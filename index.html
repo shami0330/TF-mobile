@@ -105,6 +105,16 @@ button:disabled{cursor:default}
 .wch{display:inline-block;margin:4px;padding:8px 14px;border-radius:12px;background:var(--acs);font-size:22px}
 .mrow{padding:8px 0;border-bottom:1px dotted var(--ln);font-size:20px}.mrow span{color:var(--mu);letter-spacing:2px}
 .big{font-size:46px;font-weight:700;text-align:center;padding:28px 0;color:var(--ac)}.big.hd{color:var(--mu);font-size:30px}
+/* حباب اسامی | Names Bubble: حبابی کوچک و شناور که اسامی را نشان می‌دهد و بدون جابجا کردن چیزی محو می‌شود */
+.nmb{position:fixed;z-index:50;max-width:86vw;max-height:40vh;overflow:auto;padding:8px 12px;border-radius:14px;background:var(--card);border:1px solid var(--ln);box-shadow:0 4px 16px rgba(0,0,0,.18);font-size:13px;line-height:1.7;opacity:0;transition:opacity .18s}.nmb.in{opacity:1}
+/* پنل شایستگی | Merit Panel: صفحهٔ تمام‌صفحه با فهرست دانش‌آموزان و شمارندهٔ مثبت و منفی */
+.merp{position:fixed;inset:0;z-index:40;background:var(--card);display:flex;flex-direction:column}.merh{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--ln);font-weight:700;font-size:15px}.merl{flex:1;overflow:auto;padding:0 12px 24px}.merr{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--ln)}.merr>span{flex:1;font-size:14px}
+/* پنجرهٔ دلیل | Reason Dialog: کادر توضیح اجباری هنگام دادن یا کم کردن مثبت و منفی */
+.merb{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;padding:16px}.merd{width:100%;max-width:380px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 6px 24px rgba(0,0,0,.25)}.merd h4{font-size:14px;margin-bottom:10px}.merd textarea{width:100%;height:84px;border:2px solid var(--ln);border-radius:12px;padding:8px;font:inherit;font-size:14px;resize:none}.merd textarea.er{border-color:#cf3a30}.merd .bt{display:flex;gap:8px;margin-top:10px}.merd .bt button{padding:8px 18px;border-radius:12px;color:#fff;font-weight:700}
+/* شمارندهٔ فشردهٔ ردیف | Compact Row Counters: کوچک‌کردن شمارنده‌ها تا در ردیف فهرست جا شوند */
+.srow .cnt button{width:28px;height:28px}.srow .cnt b{min-width:20px;font-size:13px}
+/* حباب شایستگی | Merit Bubble: همان حباب اسامی؛ هر ردیف یک قرص دورنگ (سبز مثبت ، قرمز منفی) با دکمه‌های گرد */
+.nmb.mbub{max-height:62vh}.mrw{display:flex;align-items:center;justify-content:space-between;gap:14px;white-space:nowrap;min-height:28px}.mcap{display:flex;border:1px solid var(--ln);border-radius:16px;overflow:hidden}.mcap .cnt{border-radius:0;padding:2px 3px;gap:1px}.mcap .cnt button{width:22px;height:22px;border-radius:50%;border:1px solid var(--ln)}.mcap .cnt button{display:flex;align-items:center;justify-content:center;padding:0}.mcap .cnt svg{display:block;width:11px;height:11px;margin:0}.mrw>span:first-child{color:var(--ink);font-weight:600}.mcap .cnt b{min-width:18px;font-size:11px}
 </style>
 </head>
 <body>
@@ -150,7 +160,7 @@ function todayIdx(){return Math.min((new Date().getDay()+1)%7,4)}
 function attDay(d,i){const k=dk(d);if(!ATT[k]){ATT[k]={};if(isPast(d))STU.forEach((_,j)=>{ATT[k][j]=(i*5+j*3)%7==0?0:1})}return ATT[k]}
 /* نوار هفته | Week Bar: جابه‌جایی هفتهٔ قبل/بعد و دکمهٔ برگشت (در حضور و غیاب «امروز»، در چک‌لیست «این هفته») */
 function wkBar(W,att){const a=jMD(W[0]),b=jMD(W[4]),t=att?(S.wk||S.di!=todayIdx()):S.wk;
-return `<div class="wk"><button class="nv" data-a="wk" data-d="-1" aria-label="هفتهٔ قبل">${ic('cr',24)}</button><b>هفتهٔ ${jMO(W[0])==jMO(W[4])?jDay(W[0]):a} تا ${b}</b><button class="nv" data-a="wk" data-d="1" aria-label="هفتهٔ بعد">${ic('cl',24)}</button></div>`+(t?`<button class="btn o" style="margin-bottom:10px" data-a="wk" data-d="0">${att?'برگشت به امروز':'برگشت به این هفته'}</button>`:'')}
+return `<div class="wk"><button class="nv" data-a="wk" data-d="-1" aria-label="هفتهٔ قبل">${ic('cr',24)}</button><span style="width:46px;flex:none"></span><b>هفتهٔ ${jMO(W[0])==jMO(W[4])?jDay(W[0]):a} تا ${b}</b><button class="btn o" style="width:46px;flex:none;min-height:30px;padding:0;border-radius:10px;font-size:11px;white-space:nowrap;visibility:${t?'visible':'hidden'}" tabindex="${t?0:-1}" data-a="wk" data-d="0" aria-label="${att?'برگشت به امروز':'برگشت به این هفته'}">${att?'امروز':'این هفته'}</button><button class="nv" data-a="wk" data-d="1" aria-label="هفتهٔ بعد">${ic('cl',24)}</button></div>`}
 
 /* ---- ۳.۱ آیکن‌ها | 3.1 Icons ---- */
 /* آیکن‌های برنامه | App Icons: همهٔ آیکن‌ها خطیِ یک‌دست‌اند و رنگشان از متن اطرافشان می‌آید (فقط توت‌فرنگی رنگی است)؛ ic('نام',اندازه) آیکن را می‌سازد */
@@ -185,9 +195,9 @@ function vCourses(){return COURSES.map((c,i)=>`<div class="card"><button class="
 function vAtt(){const W=weekDays(S.wk),tk=dk(new Date()),k=dk(W[S.di]),m=attDay(W[S.di],S.di),lk=LOCK[k],v=Object.values(m),p=v.filter(x=>x===1).length,a=v.filter(x=>x===0).length;
 return wkBar(W,1)
 +`<div class="days">${W.map((d,i)=>`<button class="day${i==S.di?' on':''}${dk(d)==tk?' td':''}" data-a="day" data-i="${i}">${DY[i]}<b>${jDay(d)}</b></button>`).join('')}</div>`
-+`<div class="stats"><div class="stat" style="background:var(--gns);color:var(--gn)"><b>${fn(p)}</b>حاضر</div><div class="stat" style="background:var(--rds);color:var(--rd)"><b>${fn(a)}</b>غایب</div><div class="stat" style="background:#ebe5e9;color:var(--mu)"><b>${fn(STU.length-p-a)}</b>ثبت‌نشده</div></div>`
++`<div class="stats"><div class="stat" data-a="nm" data-t="1" style="background:var(--gns);color:var(--gn)"><b>${fn(p)}</b>حاضر</div><div class="stat" data-a="nm" data-t="0" style="background:var(--rds);color:var(--rd)"><b>${fn(a)}</b>غایب</div><div class="stat" data-a="mer" style="background:#ebe5e9;color:var(--mu)${S.mer?';outline:2px solid var(--ac)':''}"><b style="font-size:17px">${(()=>{let P=0,M=0;STU.forEach((_,j)=>{const x=pmGet(W[S.di],S.di,j);P+=x.p;M+=x.m});return '+'+fn(P)+' −'+fn(M)})()}</b>شایستگی</div></div>`
 +`<div class="grid2"><button class="btn o" data-a="all"${lk?' disabled':''}>همه حاضر</button><button class="btn o" data-a="lock">${lk?ic('unlock',18)+' باز کردن قفل':ic('lock',18)+' قفل این روز'}</button></div>`
-+`<div class="card">${STU.map((s,j)=>{const x=m[j];return `<div class="srow"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><span class="dots">${W.map((d,i)=>{const y=attDay(d,i)[j];return `<i class="dot${y===1?' p':y===0?' a':''}${i==S.di?' s':''}"></i>`}).join('')}</span></span><button class="ab${x===1?' p':x===0?' a':''}" data-a="ab" data-i="${j}"${lk?' disabled':''}>${x===1?ic('ok',26):x===0?ic('no',24):''}</button></div>`}).join('')}</div><p class="mu" style="text-align:center">لمس دکمه: حاضر ← غایب ← خالی</p>`}
++`<div class="card">${STU.map((s,j)=>{const x=m[j];return `<div class="srow"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><span class="dots">${W.map((d,i)=>{const y=attDay(d,i)[j];return `<i class="dot${y===1?' p':y===0?' a':''}${i==S.di?' s':''}"></i>`}).join('')}</span></span>${S.mer?merPills(j):`<button class="ab${x===1?' p':x===0?' a':''}" data-a="ab" data-i="${j}"${lk?' disabled':''}>${x===1?ic('ok',26):x===0?ic('no',24):''}</button>`}</div>`}).join('')}</div><p class="mu" style="text-align:center">لمس دکمه: حاضر ← غایب ← خالی</p>`}
 
 /* ---- ۷ چک‌لیست | 7 Checklist ---- */
 /* خواندن داده‌ها | Data Getters: نمرهٔ یک خانه، مثبت/منفی یک روز و توصیف؛ روزهای گذشته مقدار نمونه دارند */
@@ -251,8 +261,31 @@ function R(keep){const m=$('main'),y=m.scrollTop;rTop();
 m.innerHTML=S.v=='courses'?vCourses():S.tab=='att'?vAtt():S.tab=='chk'?vChk():vTools();
 $('nav').style.display=S.v=='courses'?'none':'flex';if(S.v!='courses')rNav();m.scrollTop=keep?y:0}
 /* لمس‌ها | Tap Handler: همهٔ دکمه‌ها با data-a کار می‌کنند و اینجا تصمیم گرفته می‌شود چه شود */
+/* حباب اسامی | Names Bubble: با لمس «حاضر» یا «غایب» اسامی در حبابی کوچک زیر همان کادر نشان داده می‌شود */
+function nmBubble(b){const m=attDay(weekDays(S.wk)[S.di],S.di),w=b.dataset.t=='1'?1:0,n=STU.map((s,j)=>[s,j]).filter(x=>m[x[1]]===w),el=document.createElement('div');el.className='nmb';if(!n.length)el.textContent='کسی نیست';n.forEach((x,r)=>{const t=Object.keys(ATT).reduce((c,k)=>c+(ATT[k][x[1]]===0?1:0),0),row=document.createElement('div'),nm=document.createElement('span'),ab=document.createElement('small');row.style.cssText='display:flex;align-items:center;justify-content:space-between;gap:14px;white-space:nowrap;min-height:28px';nm.textContent=fn(r+1)+'. '+x[0];nm.style.cssText='color:var(--ink);font-weight:600';ab.textContent='غیبت '+fn(t);ab.style.color='var(--mu)';row.append(nm,ab);el.appendChild(row)});document.body.appendChild(el);const r=b.getBoundingClientRect(),q=el.getBoundingClientRect();el.style.top=Math.min(r.bottom+6,innerHeight-q.height-8)+'px';el.style.left=Math.max(8,Math.min(innerWidth-q.width-8,r.left+r.width/2-q.width/2))+'px';requestAnimationFrame(()=>el.classList.add('in'))}
+/* بستن حباب | Close Bubble: لمس هر جایی حباب را محو می‌کند و همان لمس کار دیگری نمی‌کند */
+document.addEventListener('click',e=>{const o=document.querySelector('.nmb:not(.out)');if(!o||e.target.closest('.nmb.mbub,.merb'))return;e.stopPropagation();e.preventDefault();o.classList.remove('in');o.classList.add('out');setTimeout(()=>o.remove(),200)},true);
+/* دلیل‌ها | Reasons Store: دلیل‌های ثبت‌شده برای هر دانش‌آموز و روز */
+const PMR={};
+/* شمارندهٔ شایستگی | Merit Counters: دو شمارندهٔ سبز (مثبت) و قرمز (منفی) هر دانش‌آموز، جای دکمهٔ حاضر/غایب در همان فهرست */
+function merPills(j){const x=pmGet(weekDays(S.wk)[S.di],S.di,j),c=f=>`<span class='cnt ${f}'><button data-a='mp' data-i='${j}' data-f='${f}' data-s='-1' aria-label='کم'>${ic('minus',14)}</button><b>${f=='p'?'+':'−'}${fn(x[f])}</b><button data-a='mp' data-i='${j}' data-f='${f}' data-s='1' aria-label='زیاد'>${ic('plus',14)}</button></span>`;return c('p')+c('m')}
+/* پر کردن حباب شایستگی | Fill Merit Bubble: فهرست شماره‌دار دانش‌آموزان با قرص مثبت/منفی را می‌سازد و محل اسکرول را نگه می‌دارد */
+function merFill(el){el=el||document.querySelector('.nmb.mbub');if(!el)return;const d=weekDays(S.wk)[S.di],sc=el.scrollTop;el.innerHTML=STU.map((s,j)=>{const x=pmGet(d,S.di,j),c=f=>`<span class='cnt ${f}'><button data-a='mp' data-i='${j}' data-f='${f}' data-s='-1' aria-label='کم'>${ic('minus',14)}</button><b>${x[f]?(f=='p'?'+':'−')+fn(x[f]):'۰'}</b><button data-a='mp' data-i='${j}' data-f='${f}' data-s='1' aria-label='زیاد'>${ic('plus',14)}</button></span>`;return `<div class='mrw'><span>${fn(j+1)}. ${s}</span><span class='mcap'>${c('p')}${c('m')}</span></div>`}).join('');el.scrollTop=sc}
+/* حباب شایستگی | Merit Bubble: با لمس «شایستگی» حباب کوچک زیر همان کادر باز می‌شود؛ لمس بیرون آن محوش می‌کند */
+function merBubble(b){const el=document.createElement('div');el.className='nmb mbub';merFill(el);document.body.appendChild(el);const r=b.getBoundingClientRect(),q=el.getBoundingClientRect();el.style.top=Math.min(r.bottom+6,innerHeight-q.height-8)+'px';el.style.left=Math.max(8,Math.min(innerWidth-q.width-8,r.left+r.width/2-q.width/2))+'px';requestAnimationFrame(()=>el.classList.add('in'))}
+/* رسم پنل شایستگی | Draw Merit Panel: ساخت یا تازه‌سازی فهرست دانش‌آموزان با شمارندهٔ سبز (مثبت) و قرمز (منفی) */
+function merDraw(){const d=weekDays(S.wk)[S.di];let el=document.querySelector('.merp');if(!el){el=document.createElement('div');el.className='merp';document.body.appendChild(el)}const sc=el.querySelector('.merl'),t=sc?sc.scrollTop:0;const cnt=(f,j,x)=>`<span class='cnt ${f}'><button data-a='mp' data-i='${j}' data-f='${f}' data-s='-1' aria-label='کم'>${ic('minus',16)}</button><b>${f=='p'?'+':'−'}${fn(x[f])}</b><button data-a='mp' data-i='${j}' data-f='${f}' data-s='1' aria-label='زیاد'>${ic('plus',16)}</button></span>`;el.innerHTML=`<div class='merh'><b>شایستگی — ${DY[S.di]} ${jMD(d)}</b><button class='nv' data-a='merx' aria-label='بستن'>✕</button></div><div class='merl'>${STU.map((s,j)=>{const x=pmGet(d,S.di,j);return `<div class='merr'><span>${fn(j+1)}. ${s}</span>${cnt('p',j,x)}${cnt('m',j,x)}</div>`}).join('')}</div>`;el.querySelector('.merl').scrollTop=t}
+/* پنجرهٔ دلیل | Reason Dialog: با زدن + یا − کادر توضیح اجباری باز می‌شود؛ زیر صفر نمی‌رود */
+function merAsk(j,f,s){const x=pmGet(weekDays(S.wk)[S.di],S.di,j);if(s<0&&x[f]<1)return;const el=document.createElement('div');el.className='merb';el.dataset.j=j;el.dataset.f=f;el.dataset.s=s;el.innerHTML=`<div class='merd'><h4>${s<0?'دلیل کم کردن ':'دلیل '}${f=='p'?'مثبت':'منفی'} — ${STU[j]}</h4><textarea placeholder='توضیح کوتاه (اجباری)'></textarea><div class='bt'><button style='background:#4aa35a' data-a='mok'>تأیید</button><button style='background:#cf3a30' data-a='mno'>لغو</button></div></div>`;document.body.appendChild(el);setTimeout(()=>el.querySelector('textarea').focus(),50)}
+/* تأیید دلیل | Confirm Reason: بدون توضیح پذیرفته نمی‌شود؛ بعد از تأیید عدد تغییر می‌کند و دلیل ذخیره می‌شود */
+function merOk(){const el=document.querySelector('.merb'),t=el.querySelector('textarea'),v=t.value.trim();if(!v){t.classList.add('er');t.focus();return}const j=+el.dataset.j,f=el.dataset.f,s=+el.dataset.s,d=weekDays(S.wk)[S.di],x=pmGet(d,S.di,j);if(!(s<0&&x[f]<1)){x[f]=Math.max(0,x[f]+s);const k=dk(d)+'|'+j;(PMR[k]=PMR[k]||[]).push({f:f,s:s,t:v})}el.remove();R(1);merFill()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,i=+b.dataset.i,d=+b.dataset.d,W=weekDays(S.wk),k=dk(W[S.di]);
 switch(a){
+case'nm':return nmBubble(b);
+case'mer':return merBubble(b);
+case'mp':return merAsk(i,b.dataset.f,+b.dataset.s);
+case'mok':return merOk();
+case'mno':document.querySelector('.merb').remove();return;
 case'open':S.v='class';S.ci=i;S.tab='att';S.wk=0;S.di=todayIdx();S.cs=-1;return R();
 case'back':if(S.tab=='chk'&&S.cs>=0)S.cs=-1;else S.v='courses';return R();
 case'tab':if(b.dataset.t=='chk'&&S.tab=='chk')S.cs=-1;S.tab=b.dataset.t;return R();
