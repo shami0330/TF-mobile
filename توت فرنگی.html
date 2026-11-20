@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#d81b5a">
+<title>توت فرنگی</title>
+<style>
+/* ---- ۱ ظاهر کلی | 1 Base Look ---- */
+/* رنگ‌ها و پایه | Colors & Base: رنگ‌ها، فونت و قاعدهٔ کلی صفحه؛ هیچ انیمیشنی در برنامه نیست */
+:root{--bg:#f5f2f4;--card:#fff;--ink:#211e22;--mu:#7a717b;--ln:#e8e2e6;--ac:#d81b5a;--acs:#fde7ef;--gn:#1f9d55;--gns:#e3f6ea;--rd:#d64545;--rds:#fde8e8;--bl:#2b6cb0;--bls:#e6f0fa;--am:#d98a0b;--ams:#fff2dc}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;transition:none!important;animation:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,system-ui,"Geeza Pro","Vazirmatn",Tahoma,sans-serif;overscroll-behavior:none}
+button,input{font:inherit;color:inherit}
+button{border:0;background:none;cursor:pointer;touch-action:manipulation}
+button:disabled{cursor:default}
+
+/* ---- ۲ قاب برنامه | 2 App Frame ---- */
+/* قاب اصلی | Main Frame: سربرگ بالا، بدنهٔ قابل اسکرول و نوار پایین؛ با لبهٔ امن آیفون هماهنگ است */
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;background:var(--bg)}
+.top{flex:none;display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 8px) 14px 10px;background:var(--ac);color:#fff}
+.top .tt{flex:1;min-width:0}.top .tt b{display:block;font-size:19px;line-height:1.4}.top .tt small{font-size:12px;opacity:.85}
+.bk{flex:none;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);color:#fff;font-size:30px;line-height:1}
+.body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px 24px}
+.nav{flex:none;display:none;background:var(--card);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{flex:1;padding:7px 0 5px;display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--mu)}
+.nav button b{font-size:22px;line-height:1.3}.nav .on{color:var(--ac);font-weight:700}
+
+/* ---- ۳ اجزای مشترک | 3 Shared Parts ---- */
+/* کارت و متن | Cards & Text: کادر سفید، تیتر و متن کم‌رنگ */
+.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:14px;margin-bottom:12px}
+.h2{font-size:17px;font-weight:700;margin-bottom:8px}.mu{color:var(--mu);font-size:13px}
+/* دکمه‌ها و انتخاب‌ها | Buttons & Chips: دکمهٔ بزرگ، حبّهٔ انتخاب و کلید دو‌حالته */
+.btn{width:100%;min-height:48px;padding:0 16px;border-radius:14px;background:var(--ac);color:#fff;font-weight:700}
+.btn.o{background:var(--card);color:var(--ac);border:1px solid var(--ac);font-size:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px}
+.chip{flex:none;min-height:40px;padding:0 14px;border-radius:999px;background:var(--card);border:1px solid var(--ln);font-size:14px}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:700}
+.seg{display:flex;background:#ebe5e9;border-radius:12px;padding:3px;margin-bottom:12px}
+.seg button{flex:1;min-height:42px;border-radius:10px;font-size:14px;color:var(--mu)}
+.seg .on{background:var(--card);color:var(--ac);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.av{flex:none;width:42px;height:42px;border-radius:50%;background:var(--acs);color:var(--ac);display:grid;place-items:center;font-weight:700}
+/* آیکن | Icon Style: آیکن‌های خطی با رنگ متنِ اطرافشان؛ ضخامت و گوشه‌ها همه یک‌دست */
+.i{display:inline-block;vertical-align:middle;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn .i,.nv .i,.bk .i{vertical-align:-.2em}
+
+/* ---- ۴ دوره‌ها | 4 Courses ---- */
+/* کارت دوره | Course Card: هر دوره یک کارت بزرگ قابل لمس است */
+.crs{display:flex;align-items:center;gap:12px;width:100%;text-align:right}
+.crs .ic{flex:none;width:52px;height:52px;border-radius:14px;background:var(--acs);display:grid;place-items:center;font-size:26px}
+.crs .tx{flex:1}.crs .tx b{display:block;font-size:17px}.crs .go{color:var(--ac);font-size:26px}
+
+/* ---- ۵ حضور و غیاب | 5 Attendance ---- */
+/* هفته و روزها | Week & Days: جابه‌جایی هفته، حبّه‌های روز و شمارنده‌ها */
+.wk{display:flex;align-items:center;gap:8px;margin-bottom:10px}.wk b{flex:1;text-align:center;font-size:15px}
+.nv{flex:none;width:44px;height:44px;border-radius:12px;background:var(--card);border:1px solid var(--ln);font-size:26px;color:var(--ac);line-height:1}
+.days{display:flex;gap:6px;margin-bottom:12px}
+.day{flex:1;padding:8px 0;border-radius:12px;background:var(--card);border:1px solid var(--ln);text-align:center;font-size:12px;line-height:1.35}
+.day b{display:block;font-size:18px}.day.td{border-color:var(--ac)}.day.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.stats{display:flex;gap:8px;margin-bottom:12px}.stat{flex:1;border-radius:14px;padding:8px 4px;text-align:center;font-size:12px}.stat b{display:block;font-size:22px;line-height:1.3}
+/* ردیف دانش‌آموز | Student Row: نام، نوار هفته و دکمهٔ بزرگ حاضر/غایب */
+.srow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln)}.srow:last-child{border:0}
+.sn{flex:1;min-width:0}.sn b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dots{display:flex;gap:4px;margin-top:3px}.dot{width:16px;height:6px;border-radius:3px;background:var(--ln)}
+.dot.p{background:var(--gn)}.dot.a{background:var(--rd)}.dot.s{outline:2px solid var(--ink);outline-offset:1px}
+.ab{flex:none;width:74px;height:46px;border-radius:14px;border:2px dashed var(--ln);font-size:22px;color:var(--mu)}
+.ab.p{background:var(--gns);border:2px solid var(--gn);color:var(--gn)}.ab.a{background:var(--rds);border:2px solid var(--rd);color:var(--rd)}.ab:disabled{opacity:.55}
+
+/* ---- ۶ چک‌لیست | 6 Checklist ---- */
+/* فهرست دانش‌آموزان | Student List: ردیف‌های بزرگ و قابل لمس؛ لمس هر ردیف = ورود به چک‌لیست همان دانش‌آموز */
+.lrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 0;border-bottom:1px solid var(--ln);text-align:right}.lrow:last-child{border:0}
+.lrow .sn small{display:block;font-size:12px;color:var(--mu)}.lrow .go{color:var(--mu)}
+/* نوار دانش‌آموز | Student Bar: نوار چسبان بالای صفحه با «قبلی»، نام دانش‌آموز و «بعدی» */
+.sbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;margin:-14px -14px 10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--ln)}
+.sbar .pn{flex:none;width:78px;min-height:50px;border-radius:12px;background:var(--card);border:1px solid var(--ln);color:var(--ac);font-size:14px;font-weight:700}.sbar .pn:disabled{opacity:.35}
+.sbar .me{flex:1;min-width:0;display:flex;align-items:center;gap:8px;min-height:50px;padding:0 8px;border-radius:12px;background:var(--card);border:1px solid var(--ln);text-align:right}
+.sbar .sn small{display:block;font-size:11px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mu);margin-bottom:10px}
+/* خانه‌های نمره | Grade Cells: پنج خانهٔ روز برای هر معیار؛ لمس خانه = چرخش نمره (خ خ ← خ ← ق ق ← ن ت ← خالی) */
+.dc{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.dc>div{text-align:center;font-size:11px;color:var(--mu);line-height:1.35}
+.gc{width:100%;min-height:54px;margin-top:4px;border-radius:12px;border:2px dashed var(--ln);font-weight:700;font-size:16px;color:var(--mu)}
+.gc.g1{background:var(--gn);border:2px solid var(--gn);color:#fff}.gc.g2{background:var(--bl);border:2px solid var(--bl);color:#fff}
+.gc.g3{background:var(--am);border:2px solid var(--am);color:#fff}.gc.g4{background:var(--rd);border:2px solid var(--rd);color:#fff}
+.gc.ab{background:#ebe5e9;border:2px solid #ebe5e9;font-size:12px;font-weight:400}
+/* شمارنده و توصیف | Counters & Notes: مثبت/منفی و متن توصیف برای هر روز */
+.drow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--ln)}.drow:last-child{border:0}.drow>span:first-child{flex:1;font-size:13px}
+.cnt{display:flex;align-items:center;gap:2px;border-radius:12px;padding:3px}.cnt b{min-width:30px;text-align:center}.cnt button{width:36px;height:36px;border-radius:10px;background:var(--card)}
+.cnt.p{background:var(--gns);color:var(--gn)}.cnt.m{background:var(--rds);color:var(--rd)}.drow .inp{flex:2;min-height:42px;font-size:14px}
+
+/* ---- ۷ ابزارها | 7 Tools ---- */
+/* تکلیف‌ساز | Homework Maker: فرم تنظیم، شمارنده‌ها و برگهٔ پیش‌نمایش */
+.fld{margin-bottom:14px}.fld>label{display:block;font-size:13px;color:var(--mu);margin-bottom:5px}
+.inp{width:100%;min-height:46px;padding:0 12px;border-radius:12px;border:1px solid var(--ln);background:#fff}
+.step{display:flex;align-items:center;gap:12px}.step b{min-width:36px;text-align:center;font-size:20px}
+.step button{width:46px;height:46px;border-radius:12px;background:var(--acs);color:var(--ac);font-size:24px;font-weight:700}
+.sheet{background:#fff;border:1px dashed var(--ln);border-radius:12px;padding:14px}.sheet h3{text-align:center;font-size:18px;margin-bottom:4px}
+.q{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dotted var(--ln);font-size:20px}.q i{font-style:normal;font-size:13px;color:var(--mu);width:24px}
+.q bdi{direction:ltr;unicode-bidi:isolate}
+/* روخوانی و املا | Reading & Dictation: متن قابل لمس، شمارنده‌ها، برگهٔ مشق و کارت املا */
+.words{font-size:20px;line-height:2.3}.w{padding:3px 6px;border-radius:8px}.w.cn{color:var(--mu)}.w.t{background:var(--acs)}.w.sel{background:var(--ac);color:#fff}
+.wch{display:inline-block;margin:4px;padding:8px 14px;border-radius:12px;background:var(--acs);font-size:22px}
+.mrow{padding:8px 0;border-bottom:1px dotted var(--ln);font-size:20px}.mrow span{color:var(--mu);letter-spacing:2px}
+.big{font-size:46px;font-weight:700;text-align:center;padding:28px 0;color:var(--ac)}.big.hd{color:var(--mu);font-size:30px}
+</style>
+</head>
+<body>
+<!-- قاب برنامه | App Frame: سه بخش ثابت (سربرگ، بدنه، نوار پایین)؛ محتوا را جاوااسکریپت پایین فایل داخلشان می‌گذارد -->
+<div id="app"><header class="top" id="top"></header><main class="body" id="main"></main><nav class="nav" id="nav"></nav></div>
+<script>
+/* ---- ۱ داده‌های نمایشی | 1 Demo Data ---- */
+/* دانش‌آموزان | Students: پنج دانش‌آموز نمایشی؛ در مرحلهٔ بعد از سرور خوانده می‌شوند */
+const STU=['علی احمدی','محمد رضایی','زهرا کریمی','سارا موسوی','امیرحسین نوری'];
+/* دوره‌ها | Courses: دو دورهٔ نمایشی برای صفحهٔ دوره‌ها */
+const COURSES=[{n:'پایه چهارم — کلاس ۴۰۱',s:'دبستان نمونه'},{n:'پایه پنجم — کلاس ۵۰۲',s:'دبستان نمونه'}];
+/* درس‌ها و معیارها | Lessons & Criteria: درس‌های چک‌لیست و معیارهای هر درس */
+const C3=[['اهداف فصل'],['ارزشیابی'],['توصیف کلی','t']];
+const LES=[['ریاضی',C3],['فارسی',[['خوانداری'],['نوشتاری'],['ارزشیابی'],['توصیف کلی','t']]],['علوم',C3],['قرآن',[['روخوانی و قرائت'],['ترجمه و پیام'],['توصیف کلی','t']]],['هدیه‌های آسمان',C3],['مطالعات اجتماعی',C3],['شایستگی‌ها',[['تکالیف و فعالیت‌ها','c']]]];
+/* نوع معیار | Criterion Type: بدون نوع = نمرهٔ چهارحالته، t = توصیف نوشتاری، c = شمارندهٔ مثبت و منفی */
+/* نمره‌ها و روزها | Grades & Days: حرف‌های اول نمره‌ها و نام روزهای هفته */
+const GL=['','خ خ','خ','ق ق','ن ت'],GN=['','خیلی خوب','خوب','قابل قبول','نیاز به تلاش'],DY=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه'];
+/* متن‌های روخوانی | Reading Texts: دو متن نمایشی و فهرست حرف‌های ربط (شمرده نمی‌شوند) */
+const TXT=[{t:'درس ۱ — صبح',b:'صبح زود، خورشید از پشت کوه بالا آمد. پرنده‌ها روی شاخهٔ درخت آواز می‌خواندند و بچه‌ها با شادی به مدرسه رفتند.'},{t:'درس ۲ — باران',b:'باران بهاری روی برگ‌ها می‌بارید. مادربزرگ کنار پنجره نشست و چای داغ نوشید، اما من در حیاط بازی می‌کردم.'}];
+const CON=['و','یا','اما','ولی','که','تا','پس','اگر','چون','نیز','زیرا','بلکه'];
+
+/* ---- ۲ وضعیت برنامه | 2 App State ---- */
+/* وضعیت‌ها | State Objects: همهٔ چیزهایی که برنامه الان به یاد دارد (صفحه، تب، هفته، نمره‌ها...) */
+const S={v:'courses',ci:0,tab:'att',wk:0,di:0,les:0,cs:-1,tool:'hw'};
+/* دادهٔ ثبت‌شده | Saved Data: حضور، قفل، نمره‌ها، مثبت/منفی و توصیف‌ها؛ فعلاً فقط در حافظهٔ صفحه‌اند و در مرحلهٔ بعد به سرور می‌روند */
+const ATT={},LOCK={},CHK={},PMD={},TXD={};
+const HW={t:'تکلیف ریاضی',ops:['add','sub'],a:2,b:1,n:6,ans:0,seed:1};
+const RA={tx:0,md:'read',sel:[],pos:0,show:1};
+const OPS=[['add','جمع','+'],['sub','تفریق','−'],['mul','ضرب','×'],['div','تقسیم','÷']];
+
+/* ---- ۳ ابزارهای کمکی | 3 Helpers ---- */
+/* کمکی‌ها | Small Helpers: عدد فارسی، میان‌بر انتخاب عنصر، تاریخ شمسی و هفتهٔ شنبه تا چهارشنبه */
+const $=id=>document.getElementById(id),fn=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const JF=o=>new Intl.DateTimeFormat('fa-IR-u-ca-persian',o),jDay=d=>JF({day:'numeric'}).format(d),jMD=d=>JF({day:'numeric',month:'long'}).format(d);
+const dk=d=>d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+/* هفتهٔ کلاسی | School Week: شنبه تا چهارشنبهٔ هفتهٔ جاری؛ پنج‌شنبه و جمعه هم همان هفتهٔ تمام‌شده را نشان می‌دهند */
+function weekDays(off){const n=new Date(),b=(n.getDay()+1)%7;return[0,1,2,3,4].map(i=>new Date(n.getFullYear(),n.getMonth(),n.getDate()-b+off*7+i,12))}
+/* گذشته یا امروز | Is Past: روزهای آینده هیچ داده‌ای ندارند */
+const isPast=d=>+d<=Date.now()+43200000,jMO=d=>JF({month:'long'}).format(d),esc=t=>String(t).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+/* روز امروز | Today Index: شمارهٔ امروز در هفته (پنج‌شنبه و جمعه ← چهارشنبه) */
+function todayIdx(){return Math.min((new Date().getDay()+1)%7,4)}
+/* حضور روز | Day Attendance: حضور یک روز؛ برای نمایش، روزهای گذشته با داده‌ی نمونه پر می‌شوند و روزهای آینده خالی‌اند */
+function attDay(d,i){const k=dk(d);if(!ATT[k]){ATT[k]={};if(isPast(d))STU.forEach((_,j)=>{ATT[k][j]=(i*5+j*3)%7==0?0:1})}return ATT[k]}
+/* نوار هفته | Week Bar: جابه‌جایی هفتهٔ قبل/بعد و دکمهٔ برگشت (در حضور و غیاب «امروز»، در چک‌لیست «این هفته») */
+function wkBar(W,att){const a=jMD(W[0]),b=jMD(W[4]),t=att?(S.wk||S.di!=todayIdx()):S.wk;
+return `<div class="wk"><button class="nv" data-a="wk" data-d="-1" aria-label="هفتهٔ قبل">${ic('cr',24)}</button><b>هفتهٔ ${jMO(W[0])==jMO(W[4])?jDay(W[0]):a} تا ${b}</b><button class="nv" data-a="wk" data-d="1" aria-label="هفتهٔ بعد">${ic('cl',24)}</button></div>`+(t?`<button class="btn o" style="margin-bottom:10px" data-a="wk" data-d="0">${att?'برگشت به امروز':'برگشت به این هفته'}</button>`:'')}
+
+/* ---- ۳.۱ آیکن‌ها | 3.1 Icons ---- */
+/* آیکن‌های برنامه | App Icons: همهٔ آیکن‌ها خطیِ یک‌دست‌اند و رنگشان از متن اطرافشان می‌آید (فقط توت‌فرنگی رنگی است)؛ ic('نام',اندازه) آیکن را می‌سازد */
+const IC={
+att:'<rect x="3" y="5" width="18" height="16" rx="3.5"/><path d="M3 10h18M8 3v4M16 3v4M9 15.5l2 2 4-4"/>',
+chk:'<rect x="4" y="3" width="16" height="18" rx="3.5"/><path d="M8 8.5l1.3 1.3L11.5 7.5M8 15l1.3 1.3 2.2-2.3M14 9h3M14 15.5h3"/>',
+tools:'<rect x="3" y="8" width="18" height="12" rx="3.5"/><path d="M9 8V6.5A2.5 2.5 0 0111.5 4h1A2.5 2.5 0 0115 6.5V8M3 13.5h18M10.5 12.5v2.5h3v-2.5"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 018 0v3"/>',
+unlock:'<rect x="5" y="11" width="14" height="10" rx="3"/><path d="M8 11V8a4 4 0 017.6-1.7"/>',
+ok:'<path d="M5 12.5l4.5 4.5L19 7.5" stroke-width="2.8"/>',
+no:'<path d="M6 6l12 12M18 6L6 18" stroke-width="2.8"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',
+cr:'<path d="M9 5l7 7-7 7"/>',cl:'<path d="M15 5l-7 7 7 7"/>',
+spk:'<path d="M4 9.5v5h3.5l4.5 4v-13l-4.5 4z"/><path d="M15.5 9a4 4 0 010 6M18.2 6.5a8 8 0 010 11"/>',
+berry:'<path d="M12 21.5C6.6 18.8 3.8 14 5 9.8 5.7 7.4 8.3 6.2 12 6.2s6.3 1.2 7 3.6c1.2 4.2-1.6 9-7 11.7z" fill="#d81b5a" stroke="none"/><path d="M12 7C9.6 7 7.7 5.9 6.8 3.8c2.3 0 3.9.6 5.2 2 1.3-1.4 2.9-2 5.2-2C16.3 5.9 14.4 7 12 7z" fill="#1f9d55" stroke="none"/><g fill="#fff" stroke="none" opacity=".9"><ellipse cx="9" cy="11" rx=".8" ry="1.1"/><ellipse cx="12.5" cy="10.5" rx=".8" ry="1.1"/><ellipse cx="15.5" cy="12" rx=".8" ry="1.1"/><ellipse cx="10.5" cy="14.5" rx=".8" ry="1.1"/><ellipse cx="14" cy="15.5" rx=".8" ry="1.1"/><ellipse cx="12" cy="18" rx=".8" ry="1.1"/></g>'
+};
+const ic=(n,s)=>`<svg class="i" viewBox="0 0 24 24" width="${s||20}" height="${s||20}" aria-hidden="true">${IC[n]}</svg>`;
+
+/* ---- ۴ سربرگ و نوار پایین | 4 Header & Nav ---- */
+/* سربرگ | Header: در دوره‌ها فقط عنوان؛ در کلاس دکمهٔ برگشت و نام دوره */
+function rTop(){const dt=clkTxt();
+$('top').innerHTML=S.v=='courses'?`<div class="tt"><b>دوره‌ها</b><small class="clk">${dt}</small></div>`:`<button class="bk" data-a="back" aria-label="بازگشت">${ic('cr',28)}</button><div class="tt"><b>${COURSES[S.ci].n}</b><small class="clk">${dt}</small></div>`}
+/* نوار پایین | Bottom Nav: سه تب کلاس درس */
+function rNav(){$('nav').innerHTML=[['att','حضور و غیاب'],['chk','چک‌لیست'],['tools','ابزارها']].map(t=>`<button class="${S.tab==t[0]?'on':''}" data-a="tab" data-t="${t[0]}"><b>${ic(t[0],26)}</b>${t[1]}</button>`).join('')}
+
+/* ---- ۵ دوره‌ها | 5 Courses ---- */
+/* صفحهٔ دوره‌ها | Courses Page: فهرست دوره‌ها؛ لمس هر کارت = ورود به کلاس */
+function vCourses(){return COURSES.map((c,i)=>`<div class="card"><button class="crs" data-a="open" data-i="${i}"><span class="ic">${ic('berry',34)}</span><span class="tx"><b>${c.n}</b><span class="mu">${c.s} • ${fn(STU.length)} دانش‌آموز</span></span><span class="go">${ic('cl',24)}</span></button></div>`).join('')+`<p class="mu" style="text-align:center">نسخهٔ نمایشی — داده‌ها بعداً از سرور می‌آیند</p>`}
+
+/* ---- ۶ حضور و غیاب | 6 Attendance ---- */
+/* صفحهٔ حضور و غیاب | Attendance Page: انتخاب هفته و روز، شمارنده‌ها و ثبت حاضر/غایب برای هر دانش‌آموز */
+function vAtt(){const W=weekDays(S.wk),tk=dk(new Date()),k=dk(W[S.di]),m=attDay(W[S.di],S.di),lk=LOCK[k],v=Object.values(m),p=v.filter(x=>x===1).length,a=v.filter(x=>x===0).length;
+return wkBar(W,1)
++`<div class="days">${W.map((d,i)=>`<button class="day${i==S.di?' on':''}${dk(d)==tk?' td':''}" data-a="day" data-i="${i}">${DY[i]}<b>${jDay(d)}</b></button>`).join('')}</div>`
++`<div class="stats"><div class="stat" style="background:var(--gns);color:var(--gn)"><b>${fn(p)}</b>حاضر</div><div class="stat" style="background:var(--rds);color:var(--rd)"><b>${fn(a)}</b>غایب</div><div class="stat" style="background:#ebe5e9;color:var(--mu)"><b>${fn(STU.length-p-a)}</b>ثبت‌نشده</div></div>`
++`<div class="grid2"><button class="btn o" data-a="all"${lk?' disabled':''}>همه حاضر</button><button class="btn o" data-a="lock">${lk?ic('unlock',18)+' باز کردن قفل':ic('lock',18)+' قفل این روز'}</button></div>`
++`<div class="card">${STU.map((s,j)=>{const x=m[j];return `<div class="srow"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><span class="dots">${W.map((d,i)=>{const y=attDay(d,i)[j];return `<i class="dot${y===1?' p':y===0?' a':''}${i==S.di?' s':''}"></i>`}).join('')}</span></span><button class="ab${x===1?' p':x===0?' a':''}" data-a="ab" data-i="${j}"${lk?' disabled':''}>${x===1?ic('ok',26):x===0?ic('no',24):''}</button></div>`}).join('')}</div><p class="mu" style="text-align:center">لمس دکمه: حاضر ← غایب ← خالی</p>`}
+
+/* ---- ۷ چک‌لیست | 7 Checklist ---- */
+/* خواندن داده‌ها | Data Getters: نمرهٔ یک خانه، مثبت/منفی یک روز و توصیف؛ روزهای گذشته مقدار نمونه دارند */
+function cgGet(d,i,L,C,j){const key=dk(d)+'|'+L+'.'+C+'|'+j;if(key in CHK)return CHK[key];const h=(i*3+j*2+L*5+C)%7;return isPast(d)&&h?1+h%4:0}
+function pmGet(d,i,j){const key=dk(d)+'|'+j;return PMD[key]||(PMD[key]=isPast(d)?{p:(i+j)%3==0?1:0,m:(i*2+j)%5==0?1:0}:{p:0,m:0})}
+/* صفحهٔ چک‌لیست | Checklist Page: اول فهرست دانش‌آموزان؛ با لمس هر کدام صفحهٔ خودش باز می‌شود */
+function vChk(){const W=weekDays(S.wk);return S.cs<0?vChkList(W):vChkStu(W)}
+/* فهرست دانش‌آموزان | Checklist Student List: هر ردیف خلاصهٔ مثبت، منفی و غیبت همین هفته را نشان می‌دهد */
+function vChkList(W){return `<p class="mu" style="margin-bottom:8px">یک دانش‌آموز را لمس کن تا چک‌لیستش باز شود</p>`+wkBar(W)+`<div class="card">${STU.map((s,j)=>{let p=0,m=0,a=0;W.forEach((d,i)=>{const x=pmGet(d,i,j);p+=x.p;m+=x.m;if(attDay(d,i)[j]===0)a++});return `<button class="lrow" data-a="cs" data-i="${j}"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><small>مثبت ${fn(p)} • منفی ${fn(m)} • غیبت ${fn(a)}</small></span><span class="go">${ic('cl',22)}</span></button>`}).join('')}</div>`}
+/* صفحهٔ یک دانش‌آموز | Student Checklist Page: نوار قبلی/بعدی، هفته، درس‌ها و معیارها با پنج خانهٔ روز */
+function vChkStu(W){const j=S.cs,s=STU[j],L=LES[S.les],last=STU.length-1;
+const cnt=(f,v,i)=>`<span class="cnt ${f}"><button data-a="pc" data-i="${j}" data-d="${i}" data-f="${f}" data-s="-1" aria-label="کم">${ic('minus',16)}</button><b>${f=='p'?'+':'−'}${fn(v)}</b><button data-a="pc" data-i="${j}" data-d="${i}" data-f="${f}" data-s="1" aria-label="زیاد">${ic('plus',16)}</button></span>`;
+return `<div class="sbar"><button class="pn" data-a="cs" data-i="${j-1}"${j?'':' disabled'}>${ic('cr',18)} قبلی</button><button class="me" data-a="cs" data-i="-1"><span class="av" style="width:36px;height:36px">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><small>${fn(j+1)} از ${fn(last+1)} • لمس = فهرست</small></span></button><button class="pn" data-a="cs" data-i="${j+1}"${j<last?'':' disabled'}>بعدی ${ic('cl',18)}</button></div>`
++wkBar(W)+`<div class="lg">${[1,2,3,4].map(g=>`<span><b>${GL[g]}</b> = ${GN[g]}</span>`).join('')}</div>`
++`<div class="chips">${LES.map((l,i)=>`<button class="chip${i==S.les?' on':''}" data-a="les" data-i="${i}">${l[0]}</button>`).join('')}</div>`
++L[1].map((c,C)=>{const ty=c[1]||'g',h=`<div class="card"><div class="h2">${c[0]}</div>`;
+if(ty=='g')return h+`<div class="dc">${W.map((d,i)=>{const ab=attDay(d,i)[j]===0,g=cgGet(d,i,S.les,C,j);return `<div>${DY[i]}<br>${jDay(d)}<button class="gc${ab?' ab':g?' g'+g:''}" data-a="cg" data-i="${j}" data-d="${i}" data-k="${S.les}.${C}"${ab?' disabled':''}>${ab?'غایب':g?GL[g]:''}</button></div>`}).join('')}</div></div>`;
+if(ty=='c')return h+W.map((d,i)=>{const x=pmGet(d,i,j);return `<div class="drow"><span>${DY[i]} ${jDay(d)}</span>${cnt('p',x.p,i)}${cnt('m',x.m,i)}</div>`}).join('')+'</div>';
+return h+W.map((d,i)=>{const ab=attDay(d,i)[j]===0,key=dk(d)+'|'+S.les+'.'+C+'|'+j;return `<div class="drow"><span>${DY[i]} ${jDay(d)}</span><input class="inp" data-tk="${key}" value="${esc(TXD[key]||'')}" placeholder="${ab?'غایب':'توصیف...'}"${ab?' disabled':''}></div>`}).join('')+'</div>'}).join('')}
+
+/* ---- ۸ ابزارها | 8 Tools ---- */
+/* صفحهٔ ابزارها | Tools Page: کلید بین «تکلیف‌ساز» و «روخوانی و املا» */
+function vTools(){return `<div class="seg"><button class="${S.tool=='hw'?'on':''}" data-a="tool" data-t="hw">تکلیف‌ساز</button><button class="${S.tool=='ra'?'on':''}" data-a="tool" data-t="ra">روخوانی و املا</button></div>`+(S.tool=='hw'?vHw():vRa())}
+
+/* ---- ۸.۱ تکلیف‌ساز | 8.1 Homework Maker ---- */
+/* عدد تصادفی ثابت | Seeded Random: عددهای تصادفی که با یک دانه همیشه یکسان می‌مانند تا برگه با هر لمس نپرد */
+function rnd(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const num=(r,d)=>{const lo=d==1?1:10**(d-1),hi=10**d-1;return lo+Math.floor(r()*(hi-lo+1))};
+/* ساخت سؤال‌ها | Build Questions: سؤال‌های جمع، تفریق، ضرب و تقسیم را با رقم‌های انتخاب‌شده می‌سازد */
+function hwQs(){const r=rnd(HW.seed*97+13),on=OPS.filter(o=>HW.ops.includes(o[0])),Q=[];
+for(let i=0;i<HW.n;i++){const o=on[i%on.length];let x=num(r,HW.a),y=num(r,HW.b),v;
+if(o[0]=='add')v=x+y;else if(o[0]=='sub'){if(y>x)[x,y]=[y,x];v=x-y}else if(o[0]=='mul')v=x*y;else{v=x;x=v*y}
+Q.push([x,o[2],y,v])}return Q}
+/* صفحهٔ تکلیف‌ساز | Homework Page: فرم تنظیمات و برگهٔ پیش‌نمایش */
+function vHw(){const st=(f,l,mn,mx)=>`<div class="fld"><label>${l}</label><div class="step"><button data-a="st" data-f="${f}" data-d="-1"${HW[f]<=mn?' disabled':''}>−</button><b>${fn(HW[f])}</b><button data-a="st" data-f="${f}" data-d="1"${HW[f]>=mx?' disabled':''}>+</button></div></div>`;
+return `<div class="card"><div class="h2">تنظیم تکلیف</div><div class="fld"><label>عنوان برگه</label><input class="inp" id="hwt" value="${HW.t}"></div>`
++`<div class="fld"><label>نوع عمل</label><div class="chips" style="flex-wrap:wrap">${OPS.map(o=>`<button class="chip${HW.ops.includes(o[0])?' on':''}" data-a="op" data-t="${o[0]}">${o[1]}</button>`).join('')}</div></div>`
++st('a','تعداد رقم عدد اول',1,4)+st('b','تعداد رقم عدد دوم',1,3)+st('n','تعداد سؤال',2,20)
++`<div class="fld"><button class="chip${HW.ans?' on':''}" data-a="ans">نمایش پاسخنامه</button></div><button class="btn" data-a="hwgo">ساخت تکلیف جدید</button></div>`
++`<div class="card"><div class="h2">پیش‌نمایش برگه</div><div class="sheet"><h3 id="hwp">${HW.t}</h3><p class="mu" style="text-align:center;margin-bottom:6px">نام: ................ تاریخ: ............</p>${hwQs().map((q,i)=>`<div class="q"><i>${fn(i+1)}</i><bdi>${fn(q[0])} ${q[1]} ${fn(q[2])} = ${HW.ans?`<b style="color:var(--gn)">${fn(q[3])}</b>`:'......'}</bdi></div>`).join('')}</div></div>`}
+
+/* ---- ۸.۲ روخوانی و املا | 8.2 Reading & Dictation ---- */
+/* شمارش واژه‌ها | Word Parts: متن را به تکه‌های واژه و غیرواژه می‌شکند؛ هر واژه شمارهٔ k می‌گیرد و حرف‌های ربط جدا علامت می‌خورند */
+function raParts(t){let k=0;return t.split(/([\p{L}\p{M}\u200c]+)/u).map((p,i)=>i%2?{w:p,k:k++,c:CON.includes(p)}:{s:p})}
+/* واژه‌های کار | Work Words: واژه‌های انتخاب‌شده؛ اگر چیزی انتخاب نشده باشد همهٔ واژه‌های بدون حرف ربط */
+function raPool(P){const W=P.filter(x=>x.w&&!x.c);const s=W.filter(x=>RA.sel.includes(x.k));return(s.length?s:W).map(x=>x.w)}
+/* صفحهٔ روخوانی و املا | Reading Page: انتخاب متن، شمارنده‌ها، متن قابل لمس و برگهٔ روخوانی/مشق/املا */
+function vRa(){const P=raParts(TXT[RA.tx].b),W=P.filter(x=>x.w),n=W.filter(x=>!x.c).length,pool=raPool(P),u=new Set(W.filter(x=>!x.c).map(x=>x.w)).size;
+let h=`<div class="chips">${TXT.map((t,i)=>`<button class="chip${i==RA.tx?' on':''}" data-a="tx" data-i="${i}">${t.t}</button>`).join('')}</div>`
++`<div class="stats">${[['کلمه',n],['حرف ربط',W.length-n],['متفاوت',u],['انتخاب',RA.sel.length]].map(x=>`<div class="stat" style="background:var(--acs);color:var(--ac)"><b>${fn(x[1])}</b>${x[0]}</div>`).join('')}</div>`
++`<div class="card"><div class="h2">متن (کلمه‌ها را لمس کن)</div><div class="words">${P.map(x=>x.s!==undefined?x.s:x.c?`<span class="w cn">${x.w}</span>`:`<span class="w t${RA.sel.includes(x.k)?' sel':''}" data-a="wd" data-k="${x.k}">${x.w}</span>`).join('')}</div></div>`
++`<div class="seg">${[['read','روخوانی'],['write','مشق'],['dict','املا']].map(m=>`<button class="${RA.md==m[0]?'on':''}" data-a="md" data-t="${m[0]}">${m[1]}</button>`).join('')}</div><div class="card">`;
+if(RA.md=='read')h+=`<div class="h2">برگهٔ روخوانی</div>${pool.map(w=>`<span class="wch">${w}</span>`).join('')}`;
+else if(RA.md=='write')h+=`<div class="h2">برگهٔ مشق</div>${pool.map(w=>`<div class="mrow">${w} <span>${'· · · · '.repeat(4)}</span></div>`).join('')}`;
+else{const i=Math.min(RA.pos,pool.length-1);h+=`<div class="h2">املا — کلمهٔ ${fn(i+1)} از ${fn(pool.length)}</div><div class="big${RA.show?'':' hd'}">${RA.show?pool[i]:ic('spk',36)+' کلمه را بگو'}</div><div class="grid2"><button class="btn o" data-a="pos" data-d="-1">${ic('cr',18)} قبلی</button><button class="btn o" data-a="pos" data-d="1">بعدی ${ic('cl',18)}</button></div><button class="btn o" data-a="show">${RA.show?'پنهان کردن کلمه':'نمایش کلمه'}</button>`}
+return h+'</div>'}
+
+/* ---- ۹ نمایش و رویدادها | 9 Render & Events ---- */
+/* نمایش اصلی | Main Render: سربرگ و صفحهٔ درست را می‌کشد؛ keep=1 یعنی جای اسکرول عوض نشود */
+function R(keep){const m=$('main'),y=m.scrollTop;rTop();
+m.innerHTML=S.v=='courses'?vCourses():S.tab=='att'?vAtt():S.tab=='chk'?vChk():vTools();
+$('nav').style.display=S.v=='courses'?'none':'flex';if(S.v!='courses')rNav();m.scrollTop=keep?y:0}
+/* لمس‌ها | Tap Handler: همهٔ دکمه‌ها با data-a کار می‌کنند و اینجا تصمیم گرفته می‌شود چه شود */
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,i=+b.dataset.i,d=+b.dataset.d,W=weekDays(S.wk),k=dk(W[S.di]);
+switch(a){
+case'open':S.v='class';S.ci=i;S.tab='att';S.wk=0;S.di=todayIdx();S.cs=-1;return R();
+case'back':if(S.tab=='chk'&&S.cs>=0)S.cs=-1;else S.v='courses';return R();
+case'tab':if(b.dataset.t=='chk'&&S.tab=='chk')S.cs=-1;S.tab=b.dataset.t;return R();
+case'wk':S.wk=d?S.wk+d:0;if(!d&&S.tab=='att')S.di=todayIdx();return R(1);
+case'day':S.di=i;return R(1);
+case'ab':{const m=attDay(W[S.di],S.di);if(m[i]===undefined)m[i]=1;else if(m[i]===1)m[i]=0;else delete m[i];return R(1)}
+case'all':{const m=attDay(W[S.di],S.di);STU.forEach((_,j)=>m[j]=1);return R(1)}
+case'lock':LOCK[k]=!LOCK[k];return R(1);
+case'les':S.les=i;return R(1);
+case'cs':S.cs=i;return R();
+case'cg':{const[L,C]=b.dataset.k.split('.').map(Number),v=cgGet(W[d],d,L,C,i);CHK[dk(W[d])+'|'+L+'.'+C+'|'+i]=(v+1)%5;return R(1)}
+case'pc':{const x=pmGet(W[d],d,i),f=b.dataset.f;x[f]=Math.max(0,x[f]+ +b.dataset.s);return R(1)}
+case'tool':S.tool=b.dataset.t;return R();
+case'op':{const t=b.dataset.t,x=HW.ops.indexOf(t);if(x<0)HW.ops.push(t);else if(HW.ops.length>1)HW.ops.splice(x,1);return R(1)}
+case'st':{const f=b.dataset.f,L={a:[1,4],b:[1,3],n:[2,20]}[f];HW[f]=Math.min(L[1],Math.max(L[0],HW[f]+d));return R(1)}
+case'ans':HW.ans^=1;return R(1);
+case'hwgo':HW.seed++;return R(1);
+case'tx':RA.tx=i;RA.sel=[];RA.pos=0;return R(1);
+case'md':RA.md=b.dataset.t;RA.pos=0;return R(1);
+case'wd':{const kk=+b.dataset.k,x=RA.sel.indexOf(kk);if(x<0)RA.sel.push(kk);else RA.sel.splice(x,1);RA.pos=0;return R(1)}
+case'pos':{const n=raPool(raParts(TXT[RA.tx].b)).length;RA.pos=(RA.pos+d+n)%n;return R(1)}
+case'show':RA.show^=1;return R(1);
+}});
+/* نوشتن در کادرها | Text Inputs: توصیف چک‌لیست ذخیره می‌شود و با نوشتن عنوان تکلیف، تیتر برگه همان لحظه عوض می‌شود */
+document.addEventListener('input',e=>{if(e.target.dataset.tk)TXD[e.target.dataset.tk]=e.target.value;if(e.target.id=='hwt'){HW.t=e.target.value;const p=$('hwp');if(p)p.textContent=HW.t}});
+/* ---- ۱۰ ساعت زنده | 10 Live Clock ---- */
+/* متن ساعت | Clock Text: تاریخ شمسی و ساعت:دقیقه:ثانیه، دقیقاً از ساعت خود دستگاه */
+function clkTxt(){const n=new Date();return JF({weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(n)+' — '+new Intl.DateTimeFormat('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(n)}
+/* به‌روزرسانی ساعت | Clock Tick: هر ثانیه فقط متن ساعت سربرگ عوض می‌شود، نه کل صفحه */
+setInterval(()=>{const e=document.querySelector('.clk');if(e)e.textContent=clkTxt()},1000);
+R();
+</script>
+</body>
+</html>
