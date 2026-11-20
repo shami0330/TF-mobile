@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#d81b5a">
@@ -75,7 +75,7 @@ button:disabled{cursor:default}
 .lrow{display:flex;align-items:center;gap:12px;width:100%;padding:12px 0;border-bottom:1px solid var(--ln);text-align:right}.lrow:last-child{border:0}
 .lrow .sn small{display:block;font-size:12px;color:var(--mu)}.lrow .go{color:var(--mu)}
 /* نوار دانش‌آموز | Student Bar: نوار چسبان بالای صفحه با «قبلی»، نام دانش‌آموز و «بعدی» */
-.sbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;margin:-14px -14px 10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--ln)}
+.sbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:8px;margin:0 -14px 10px;padding:10px 14px;background:var(--bg);border-bottom:1px solid var(--ln)}
 .sbar .pn{flex:none;width:78px;min-height:50px;border-radius:12px;background:var(--card);border:1px solid var(--ln);color:var(--ac);font-size:14px;font-weight:700}.sbar .pn:disabled{opacity:.35}
 .sbar .me{flex:1;min-width:0;display:flex;align-items:center;gap:8px;min-height:50px;padding:0 8px;border-radius:12px;background:var(--card);border:1px solid var(--ln);text-align:right}
 .sbar .sn small{display:block;font-size:11px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -115,6 +115,23 @@ button:disabled{cursor:default}
 .srow .cnt button{width:28px;height:28px}.srow .cnt b{min-width:20px;font-size:13px}
 /* حباب شایستگی | Merit Bubble: همان حباب اسامی؛ هر ردیف یک قرص دورنگ (سبز مثبت ، قرمز منفی) با دکمه‌های گرد */
 .nmb.mbub{max-height:62vh}.mrw{display:flex;align-items:center;justify-content:space-between;gap:14px;white-space:nowrap;min-height:28px}.mcap{display:flex;border:1px solid var(--ln);border-radius:16px;overflow:hidden}.mcap .cnt{border-radius:0;padding:2px 3px;gap:1px}.mcap .cnt button{width:22px;height:22px;border-radius:50%;border:1px solid var(--ln)}.mcap .cnt button{display:flex;align-items:center;justify-content:center;padding:0}.mcap .cnt svg{display:block;width:11px;height:11px;margin:0}.mrw>span:first-child{color:var(--ink);font-weight:600}.mcap .cnt b{min-width:18px;font-size:11px}
+
+/* ---- ۱۱ کادر شیفت و زنگ | 11 Shift & Bell Box ---- */
+/* جای کادر | Box Slot: گوشهٔ چپِ همان ردیف بالای سربرگ، کنار عنوان و باریک؛ فقط داخل دوره دیده می‌شود و اگر چیزی برای نشان دادن نباشد خالی و پنهان است */
+.bkx{flex:none;width:124px}.bkx:empty{display:none}
+/* کادر شیفت و زنگ | Bell Box: کادر گرد با نام شیفت یا زنگ و شمارش معکوس؛ با لمس، فهرست زنگ‌های باقی‌مانده باز می‌شود */
+.bkb{display:block;width:100%;min-height:40px;padding:1px 6px;border:2px solid #fff;border-radius:12px;background:var(--card);color:var(--ink);text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.bt1,.bt2{display:block}.bt2{white-space:nowrap}.bt1{font-weight:800;font-size:12.5px;line-height:1.35;color:var(--ac)}.bt1 .bdt{opacity:.5}.bt2{font-weight:700;font-size:11px;line-height:1.35;font-variant-numeric:tabular-nums}
+/* فهرست زنگ‌ها | Bell List Panel: برگهٔ شناور زیر کادر با ردیف‌های ساعت زنگ‌های باقی‌مانده */
+.brp{position:fixed;z-index:55;overflow:auto;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--ln);box-shadow:0 4px 16px rgba(0,0,0,.18)}
+.brr{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border-radius:10px;font-size:14px;line-height:1.6}.brr bdi{font-variant-numeric:tabular-nums;white-space:nowrap}
+.brr.cur{background:var(--acs);color:var(--ac);font-weight:700}.brr.br{opacity:.65}.brn{padding:10px;text-align:center;font-size:13px;color:var(--mu)}
+
+/* ---- ۱۲ قفل صفحه | 12 Page Lock ---- */
+/* صفحهٔ ثابت | Fixed Page: خود صفحه هرگز اسکرول یا کشیده نمی‌شود؛ سربرگ قرمز و نوار پایین سر جایشان می‌مانند و فقط بدنه اسکرول می‌شود */
+html,body{position:fixed;inset:0;width:100%;overflow:hidden;touch-action:pan-x pan-y}#app{position:fixed;inset:0;height:auto;margin:0 auto}.top{position:relative;z-index:20}.body{min-height:0;overscroll-behavior:contain}.body:has(.sbar){padding-top:0}
+/* بدون انتخاب متن | No Text Select: نگه داشتن انگشت روی نوشته‌ها آن‌ها را انتخاب نمی‌کند و منوی کپی باز نمی‌شود؛ فقط داخل کادرهای نوشتنی انتخاب و تایپ آزاد است */
+*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea{-webkit-user-select:text;user-select:text}
 </style>
 </head>
 <body>
@@ -125,7 +142,11 @@ button:disabled{cursor:default}
 /* دانش‌آموزان | Students: پنج دانش‌آموز نمایشی؛ در مرحلهٔ بعد از سرور خوانده می‌شوند */
 const STU=['علی احمدی','محمد رضایی','زهرا کریمی','سارا موسوی','امیرحسین نوری'];
 /* دوره‌ها | Courses: دو دورهٔ نمایشی برای صفحهٔ دوره‌ها */
-const COURSES=[{n:'پایه چهارم — کلاس ۴۰۱',s:'دبستان نمونه'},{n:'پایه پنجم — کلاس ۵۰۲',s:'دبستان نمونه'}];
+/* زنگ‌های نمایشی | Demo Bells: برنامهٔ زنگ مدرسهٔ نمونه با همان ساختاری که از سرور می‌آید؛ sh=۱ یعنی شیفت‌بندی دارد (d صبحی، e بعدازظهری)، و در هر کدام a مراسم، p ساعت زنگ‌ها، b ساعت تفریح‌هاست */
+const bkDemo=sh=>({np:4,as:1,same:1,sh:sh,anchor:bkSatN(new Date()),a0:'m',
+d:[{a:['07:30','07:45'],p:[['07:45','08:30'],['08:35','09:20'],['09:40','10:25'],['10:30','11:15']],b:[['08:30','08:35'],['09:20','09:40'],['10:25','10:30']]}],
+e:[{a:['12:45','13:00'],p:[['13:00','13:45'],['13:50','14:35'],['14:55','15:40'],['15:45','16:30']],b:[['13:45','13:50'],['14:35','14:55'],['15:40','15:45']]}]});
+const COURSES=[{n:'پایه چهارم — کلاس ۴۰۱',s:'دبستان نمونه',bel:bkDemo(1)},{n:'پایه پنجم — کلاس ۵۰۲',s:'دبستان نمونه',bel:bkDemo(0)}];
 /* درس‌ها و معیارها | Lessons & Criteria: درس‌های چک‌لیست و معیارهای هر درس */
 const C3=[['اهداف فصل'],['ارزشیابی'],['توصیف کلی','t']];
 const LES=[['ریاضی',C3],['فارسی',[['خوانداری'],['نوشتاری'],['ارزشیابی'],['توصیف کلی','t']]],['علوم',C3],['قرآن',[['روخوانی و قرائت'],['ترجمه و پیام'],['توصیف کلی','t']]],['هدیه‌های آسمان',C3],['مطالعات اجتماعی',C3],['شایستگی‌ها',[['تکالیف و فعالیت‌ها','c']]]];
@@ -182,7 +203,7 @@ const ic=(n,s)=>`<svg class="i" viewBox="0 0 24 24" width="${s||20}" height="${s
 /* ---- ۴ سربرگ و نوار پایین | 4 Header & Nav ---- */
 /* سربرگ | Header: در دوره‌ها فقط عنوان؛ در کلاس دکمهٔ برگشت و نام دوره */
 function rTop(){const dt=clkTxt();
-$('top').innerHTML=S.v=='courses'?`<div class="tt"><b>دوره‌ها</b><small class="clk">${dt}</small></div>`:`<button class="bk" data-a="back" aria-label="بازگشت">${ic('cr',28)}</button><div class="tt"><b>${COURSES[S.ci].n}</b><small class="clk">${dt}</small></div>`}
+$('top').innerHTML=S.v=='courses'?`<div class="tt"><b>دوره‌ها</b><small class="clk">${dt}</small></div>`:`<button class="bk" data-a="back" aria-label="بازگشت">${ic('cr',28)}</button><div class="tt"><b>${COURSES[S.ci].n}</b><small class="clk">${dt}</small></div><div class="bkx" id="bkx"></div>`;bkU()}
 /* نوار پایین | Bottom Nav: سه تب کلاس درس */
 function rNav(){$('nav').innerHTML=[['att','حضور و غیاب'],['chk','چک‌لیست'],['tools','ابزارها']].map(t=>`<button class="${S.tab==t[0]?'on':''}" data-a="tab" data-t="${t[0]}"><b>${ic(t[0],26)}</b>${t[1]}</button>`).join('')}
 
@@ -195,9 +216,9 @@ function vCourses(){return COURSES.map((c,i)=>`<div class="card"><button class="
 function vAtt(){const W=weekDays(S.wk),tk=dk(new Date()),k=dk(W[S.di]),m=attDay(W[S.di],S.di),lk=LOCK[k],v=Object.values(m),p=v.filter(x=>x===1).length,a=v.filter(x=>x===0).length;
 return wkBar(W,1)
 +`<div class="days">${W.map((d,i)=>`<button class="day${i==S.di?' on':''}${dk(d)==tk?' td':''}" data-a="day" data-i="${i}">${DY[i]}<b>${jDay(d)}</b></button>`).join('')}</div>`
-+`<div class="stats"><div class="stat" data-a="nm" data-t="1" style="background:var(--gns);color:var(--gn)"><b>${fn(p)}</b>حاضر</div><div class="stat" data-a="nm" data-t="0" style="background:var(--rds);color:var(--rd)"><b>${fn(a)}</b>غایب</div><div class="stat" data-a="mer" style="background:#ebe5e9;color:var(--mu)${S.mer?';outline:2px solid var(--ac)':''}"><b style="font-size:17px">${(()=>{let P=0,M=0;STU.forEach((_,j)=>{const x=pmGet(W[S.di],S.di,j);P+=x.p;M+=x.m});return '+'+fn(P)+' −'+fn(M)})()}</b>شایستگی</div></div>`
++`<div class="stats"><div class="stat" data-a="nm" data-t="0" style="background:var(--rds);color:var(--rd)"><b>${fn(a)}</b>غایب</div><div class="stat" data-a="mer" style="background:#ebe5e9;color:var(--mu)${S.mer?';outline:2px solid var(--ac)':''}"><b>±</b>شایستگی</div></div>`
 +`<div class="grid2"><button class="btn o" data-a="all"${lk?' disabled':''}>همه حاضر</button><button class="btn o" data-a="lock">${lk?ic('unlock',18)+' باز کردن قفل':ic('lock',18)+' قفل این روز'}</button></div>`
-+`<div class="card">${STU.map((s,j)=>{const x=m[j];return `<div class="srow"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><span class="dots">${W.map((d,i)=>{const y=attDay(d,i)[j];return `<i class="dot${y===1?' p':y===0?' a':''}${i==S.di?' s':''}"></i>`}).join('')}</span></span>${S.mer?merPills(j):`<button class="ab${x===1?' p':x===0?' a':''}" data-a="ab" data-i="${j}"${lk?' disabled':''}>${x===1?ic('ok',26):x===0?ic('no',24):''}</button>`}</div>`}).join('')}</div><p class="mu" style="text-align:center">لمس دکمه: حاضر ← غایب ← خالی</p>`}
++`<div class="card">${STU.map((s,j)=>{const x=m[j];return `<div class="srow"><span class="av">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><span class="dots">${W.map((d,i)=>{const y=attDay(d,i)[j];return `<i class="dot${y===1?' p':y===0?' a':''}${i==S.di?' s':''}"></i>`}).join('')}</span></span>${S.mer?merPills(j):`<button class="ab${x===1?' p':x===0?' a':''}" data-a="ab" data-i="${j}"${lk?' disabled':''}>${x===1?ic('ok',26):x===0?ic('no',24):''}</button>`}</div>`}).join('')}</div>`}
 
 /* ---- ۷ چک‌لیست | 7 Checklist ---- */
 /* خواندن داده‌ها | Data Getters: نمرهٔ یک خانه، مثبت/منفی یک روز و توصیف؛ روزهای گذشته مقدار نمونه دارند */
@@ -210,8 +231,8 @@ function vChkList(W){return `<p class="mu" style="margin-bottom:8px">یک دان
 /* صفحهٔ یک دانش‌آموز | Student Checklist Page: نوار قبلی/بعدی، هفته، درس‌ها و معیارها با پنج خانهٔ روز */
 function vChkStu(W){const j=S.cs,s=STU[j],L=LES[S.les],last=STU.length-1;
 const cnt=(f,v,i)=>`<span class="cnt ${f}"><button data-a="pc" data-i="${j}" data-d="${i}" data-f="${f}" data-s="-1" aria-label="کم">${ic('minus',16)}</button><b>${f=='p'?'+':'−'}${fn(v)}</b><button data-a="pc" data-i="${j}" data-d="${i}" data-f="${f}" data-s="1" aria-label="زیاد">${ic('plus',16)}</button></span>`;
-return `<div class="sbar"><button class="pn" data-a="cs" data-i="${j-1}"${j?'':' disabled'}>${ic('cr',18)} قبلی</button><button class="me" data-a="cs" data-i="-1"><span class="av" style="width:36px;height:36px">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><small>${fn(j+1)} از ${fn(last+1)} • لمس = فهرست</small></span></button><button class="pn" data-a="cs" data-i="${j+1}"${j<last?'':' disabled'}>بعدی ${ic('cl',18)}</button></div>`
-+wkBar(W)+`<div class="lg">${[1,2,3,4].map(g=>`<span><b>${GL[g]}</b> = ${GN[g]}</span>`).join('')}</div>`
+return `<div class="sbar"><button class="pn" data-a="cs" data-i="${j-1}"${j?'':' disabled'}>${ic('cr',18)} قبلی</button><button class="me" data-a="cs" data-i="-1"><span class="av" style="width:36px;height:36px">${s[0]}</span><span class="sn"><b>${fn(j+1)}. ${s}</b><small>${fn(j+1)} از ${fn(last+1)}</small></span></button><button class="pn" data-a="cs" data-i="${j+1}"${j<last?'':' disabled'}>بعدی ${ic('cl',18)}</button></div>`
++wkBar(W)
 +`<div class="chips">${LES.map((l,i)=>`<button class="chip${i==S.les?' on':''}" data-a="les" data-i="${i}">${l[0]}</button>`).join('')}</div>`
 +L[1].map((c,C)=>{const ty=c[1]||'g',h=`<div class="card"><div class="h2">${c[0]}</div>`;
 if(ty=='g')return h+`<div class="dc">${W.map((d,i)=>{const ab=attDay(d,i)[j]===0,g=cgGet(d,i,S.les,C,j);return `<div>${DY[i]}<br>${jDay(d)}<button class="gc${ab?' ab':g?' g'+g:''}" data-a="cg" data-i="${j}" data-d="${i}" data-k="${S.les}.${C}"${ab?' disabled':''}>${ab?'غایب':g?GL[g]:''}</button></div>`}).join('')}</div></div>`;
@@ -279,11 +300,14 @@ function merDraw(){const d=weekDays(S.wk)[S.di];let el=document.querySelector('.
 function merAsk(j,f,s){const x=pmGet(weekDays(S.wk)[S.di],S.di,j);if(s<0&&x[f]<1)return;const el=document.createElement('div');el.className='merb';el.dataset.j=j;el.dataset.f=f;el.dataset.s=s;el.innerHTML=`<div class='merd'><h4>${s<0?'دلیل کم کردن ':'دلیل '}${f=='p'?'مثبت':'منفی'} — ${STU[j]}</h4><textarea placeholder='توضیح کوتاه (اجباری)'></textarea><div class='bt'><button style='background:#4aa35a' data-a='mok'>تأیید</button><button style='background:#cf3a30' data-a='mno'>لغو</button></div></div>`;document.body.appendChild(el);setTimeout(()=>el.querySelector('textarea').focus(),50)}
 /* تأیید دلیل | Confirm Reason: بدون توضیح پذیرفته نمی‌شود؛ بعد از تأیید عدد تغییر می‌کند و دلیل ذخیره می‌شود */
 function merOk(){const el=document.querySelector('.merb'),t=el.querySelector('textarea'),v=t.value.trim();if(!v){t.classList.add('er');t.focus();return}const j=+el.dataset.j,f=el.dataset.f,s=+el.dataset.s,d=weekDays(S.wk)[S.di],x=pmGet(d,S.di,j);if(!(s<0&&x[f]<1)){x[f]=Math.max(0,x[f]+s);const k=dk(d)+'|'+j;(PMR[k]=PMR[k]||[]).push({f:f,s:s,t:v})}el.remove();R(1);merFill()}
+/* کم کردن بدون تأیید | Quick Decrease: لمس دکمهٔ منهی بدون پرسیدن دلیل یکی کم می‌کند؛ اگر عدد صفر باشد کاری نمی‌کند */
+function merDec(j,f){const d=weekDays(S.wk)[S.di],x=pmGet(d,S.di,j);if(x[f]<1)return;x[f]--;const k=dk(d)+'|'+j;(PMR[k]=PMR[k]||[]).push({f:f,s:-1,t:''});R(1);merFill()}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(!b)return;const a=b.dataset.a,i=+b.dataset.i,d=+b.dataset.d,W=weekDays(S.wk),k=dk(W[S.di]);
 switch(a){
 case'nm':return nmBubble(b);
+case'bell':return bkPanel(b);
 case'mer':return merBubble(b);
-case'mp':return merAsk(i,b.dataset.f,+b.dataset.s);
+case'mp':return +b.dataset.s<0?merDec(i,b.dataset.f):merAsk(i,b.dataset.f,+b.dataset.s);
 case'mok':return merOk();
 case'mno':document.querySelector('.merb').remove();return;
 case'open':S.v='class';S.ci=i;S.tab='att';S.wk=0;S.di=todayIdx();S.cs=-1;return R();
@@ -315,7 +339,52 @@ document.addEventListener('input',e=>{if(e.target.dataset.tk)TXD[e.target.datase
 /* متن ساعت | Clock Text: تاریخ شمسی و ساعت:دقیقه:ثانیه، دقیقاً از ساعت خود دستگاه */
 function clkTxt(){const n=new Date();return JF({weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(n)+' — '+new Intl.DateTimeFormat('fa-IR',{hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).format(n)}
 /* به‌روزرسانی ساعت | Clock Tick: هر ثانیه فقط متن ساعت سربرگ عوض می‌شود، نه کل صفحه */
-setInterval(()=>{const e=document.querySelector('.clk');if(e)e.textContent=clkTxt()},1000);
+setInterval(()=>{const e=document.querySelector('.clk');if(e)e.textContent=clkTxt();bkU()},1000);
+
+/* ---- ۱۰.۱ کادر شیفت و زنگ | 10.1 Shift & Bell Box ---- */
+/* شمارهٔ روز و هفته | Day & Week Numbers: شمارهٔ یک روز و شمارهٔ شنبهٔ همان هفته؛ برای فهمیدن اینکه این هفته شیفت صبحی است یا بعدازظهری */
+function bkDayN(d){return Math.round(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate())/864e5)}
+function bkSatN(d){return bkDayN(d)-(d.getDay()+1)%7}
+/* نام‌ها | Names: نام شیفت‌ها، ترتیب زنگ‌ها و تبدیل ساعت به دقیقه */
+const BKSH={m:'صبحی',a:'بعدازظهری'},BKG=['اول','دوم','سوم','چهارم','پنجم','ششم','هفتم','هشتم','نهم','دهم','یازدهم','دوازدهم'];
+const bkMin=t=>{const p=String(t).split(':');return(+p[0])*60+(+p[1])},bkCe=sh=>sh=='a'?'مراسم':'مراسم صبحگاهی';
+/* شیفت این هفته | This Week Shift: هر هفته شیفت عوض می‌شود؛ از هفتهٔ مبنا (anchor) می‌شمارد و m یا a برمی‌گرداند */
+function bkShOf(b,d){if(!b||!b.sh||b.anchor==null)return'm';const w=Math.round((bkSatN(d)-b.anchor)/7),o=((w%2)+2)%2;return o?(b.a0=='a'?'m':'a'):(b.a0=='a'?'a':'m')}
+/* زنگ‌های امروز | Today Bells: فهرست مرتب مراسم، زنگ‌ها و تفریح‌های امروزِ دوره با ساعت شروع و پایانشان */
+function bkToday(c,n){const b=c&&c.bel;if(!b||!b.d)return null;const di=(n.getDay()+1)%7,sh=b.sh?bkShOf(b,n):'';if(!b.same&&di>4)return{sh,L:[]};
+const x=(sh=='a'&&b.e?b.e:b.d)[b.same?0:di];if(!x)return{sh,L:[]};
+const np=b.np||4,nn=b.same?np:(b.n&&b.n[di]>=1?Math.min(12,b.n[di]):np),L=[];
+if(b.as)L.push({n:bkCe(sh),s:bkCe(sh),t:x.a,br:0});
+for(let i=0;i<nn;i++){L.push({n:'زنگ '+BKG[i],s:'زنگ '+BKG[i],t:(x.p||[])[i],br:0});if(i<nn-1)L.push({n:'زنگ تفریح '+BKG[i],s:'تفریح '+BKG[i],t:(x.b||[])[i],br:1})}
+return{sh,L:L.filter(q=>q.t&&q.t[0]&&q.t[1])}}
+/* زنگ فعلی | Current Bell: اگر وسط زنگ هستیم نام آن و ثانیه‌های باقی‌مانده تا پایانش؛ وگرنه نام زنگ بعدی و ثانیه‌های مانده تا شروعش */
+function bkNow(c){const n=new Date(),T=bkToday(c,n);if(!T)return null;const t=n.getHours()*3600+n.getMinutes()*60+n.getSeconds(),o={sh:T.sh};
+for(const q of T.L){const e=bkMin(q.t[1])*60;if(t>=bkMin(q.t[0])*60&&t<e){o.n=q.n;o.left=e-t;o.cur=1;return o}}
+for(const q of T.L){const s=bkMin(q.t[0])*60;if(s>t){o.n=q.n;o.left=s-t;return o}}
+return o}
+/* قالب زمان | Time Format: ثانیه‌ها را به «دقیقه:ثانیه» (یا «ساعت:دقیقه:ثانیه») با رقم فارسی درمی‌آورد */
+function bkFmt(x){const h=Math.floor(x/3600),m=Math.floor(x%3600/60),s=x%60,p=y=>String(y).padStart(2,'0');return fn((h?h+':':'')+p(m)+':'+p(s))}
+/* ظاهر کادر | Box Markup: نام زنگ و شیفت در خط اول، شمارش معکوس در خط دوم؛ اگر چیزی برای نشان دادن نباشد خالی برمی‌گردد */
+function bkHtml(o){if(!(o&&(o.sh||o.n)))return'';return'<button class="bkb" data-a="bell" aria-label="زنگ‌های باقی‌ماندهٔ امروز"><span class="bt1">'+(o.n?esc(o.n):'')+(o.sh&&o.n?' <span class="bdt">·</span> ':'')+(o.sh?BKSH[o.sh]:'')+'</span>'+(o.n?'<span class="bt2">'+(o.cur?'مانده تا زنگ: ':'تا شروع: ')+bkFmt(o.left)+'</span>':'')+'</button>'}
+/* فهرست باقی‌مانده | Remaining List: زنگ‌ها و تفریح‌هایی که امروز هنوز تمام نشده‌اند؛ مورد جاری پررنگ است */
+function bkListHtml(c){const n=new Date(),T=bkToday(c,n),t=n.getHours()*3600+n.getMinutes()*60+n.getSeconds(),L=T?T.L.filter(q=>bkMin(q.t[1])*60>t):[];
+if(!L.length)return'<div class="brn">زنگ دیگری برای امروز باقی نمانده است.</div>';
+return L.map(q=>'<div class="brr'+(bkMin(q.t[0])*60<=t?' cur':'')+(q.br?' br':'')+'"><span>'+esc(q.s)+'</span><bdi>'+fn(q.t[0])+' – '+fn(q.t[1])+'</bdi></div>').join('')}
+/* باز و بسته کردن فهرست | Bell Panel: با لمس کادر، فهرست زیرش باز می‌شود؛ لمس دوباره یا لمس جای دیگر آن را می‌بندد */
+function bkPanel(b){if($('brp'))return bkClose();const p=document.createElement('div'),l=bkListHtml(COURSES[S.ci]),r=b.getBoundingClientRect(),w=Math.min(260,innerWidth-24);
+p.id='brp';p.className='brp';p.dataset.h=l;p.innerHTML=l;p.style.cssText='width:'+w+'px;left:'+Math.round((innerWidth-w)/2)+'px;top:'+Math.round(r.bottom+6)+'px;max-height:'+Math.max(120,innerHeight-r.bottom-90)+'px';document.body.append(p)}
+function bkClose(){const p=$('brp');if(p)p.remove()}
+document.addEventListener('click',e=>{if($('brp')&&!e.target.closest('#brp,.bkb'))bkClose()},true);
+addEventListener('resize',bkClose);
+/* تازه‌سازی کادر | Box Refresh: هر ثانیه فقط وقتی متن واقعاً عوض شده باشد کادر و فهرست باز تازه می‌شوند؛ وقتی برنامه پنهان است کاری نمی‌کند */
+function bkU(){const e=$('bkx');if(!e){bkClose();return}if(document.hidden)return;const c=COURSES[S.ci],h=bkHtml(bkNow(c));
+if(e.dataset.h!==h){e.dataset.h=h;e.innerHTML=h}
+const p=$('brp');if(p){if(!h)return bkClose();const l=bkListHtml(c);if(p.dataset.h!==l){p.dataset.h=l;p.innerHTML=l}}}
+/* ---- ۱۲ قفل صفحه | 12 Page Lock ---- */
+/* بدون زوم و منوی نگه‌داشتن | No Zoom & Long-press Menu: زوم دو انگشتی و منوی نگه‌داشتن انگشت (به‌جز داخل کادرهای نوشتنی) را می‌بندد */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault()));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('contextmenu',e=>{if(!e.target.closest('input,textarea'))e.preventDefault()});
 R();
 </script>
 </body>
