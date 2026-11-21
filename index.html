@@ -628,6 +628,74 @@ input,textarea,select{font-size:max(16px,1rem)}
 .qcg.pos{background:rgba(52,199,89,.16)}.qcg.neg{background:rgba(255,59,48,.13)}
 .qc-wrap{margin-top:12px}
 
+
+/* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
+/* تکلیف‌ساز | Homework Maker: صفحهٔ تنظیم‌ها، نوار پایین، برگهٔ سفید پیش‌نمایش و چاپ A4 */
+.hw-sum{display:flex;align-items:baseline;justify-content:center;gap:8px;padding:6px 16px 14px;color:var(--label-2)}
+.hw-sum b{font-size:2rem;color:var(--tint);font-weight:800}
+.hw-opts{padding:4px 0}
+.hw-opt{padding:10px 16px;display:flex;flex-direction:column;gap:8px}
+.hw-opt+.hw-opt{border-top:.5px solid var(--sep)}
+.hw-lab{font-size:.8125rem;color:var(--label-2);font-weight:600}
+.hw-rg{display:flex;align-items:center;gap:8px}
+.hw-rg .fld{flex:1;text-align:center}
+.hw-hid{opacity:.5}
+.hw-bar-sp{height:96px}
+.hw-bar{position:absolute;inset-inline:0;bottom:0;z-index:20;display:flex;gap:10px;padding:10px 16px calc(10px + var(--sab));background:var(--blur-bg);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-top:.5px solid var(--sep)}
+.hw-bar .btn{flex:1}
+.hw-bar.two .btn:first-child{flex:.8}
+.hw-paper{margin:0 12px 12px;padding:14px 12px 18px;background:#fff;color:#000;border-radius:10px;box-shadow:0 1px 6px rgba(0,0,0,.18);--hwln:#000}
+.hw-paper .hw-empty{padding:30px 10px;text-align:center;color:#666}
+.hwtop{width:100%;table-layout:fixed;border-collapse:collapse;margin:0 0 12px;color:#000;font-size:.8125rem}
+.hwtop th,.hwtop td{border:1px solid #000;padding:3px 8px;text-align:right;line-height:1.6;overflow-wrap:anywhere}
+.hwtop th{width:17%;font-weight:700;white-space:nowrap}.hwtop td{width:33%}.hwtop .hwtc{font-weight:700}.hwtop .hwnm td{height:2em}
+.hwt{margin:0 0 12px;text-align:center}
+.hws{display:grid;grid-template-columns:repeat(2,1fr);gap:22px 10px}
+.hws.sol{grid-template-columns:1fr 1fr;gap:18px 8px}
+.hws.h{grid-template-columns:1fr 1fr;gap:16px 8px}
+.hp{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;padding:34px 4px 6px;direction:ltr;min-width:0;break-inside:avoid}
+.hp .hn{position:absolute;top:0;left:0;min-width:28px;min-height:28px;box-sizing:border-box;border:1.5px solid #000;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:.8125rem;font-weight:700;color:#000;background:#fff}
+.hp.hh{padding:4px 4px 4px 36px;flex-direction:row;justify-content:flex-start}
+.hp.hh .hn{top:50%;transform:translateY(-50%)}
+.he{display:flex;gap:8px;font-size:1.1875rem;font-weight:700;direction:ltr;white-space:nowrap}
+.he::after{content:'';display:inline-block;width:3em;border-bottom:1.5px solid #000;margin-inline-start:4px}
+.vp{direction:ltr;font-size:1.3125rem;font-weight:700;line-height:1.5;font-variant-numeric:tabular-nums}
+.vp .t{text-align:right;padding-inline-end:2px}
+.vp .b{display:flex;justify-content:space-between;gap:12px;padding-inline-end:2px}
+.vp .ln{border-top:2.5px solid #000;margin-top:2px}.vp .sp{height:1.9em}
+.hxp{grid-column:1/-1;align-items:stretch;direction:rtl}
+.hxr{display:flex;gap:10px;align-items:flex-start}
+.hxp .hn{position:static;flex:none}
+.hxb{flex:1;min-width:0}.hxt{line-height:1.9;font-size:1rem;white-space:normal;overflow-wrap:anywhere}
+.hxl{height:2.2em;border-bottom:1px dashed #777}
+.hxa{margin-top:6px;padding:6px 10px;border-radius:8px;background:#e8f7ec;color:#0a7a2a;font-weight:700}
+.xg{display:inline-block;direction:ltr;font-weight:700;font-size:1.25rem;line-height:1.5;font-variant-numeric:tabular-nums}
+.xl{display:flex;align-items:center;height:1.5em}
+.xc{display:inline-block;flex:none;width:.8em;height:100%;text-align:center;box-sizing:border-box}
+.xc.sm{font-size:.56em;width:1.43em;color:#c2185b;line-height:2.6;background:#f3f3f6;box-shadow:inset 0 0 0 1px #d0d0d6;border-radius:5px}.xc.sm:empty{background:none;box-shadow:none}
+.xc.cx{text-decoration:line-through;color:#888}.xc.op{color:#666}.xc.res,.xc.rm{color:#0a7a2a}
+.xc.ub{border-bottom:2.5px solid #000}
+.hp.sol{align-items:stretch}.sw{display:flex;justify-content:center;max-width:100%;overflow-x:auto}
+.dvw{display:inline-flex;direction:ltr;align-items:stretch;font-size:1.25rem;font-weight:700;line-height:1.5}
+.dl{padding:0 10px 0 2px}.dvw.pb .dl{min-height:4.3em}
+.dr{border-left:2.5px solid #000;padding-left:8px;min-width:2.6em}
+.dr .dv1{height:1.5em;line-height:1.5em;border-bottom:2.5px solid #000;box-sizing:border-box}
+.dr .dq{min-height:1.5em;color:#0a7a2a}.dr .dm{font-size:.55em;color:#666;font-weight:400;direction:rtl;text-align:left;white-space:nowrap}
+/* چاپ | Print: فقط برگه (A4)، بدون برنامه */
+#hwprint{display:none}
+@media print{
+  @page{size:A4;margin:10mm}
+  html,body{height:auto!important;overflow:visible!important;background:#fff!important}
+  body.pr-hw>*:not(#hwprint){display:none!important}
+  body.pr-hw #hwprint{display:block!important;margin:0;padding:0;box-shadow:none;border-radius:0;background:#fff;color:#000}
+  body.pr-hw #hwprint .hws{grid-template-columns:repeat(3,1fr);gap:9mm 6mm}
+  body.pr-hw #hwprint .hws.sol{grid-template-columns:repeat(2,1fr)}
+  body.pr-hw #hwprint .hws.h{grid-template-columns:repeat(2,1fr)}
+  body.pr-hw #hwprint .hp{break-inside:avoid}
+  body.pr-hw #hwprint *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+.hw-bar .btn{white-space:nowrap;padding:0 12px}
+
 </style>
 </head>
 <body>
@@ -763,6 +831,11 @@ const ICONS = {
   'tag': '<path d="M20.6 13.4l-7.2 7.2a2 2 0 0 1-2.8 0L2 12V2h10l8.6 8.6a2 2 0 0 1 0 2.8z"/><circle cx="7" cy="7" r="1.2"/>',
   'bell': '<path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/>',
   'award': '<circle cx="12" cy="8" r="6"/><path d="M15.5 13.9L17 23l-5-3-5 3 1.5-9.1"/>',
+  'wrench': '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  'printer': '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
+  'shuffle': '<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
+  'trash': '<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
+  'pencil': '<path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
   'list': '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
   'grid': '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
   'text': '<path d="M4 7V5h16v2M9 19h6M12 5v14"/>',
@@ -1967,7 +2040,7 @@ const ask = (msg, label, fn, danger) => Sheet.action({ msg, items: [{ t: label, 
 
 /* ---- ۹.۵ نوار تب‌ها | 9.5 Tab Bar ---- */
 /* تب‌های دوره | Course Tabs: پنج بخش اصلی داخل هر دوره؛ [کلید، نام، آیکون] */
-const TABS = [['att', 'حضور و غیاب', 'attend'], ['chk', 'چک‌لیست', 'clipboard'], ['sch', 'برنامه', 'calendar'], ['stu', 'دانش‌آموزان', 'users'], ['more', 'بیشتر', 'more']];
+const TABS = [['att', 'حضور و غیاب', 'attend'], ['chk', 'چک‌لیست', 'clipboard'], ['sch', 'برنامه', 'calendar'], ['stu', 'دانش‌آموزان', 'users'], ['tool', 'ابزار', 'wrench'], ['more', 'بیشتر', 'more']];
 const Tabs = {
   render() { $('#tabbar').innerHTML = TABS.map(t => '<button class="tab" data-act="tab" data-a="' + t[0] + '">' + ico(t[2]) + '<span>' + t[1] + '</span></button>').join(''); },
   sync(show, key) { const tb = $('#tabbar'); tb.classList.toggle('hidden', !show); $$('.tab', tb).forEach(b => b.classList.toggle('on', b.dataset.a === key)); }
@@ -1988,7 +2061,7 @@ const Nav = {
     if (lead === undefined) lead = st.length > 1 ? '<button class="nav-btn nav-back" data-act="back" aria-label="بازگشت">' + ico('chev-r') + '</button>' : '';
     el.classList.toggle('has-tabs', !!sp.tabs);
     el.innerHTML = '<div class="nav' + (sp.large ? '' : ' solid') + '"><div class="nav-bg"></div><div class="nav-row"><div class="nav-side">' + lead + '</div><div class="nav-title">' + esc(sp.title || '') + '</div><div class="nav-side">' + (sp.trail || '') + '</div></div></div>'
-      + '<div class="scroll">' + (sp.large ? '<h1 class="large-title">' + esc(sp.title) + '</h1>' : '') + (sp.sub ? '<p class="page-sub">' + sp.sub + '</p>' : '') + sp.body + '</div>';
+      + '<div class="scroll">' + (sp.large ? '<h1 class="large-title">' + esc(sp.title) + '</h1>' : '') + (sp.sub ? '<p class="page-sub">' + sp.sub + '</p>' : '') + sp.body + '</div>' + (sp.foot || '');
   },
   /* بعد از نشستن در صفحه | After Mount: برگرداندن جای اسکرول، نوار بالای شیشه‌ای، عکس‌ها و کار اختصاصی صفحه */
   post(el, r) {
@@ -2917,7 +2990,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-21T20:52:00.111Z';
+const APP_BUILD = '2026-11-21T21:00:16.654Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3110,6 +3183,211 @@ ACT.updCheck = async el => {
   catch (e) { ACT.updOpen(); toast(e && e.message ? e.message : 'بررسی نشد', true); }
 };
 ACT.updGo = () => Upd.ask();
+
+/* ==== ۱۷ ابزار | 17 Tools ====
+   بخش «ابزار» (تب جدا در پایین) با ابزارهای برنامهٔ اصلی؛ فعلاً «تکلیف‌ساز»: ساخت برگهٔ تمرین ریاضی (جمع، تفریق، ضرب، تقسیم و سؤال متنی) با پاسخ‌نامهٔ مرحله‌به‌مرحله، سربرگ و چاپ یا ذخیرهٔ PDF.
+   تنظیمات و آخرین تمرین‌های ساخته‌شده فقط روی همین گوشی نگه داشته می‌شود (روی سرور نمی‌رود). */
+
+/* ---- ۱۷.۱ صفحهٔ ابزار | 17.1 Tools Page ---- */
+/* صفحهٔ ابزار | Tools Page: فهرست ابزارها؛ هر ردیف یک ابزار را باز می‌کند */
+PAGES.tool = r => ({
+  title: 'ابزار', large: true, tabs: true, lead: leaveBtn,
+  body: '<div class="group">' + rowH({ lead: icSq('pencil', '#e11d48'), ttl: 'تکلیف‌ساز', sub: 'ساخت برگهٔ تمرین ریاضی با پاسخ‌نامه و چاپ', chev: true, attr: pushA('hw') }) + '</div>'
+    + '<div class="group-f">ابزارهای بیشتر برنامهٔ اصلی به‌تدریج اینجا اضافه می‌شوند.</div>'
+});
+
+/* ---- ۱۷.۲ داده و ساخت تمرین | 17.2 Homework Data & Generator ---- */
+/* وضعیت تکلیف‌ساز | Homework State: گروه‌های تمرین (gr)، چیدمان (lay)، ترکیب تصادفی (sh)، باقی‌مانده در تقسیم (rm)، سربرگ (hd)، تمرین‌های ساخته‌شده (it) */
+const HW = Object.assign({ gr: [{ o: 'add', a: 2, b: 2, n: 5, lo: null, hi: null }], lay: 'v', sh: 1, rm: 0, hd: { on: 1, off: 0, nm: 1, title: 'تکلیف' }, it: null, ans: false }, Pref.get('hw', {}));
+HW.hd = Object.assign({ on: 1, off: 0, nm: 1, title: 'تکلیف' }, HW.hd);
+HW.ans = false;
+const hwSave = () => Pref.set('hw', { gr: HW.gr, lay: HW.lay, sh: HW.sh, rm: HW.rm, hd: HW.hd, it: HW.it });
+const HW_OPS = { add: '+', sub: '−', mul: '×', div: '÷' };
+const HW_NAMES = { add: 'جمع', sub: 'تفریق', mul: 'ضرب', div: 'تقسیم', txt: 'سؤال متنی' };
+const HW_COL = { add: '#34c759', sub: '#ff9500', mul: '#0a84ff', div: '#af52de', txt: '#8e8e93' };
+const HW_MAX = 40;
+const hwTot = () => HW.gr.reduce((s, g) => s + (g.hid ? 0 : g.o === 'txt' ? 1 : (+g.n || 0)), 0);
+const hwDW = ['', 'یک', 'دو', 'سه', 'چهار', 'پنج', 'شش'], hwDL = d => hwDW[Math.max(1, Math.min(6, +d || 1))] + '‌رقمی';
+const hwRnd = d => { const lo = d === 1 ? 1 : Math.pow(10, d - 1), hi = Math.pow(10, d) - 1; return lo + Math.floor(Math.random() * (hi - lo + 1)); };
+/* تبدیل بازه | Range Parse: «از/تا» را به عدد برمی‌گرداند (خالی = بدون محدودیت) */
+const hwArV = x => { const s = String(x == null ? '' : x).trim(), n = s === '' ? null : parseInt(fd(s), 10); return n == null || isNaN(n) ? null : Math.max(0, n); };
+/* پاسخ در بازه | Answer Range: جمع یا تفریقی می‌سازد که جوابش در بازهٔ دلخواه باشد؛ null = بازه‌ای نیست، 0 = با این رقم‌ها شدنی نیست */
+const hwRng = (o, da, db, g) => {
+  if (!g || (g.lo == null && g.hi == null)) return null;
+  const lo = Math.max(0, g.lo == null ? 0 : +g.lo), hi = g.hi == null ? Infinity : +g.hi; if (lo > hi) return 0;
+  const dl = d => (d === 1 ? 1 : Math.pow(10, d - 1)), dh = d => Math.pow(10, d) - 1, R = n => Math.floor(Math.random() * n), xl = dl(da), xh = dh(da), yl = dl(db), yh = dh(db);
+  if (o === 'add') { const a = Math.max(xl, lo - yh), b = Math.min(xh, hi - yl); if (a > b) return 0; const x = a + R(b - a + 1), c = Math.max(yl, lo - x), d = Math.min(yh, hi - x); if (c > d) return 0; const y = c + R(d - c + 1); return { o, x, y, r: x + y }; }
+  const a = Math.max(yl, xl - hi), b = Math.min(yh, xh - lo); if (a > b) return 0; const y = a + R(b - a + 1), c = Math.max(xl, y + lo), d = Math.min(xh, y + hi); if (c > d) return 0; const x = c + R(d - c + 1); return { o, x, y, r: x - y };
+};
+/* ساخت تمرین‌ها | Generate Items: از روی گروه‌ها تمرین تصادفی می‌سازد (تقسیم تمیز یا با باقی‌مانده؛ تفریق همیشه مثبت) */
+const hwGen = () => {
+  const ops = [];
+  HW.gr.forEach(g => { if (g.hid) return; for (let i = 0, n = g.o === 'txt' ? 1 : g.n; i < n; i++) ops.push(g); });
+  if (HW.sh) for (let i = ops.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [ops[i], ops[j]] = [ops[j], ops[i]]; }
+  HW.it = ops.map(g => {
+    const o = g.o; if (o === 'txt') return { o, t: g.t || '', ans: g.ans || '' };
+    const da = +g.a || 2; let db = +g.b || 2;
+    if (o === 'div') {
+      db = Math.min(da, db); const mx = Math.pow(10, da) - 1, mn = da === 1 ? 2 : Math.pow(10, da - 1), R = n => Math.floor(Math.random() * n);
+      let y = db === 1 ? 2 + R(8) : hwRnd(db), x; if (y > mx) y = mx;
+      if (HW.rm) { x = mn + R(mx - mn + 1); if (y > x) y = 2 + R(Math.max(1, x - 1)); if (x % y === 0 && x < mx) x++; }
+      else { let ca = Math.ceil(mn / y), cb = Math.floor(mx / y); if (cb >= 2 && ca < 2) ca = 2; x = y * (ca + R(Math.max(0, cb - ca) + 1)); }
+      return { o, x, y, r: Math.floor(x / y), m: x % y };
+    }
+    if (o === 'sub') db = Math.min(da, db);
+    if (o === 'add' || o === 'sub') { const q = hwRng(o, da, db, g); if (q) return q; }
+    let x = hwRnd(da), y = hwRnd(db);
+    if (o === 'mul' && da === 1 && db === 1) { x = 2 + Math.floor(Math.random() * 8); y = 2 + Math.floor(Math.random() * 8); }
+    if (o === 'sub' && y > x) [x, y] = [y, x];
+    if (o === 'sub' && x === y) x = y + 1 < Math.pow(10, da) ? y + 1 : x;
+    return { o, x, y, r: o === 'add' ? x + y : o === 'sub' ? x - y : x * y };
+  });
+  hwSave();
+};
+
+/* ---- ۱۷.۳ راه‌حل مرحله‌به‌مرحله | 17.3 Step-by-step Solutions ---- */
+/* ستون‌های عددی | Digit Grid: همان راه‌حل عمودی برنامهٔ اصلی؛ هر رقم یک خانه، با رقم نقلی (sm)، خط زیرین (ub) و پاسخ (res) */
+const hwBlk = N => Array.from({ length: N }, () => ['', '']);
+const hwPut = (N, s, end, cls, row) => { row = row || hwBlk(N); s = String(s); for (let i = 0; i < s.length; i++) { const c = end - (s.length - 1 - i); if (c >= 0) row[c] = [pd(s[i]), cls || '']; } return row; };
+const hwUbAll = r => r.map(c => [c[0], (c[1] + ' ub').trim()]);
+const hwUbQ = r => r.map(c => [c[0], ((/\bq\b/.test(c[1]) ? c[1] : (c[1] + ' q').trim()) + ' ub')]);
+const hwGl = rows => rows.map(r => '<div class="xl">' + r.map(c => '<span class="xc ' + c[1] + '">' + c[0] + '</span>').join('') + '</div>').join('');
+const hwWrap = h => '<div class="xg">' + h + '</div>';
+const solAdd = q => {
+  const X = String(q.x), Y = String(q.y), R = String(q.r), m = Math.max(X.length, Y.length), N = Math.max(m, R.length) + 1, cr = hwBlk(N); let c = 0, has = 0;
+  for (let k = 0; k < m; k++) { const d = (+X[X.length - 1 - k] || 0) + (+Y[Y.length - 1 - k] || 0) + c; c = d >= 10 ? 1 : 0; if (c && k < m - 1) { cr[N - 2 - k] = ['۱', 'sm']; has = 1; } }
+  const ry = hwPut(N, Y, N - 1, 'q'); ry[0] = ['+', 'op q']; return hwWrap(hwGl([...(has ? [cr] : []), hwPut(N, X, N - 1, 'q'), hwUbQ(ry), hwPut(N, R, N - 1, 'res')]));
+};
+const solSub = q => {
+  const X = String(q.x), Y = String(q.y), R = String(q.r), N = X.length + 1, hr = hwBlk(N), xr = hwPut(N, X, N - 1, 'q'); let bo = 0, has = 0;
+  for (let k = 0; k < X.length; k++) { let t = +X[X.length - 1 - k] - bo; const b = +(Y[Y.length - 1 - k] || 0), bi = bo; if (t < b) { t += 10; bo = 1; } else bo = 0; if (bi || bo) { const col = N - 1 - k; hr[col] = [pd(t), 'sm']; xr[col] = [xr[col][0], 'cx q']; has = 1; } }
+  const ry = hwPut(N, Y, N - 1, 'q'); ry[0] = ['−', 'op q']; return hwWrap(hwGl([...(has ? [hr] : []), xr, hwUbQ(ry), hwPut(N, R, N - 1, 'res')]));
+};
+const solMul = q => {
+  const X = String(q.x), Y = String(q.y), R = String(q.r);
+  if (Y.length === 1) {
+    const N = Math.max(X.length, R.length) + 1, cr = hwBlk(N); let c = 0, has = 0;
+    for (let k = 0; k < X.length; k++) { const p = (+X[X.length - 1 - k]) * (+Y) + c; c = Math.floor(p / 10); if (c && k < X.length - 1) { cr[N - 2 - k] = [pd(c), 'sm']; has = 1; } }
+    const ry = hwPut(N, Y, N - 1, 'q'); ry[0] = ['×', 'op q']; return hwWrap(hwGl([...(has ? [cr] : []), hwPut(N, X, N - 1, 'q'), hwUbQ(ry), hwPut(N, R, N - 1, 'res')]));
+  }
+  const N = R.length + 1, ry = hwPut(N, Y, N - 1, 'q'); ry[0] = ['×', 'op q']; const P = [];
+  for (let j = 0; j < Y.length; j++) P.push(hwPut(N, String(+X * (+Y[Y.length - 1 - j])), N - 1 - j, '', j ? hwPut(N, '0'.repeat(j), N - 1) : null));
+  const lp = P[P.length - 1]; lp[0] = ['+', 'op']; P[P.length - 1] = hwUbAll(lp);
+  return hwWrap(hwGl([hwPut(N, X, N - 1, 'q'), hwUbQ(ry), ...P, hwPut(N, R, N - 1, 'res')]));
+};
+const hwDivSteps = (x, y) => { const D = String(x).split('').map(Number); let p = 0, cur = D[0]; while (cur < y && p < D.length - 1) { p++; cur = cur * 10 + D[p]; } const st = []; let qs = ''; while (true) { const qd = Math.floor(cur / y), pr = qd * y, rm = cur - pr; st.push({ p, pr, rm, cur }); qs += qd; if (p >= D.length - 1) break; p++; cur = rm * 10 + D[p]; } return { st, qs }; };
+/* تقسیم | Long Division: a=1 با راه‌حل، a=0 فقط خانهٔ خالی برای حل */
+const hwDiv = (q, a) => {
+  const X = String(q.x), N = X.length + 1, rows = [hwPut(N, X, N - 1, 'q')]; let qs = '';
+  if (a) { const o = hwDivSteps(q.x, q.y), st = o.st; qs = o.qs; st.forEach((s, i) => { const e = s.p + 1, P = String(s.pr), r = hwPut(N, P, e, 'ub'), c = e - P.length; if (c >= 0) r[c] = ['−', 'op ub']; rows.push(r); rows.push(i < st.length - 1 ? hwPut(N, String(st[i + 1].cur), e + 1) : hwPut(N, String(s.rm), e, 'rm')); }); }
+  return '<div class="dvw' + (a ? '' : ' pb') + '"><div class="dl"><div class="xg">' + hwGl(rows) + '</div></div><div class="dr"><div class="dv1">' + pd(q.y) + '</div><div class="dq">' + (a ? pd(qs) : '') + '</div>' + (a && q.m ? '<div class="dm">باقی‌مانده: ' + pd(q.m) + '</div>' : '') + '</div></div>';
+};
+
+/* ---- ۱۷.۴ ساخت برگه | 17.4 Worksheet Builder ---- */
+/* تاریخ سربرگ | Header Date: امروز + off روز، به شکل «یکشنبه ۱ آذر ۱۴۰۵» */
+const hwDt = off => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + (+off || 0)); return jFull(d); };
+const hwTt = () => String(HW.hd.title == null ? '' : HW.hd.title).trim() || 'تکلیف';
+/* سربرگ | Header Table: عنوان و تاریخ، و خط نام دانش‌آموز */
+const hwHd = t => (HW.hd.on ? '<table class="hwtop"><tbody><tr><th>عنوان</th><td class="hwtc">' + esc(t) + '</td><th>تاریخ</th><td>' + hwDt(HW.hd.off) + '</td></tr>' + (HW.hd.nm ? '<tr class="hwnm"><th>نام و نام خانوادگی</th><td colspan="3"></td></tr>' : '') + '</tbody></table>' : '<h3 class="hwt">' + esc(t) + '</h3>');
+/* یک تمرین | One Exercise: عمودی یا افقی؛ a=1 یعنی پاسخ‌نامه */
+const hwP = (q, i, a) => {
+  const nu = '<span class="hn">' + fn(i + 1) + '</span>';
+  if (q.o === 'txt') return '<div class="hp hxp"><div class="hxr">' + nu + '<div class="hxb"><div class="hxt">' + esc(q.t || '').replace(/\n/g, '<br>') + '</div>' + (a ? (q.ans ? '<div class="hxa">' + esc(q.ans).replace(/\n/g, '<br>') + '</div>' : '') : '<div class="hxl"></div><div class="hxl"></div>') + '</div></div></div>';
+  if (a) return '<div class="hp sol"><span class="hn">' + fn(i + 1) + '</span><div class="sw">' + (q.o === 'add' ? solAdd(q) : q.o === 'sub' ? solSub(q) : q.o === 'mul' ? solMul(q) : hwDiv(q, 1)) + '</div></div>';
+  if (HW.lay === 'h') return '<div class="hp hh">' + nu + '<div class="he"><span>' + fn(q.x) + '</span><span>' + HW_OPS[q.o] + '</span><span>' + fn(q.y) + '</span><span>=</span></div></div>';
+  if (q.o === 'div') return '<div class="hp">' + nu + hwDiv(q, 0) + '</div>';
+  const w = Math.max(String(q.x).length, String(q.y).length, String(q.r).length) + 1;
+  return '<div class="hp">' + nu + '<div class="vp" style="min-width:' + (w * 0.62 + 1).toFixed(1) + 'em"><div class="t">' + fn(q.x) + '</div><div class="b"><span>' + HW_OPS[q.o] + '</span><span>' + fn(q.y) + '</span></div><div class="ln"></div><div class="sp"></div></div></div>';
+};
+/* برگهٔ کامل | Full Sheet: سربرگ و همهٔ تمرین‌ها؛ a=1 پاسخ‌نامه */
+const hwSheet = a => {
+  if (!hwTot()) return '<div class="hw-empty">حداقل یک تمرین اضافه کن.</div>';
+  if (!HW.it) hwGen();
+  return hwHd(a ? 'پاسخ‌نامه (راه‌حل مرحله‌به‌مرحله)' : hwTt()) + '<div class="hws' + (a ? ' sol' : '') + (HW.lay === 'h' && !a ? ' h' : '') + '">' + HW.it.map((q, i) => hwP(q, i, a)).join('') + '</div>';
+};
+
+/* ---- ۱۷.۵ صفحهٔ تکلیف‌ساز | 17.5 Homework Page ---- */
+/* توضیح یک گروه | Group Summary: مثل «دو‌رقمی + دو‌رقمی» */
+const hwSum = g => (g.o === 'txt' ? esc(String(g.t || '').trim().slice(0, 40) || 'متن سؤال را بنویس') : hwDL(g.a) + ' ' + HW_OPS[g.o] + ' ' + hwDL(g.b));
+PAGES.hw = r => {
+  let b = '<div class="hw-sum"><b>' + fn(hwTot()) + '</b><span>تمرین از حداکثر ' + fn(HW_MAX) + '</span></div>';
+  b += '<div class="group-h">تمرین‌ها</div><div class="group">' + (HW.gr.length ? HW.gr.map((g, i) => rowH({ lead: icSq(g.o === 'txt' ? 'text' : 'pencil', HW_COL[g.o]), ttl: esc(HW_NAMES[g.o]) + ' · ' + hwSum(g), sub: g.hid ? 'مخفی (در برگه نمی‌آید)' : (g.o === 'txt' ? 'یک سؤال' : fn(g.n) + ' تمرین' + (g.lo != null || g.hi != null ? ' · پاسخ ' + (g.lo != null ? 'از ' + fn(g.lo) : '') + (g.hi != null ? ' تا ' + fn(g.hi) : '') : '')), cls: g.hid ? 'hw-hid' : '', chev: true, attr: ' data-act="hwEdit" data-a="' + i + '"' })).join('') : '<div class="row static"><span class="ttl muted">هنوز تمرینی اضافه نشده</span></div>') + '</div>';
+  b += '<div class="pad-x"><button class="btn tinted" data-act="hwAdd">' + ico('plus') + 'افزودن تمرین</button></div><div class="spacer"></div>';
+  const sg = (lab, k, items, cur) => '<div class="hw-opt"><div class="hw-lab">' + lab + '</div><div class="seg" style="margin:0">' + items.map(x => '<button class="' + (String(x[0]) === String(cur) ? 'on' : '') + '" data-act="hwOpt" data-a="' + k + '" data-b="' + x[0] + '">' + x[1] + '</button>').join('') + '</div></div>';
+  b += '<div class="group-h">گزینه‌ها</div><div class="group hw-opts">' + sg('ترتیب تمرین‌ها', 'sh', [[1, 'تصادفی'], [0, 'به‌ترتیب']], HW.sh) + sg('چیدمان', 'lay', [['v', 'عمودی'], ['h', 'افقی']], HW.lay) + sg('تقسیم', 'rm', [[0, 'بدون باقی‌مانده'], [1, 'با باقی‌مانده']], HW.rm) + '</div>';
+  b += '<div class="group-h">سربرگ برگه</div><div class="group hw-opts">' + sg('سربرگ', 'hdon', [[1, 'دارد'], [0, 'ندارد']], HW.hd.on)
+    + (HW.hd.on ? '<div class="hw-opt"><div class="hw-lab">عنوان تکلیف</div><input class="fld" style="margin:0" data-in="hwTitle" maxlength="80" value="' + esc(HW.hd.title == null ? 'تکلیف' : HW.hd.title) + '" placeholder="تکلیف"></div>'
+      + sg('تاریخ روی برگه', 'hdoff', [[0, 'امروز'], [1, 'فردا'], [2, 'پس‌فردا']], HW.hd.off) + sg('خط نام دانش‌آموز', 'hdnm', [[1, 'دارد'], [0, 'ندارد']], HW.hd.nm) : '') + '</div>';
+  b += '<div class="hw-bar-sp"></div>';
+  return { title: 'تکلیف‌ساز', tabs: false, body: b, foot: '<div class="hw-bar"><button class="btn primary" data-act="hwPreview"' + (hwTot() ? '' : ' disabled') + '>' + ico('printer') + 'پیش‌نمایش و چاپ</button></div>' };
+};
+INP.hwTitle = v => { HW.hd.title = v; hwSave(); };
+ACT.hwOpt = (el, k, v) => {
+  if (k === 'sh') HW.sh = +v; else if (k === 'lay') HW.lay = v; else if (k === 'rm') { HW.rm = +v; HW.it = null; } else if (k === 'hdon') HW.hd.on = +v; else if (k === 'hdoff') HW.hd.off = +v; else if (k === 'hdnm') HW.hd.nm = +v;
+  if (k === 'sh') HW.it = null; hwSave(); Nav.refresh();
+};
+/* افزودن تمرین | Add Exercise: نوع را می‌پرسد و گروه تازه می‌سازد و برگهٔ ویرایش را باز می‌کند */
+ACT.hwAdd = () => {
+  if (hwTot() >= HW_MAX) return toast('حداکثر ' + fn(HW_MAX) + ' تمرین', true);
+  Sheet.action({ msg: 'نوع تمرین', items: ['add', 'sub', 'mul', 'div', 'txt'].map(o => ({ t: HW_NAMES[o], fn: () => { HW.gr.push(o === 'txt' ? { o, t: '', ans: '', n: 1 } : { o, a: 2, b: o === 'div' ? 1 : 2, n: 5, lo: null, hi: null }); HW.it = null; hwSave(); Nav.refresh(); ACT.hwEdit(null, HW.gr.length - 1); } })) });
+};
+
+/* ---- ۱۷.۶ ویرایش یک گروه | 17.6 Edit Group Sheet ---- */
+let HWE = -1;
+/* ساخت برگهٔ ویرایش | Edit Body: نوع، رقم‌ها، تعداد، بازهٔ پاسخ، مخفی و حذف */
+const hwEdBody = () => {
+  const g = HW.gr[HWE]; if (!g) return '';
+  const stp = (lab, f, v, lo, hi, txt) => '<div class="hw-opt"><div class="hw-lab">' + lab + '</div><span class="stepper"><button class="stp" data-act="hwSt" data-a="' + f + '" data-b="-1"' + (v <= lo ? ' disabled' : '') + ' aria-label="کم">' + ico('minus') + '</button><b class="cn" style="min-width:90px">' + txt + '</b><button class="stp" data-act="hwSt" data-a="' + f + '" data-b="1"' + (v >= hi ? ' disabled' : '') + ' aria-label="زیاد">' + ico('plus') + '</button></span></div>';
+  const tp = '<div class="hw-opt"><div class="seg" style="margin:0;flex-wrap:wrap">' + ['add', 'sub', 'mul', 'div', 'txt'].map(o => '<button class="' + (g.o === o ? 'on' : '') + '" data-act="hwSt" data-a="o" data-b="' + o + '">' + HW_NAMES[o] + '</button>').join('') + '</div></div>';
+  let h = tp;
+  if (g.o === 'txt') {
+    h += '<div class="hw-opt"><div class="hw-lab">متن سؤال</div><textarea class="fld" style="margin:0" rows="4" data-in="hwT" maxlength="600" placeholder="متن سؤال">' + esc(g.t || '') + '</textarea></div><div class="hw-opt"><div class="hw-lab">پاسخ (اختیاری؛ فقط در پاسخ‌نامه)</div><textarea class="fld" style="margin:0" rows="2" data-in="hwA" maxlength="400">' + esc(g.ans || '') + '</textarea></div>';
+  } else {
+    const room = HW_MAX - (hwTot() - (g.hid ? 0 : g.n));
+    h += stp(g.o === 'div' ? 'رقم‌های مقسوم' : 'رقم اول', 'a', +g.a, 1, 6, fn(g.a) + ' رقمی') + stp(g.o === 'div' ? 'رقم‌های مقسوم‌علیه' : 'رقم دوم', 'b', +g.b, 1, 6, fn(g.b) + ' رقمی') + stp('تعداد تمرین', 'n', +g.n, 1, Math.max(1, room), fn(g.n));
+    if (g.o === 'add' || g.o === 'sub') h += '<div class="hw-opt"><div class="hw-lab">پاسخ بین (خالی = بدون محدودیت)</div><div class="hw-rg"><input class="fld" style="margin:0" inputmode="numeric" maxlength="9" placeholder="از" data-chg="hwRg" data-f="lo" value="' + (g.lo != null ? fn(g.lo) : '') + '"><span>تا</span><input class="fld" style="margin:0" inputmode="numeric" maxlength="9" placeholder="تا" data-chg="hwRg" data-f="hi" value="' + (g.hi != null ? fn(g.hi) : '') + '"></div>'
+      + ((g.lo != null || g.hi != null) && hwRng(g.o, +g.a, g.o === 'sub' ? Math.min(+g.a, +g.b) : +g.b, g) === 0 ? '<div class="banner warn" style="margin:8px 0 0">' + ico('alert') + '<span>با این رقم‌ها پاسخی در این بازه ممکن نیست؛ بازه نادیده گرفته می‌شود.</span></div>' : '') + '</div>';
+  }
+  h += '<div class="hw-opt"><button class="btn gray" data-act="hwHide">' + ico(g.hid ? 'eye' : 'eye-off') + (g.hid ? 'نمایش دوباره در برگه' : 'مخفی کردن از برگه') + '</button></div><div class="hw-opt"><button class="btn danger" data-act="hwDel">' + ico('trash') + 'حذف این تمرین</button></div>';
+  return h;
+};
+ACT.hwEdit = (el, i) => { HWE = +i; Sheet.open({ title: 'ویرایش تمرین', body: '<div class="pad-x" id="hwEd">' + hwEdBody() + '</div>', after: sh => { const cl = sh.querySelector('[data-act=sheetClose]'); if (cl) cl.addEventListener('click', () => { HWE = -1; Nav.refresh(); }); } }); };
+const hwEdPaint = () => { const e = $('#hwEd'); if (e) e.innerHTML = hwEdBody(); HW.it = null; hwSave(); };
+ACT.hwSt = (el, f, v) => {
+  const g = HW.gr[HWE]; if (!g) return;
+  if (f === 'o') { g.o = v; if (v === 'txt') { g.t = g.t || ''; g.ans = g.ans || ''; g.n = 1; } else { g.a = +g.a || 2; g.b = +g.b || (v === 'div' ? 1 : 2); g.n = +g.n || 5; if (hwTot() > HW_MAX) g.n = Math.max(1, g.n - (hwTot() - HW_MAX)); } }
+  else if (f === 'n') g.n = Math.max(1, Math.min(g.n + +v, HW_MAX - (hwTot() - (g.hid ? 0 : g.n)))); else g[f] = Math.max(1, Math.min(6, +g[f] + +v));
+  hwEdPaint();
+};
+INP.hwT = v => { const g = HW.gr[HWE]; if (g) { g.t = v; HW.it = null; hwSave(); } };
+INP.hwA = v => { const g = HW.gr[HWE]; if (g) { g.ans = v; HW.it = null; hwSave(); } };
+ACT.hwRg = (el, v) => { const g = HW.gr[HWE]; if (!g) return; g[el.dataset.f] = hwArV(v); hwEdPaint(); };
+ACT.hwHide = () => { const g = HW.gr[HWE]; if (!g) return; if (g.hid) delete g.hid; else g.hid = 1; hwEdPaint(); };
+ACT.hwDel = () => ask('این تمرین حذف شود؟', 'حذف', () => { HW.gr.splice(HWE, 1); HWE = -1; HW.it = null; hwSave(); Sheet.close(); Nav.refresh(); }, true);
+
+/* ---- ۱۷.۷ پیش‌نمایش و چاپ | 17.7 Preview & Print ---- */
+/* پیش‌نمایش | Preview Page: برگهٔ دانش‌آموز یا پاسخ‌نامه با اندازهٔ مناسب گوشی؛ چاپ همان چیزی را چاپ می‌کند که دیده می‌شود */
+PAGES.hwPrev = r => {
+  if (!HW.it) hwGen();
+  const a = !!r.st.ans;
+  return { title: 'پیش‌نمایش', tabs: false, trail: '<button class="nav-btn bold" data-act="hwPrint">چاپ</button>',
+    body: segH([['q', 'برگهٔ دانش‌آموز'], ['a', 'پاسخ‌نامه']], a ? 'a' : 'q', 'hwView') + '<div class="hw-paper' + (HW.lay === 'h' ? ' lay-h' : '') + '">' + hwSheet(a) + '</div><div class="hw-bar-sp"></div>',
+    foot: '<div class="hw-bar two"><button class="btn tinted" data-act="hwNew">' + ico('shuffle') + 'ساخت مجدد</button><button class="btn primary" data-act="hwPrint">' + ico('printer') + 'چاپ / PDF</button></div>' };
+};
+ACT.hwPreview = () => { if (!hwTot()) return; if (!HW.it) hwGen(); Nav.push('hwPrev', {}, { ans: false }); };
+ACT.hwView = (el, a) => { stOf().ans = a === 'a'; Nav.refresh(); };
+ACT.hwNew = () => { hwGen(); Nav.refresh(); toast('تمرین‌های جدید ساخته شد'); };
+/* چاپ | Print: برگه را در یک لایهٔ جدا می‌گذارد که فقط هنگام چاپ دیده می‌شود (A4)؛ در آیفون از منوی اشتراک‌گذاری «ذخیره در فایل‌ها» یا «چاپ» PDF می‌دهد */
+ACT.hwPrint = () => {
+  const a = !!stOf().ans, t0 = document.title; let el = $('#hwprint'); if (el) el.remove();
+  el = document.createElement('div'); el.id = 'hwprint'; el.className = 'hw-paper print' + (HW.lay === 'h' ? ' lay-h' : ''); el.innerHTML = hwSheet(a); document.body.append(el);
+  document.title = (a ? 'پاسخ‌نامه' : hwTt()) + ' - ' + pd(jd(new Date()).y + '-' + jd(new Date()).m + '-' + jd(new Date()).d);
+  document.body.classList.add('pr-hw'); let done = 0;
+  const end = () => { if (done) return; done = 1; removeEventListener('afterprint', end); document.removeEventListener('pointerdown', fin, true); document.title = t0; document.body.classList.remove('pr-hw'); el.remove(); };
+  const fin = () => setTimeout(end, 300);
+  addEventListener('afterprint', end);
+  setTimeout(() => { const s = Date.now(); try { window.print(); } catch (e) { toast('چاپ در این حالت ممکن نشد', true); return end(); } if (Date.now() - s > 400) return end(); document.addEventListener('pointerdown', fin, true); setTimeout(end, 120000); }, 150);
+};
 
 
 /* ================================================================
