@@ -10,7 +10,7 @@ FILE_NAME: TootFarangi_Mobile_V1_1.html
 ورود با ایمیل (بدون ثبت‌نام) + نمایش دوره‌ها + ثبت حضور و غیاب و نمره (ذخیره روی سرور، قابل دریافت در دسکتاپ). تب‌های دستیار، پیام‌رسان، آزمون‌ساز (و تکلیف‌ساز و مسابقه)، بانک سؤال، یادداشت، زمان‌سنج، تخته سیاه و چیدمان کلاس در این نسخه نیستند.
 -->
 <!-- نمای صفحه | Viewport: پر کردن کل صفحهٔ آیفون (با ناحیهٔ امن بالا و پایین) و جلوگیری از بزرگ‌شدن ناخواستهٔ صفحه هنگام نوشتن -->
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="app-version" content="1.1">
 <title>توت فرنگی</title>
 <!-- حالت برنامه | Web App Mode: اگر از Safari «افزودن به صفحهٔ اصلی» بزنی مثل یک برنامهٔ واقعی تمام‌صفحه باز می‌شود -->
@@ -603,6 +603,31 @@ a.row{color:inherit}
 .upd-load span{color:var(--label-2);font-size:.875rem}
 .fl-lab{display:block;margin:12px 4px 0;font-size:.8125rem;color:var(--label-2);font-weight:600}
 
+/* بدون انتخاب و زوم | No Select No Zoom: متن در هیچ جای برنامه انتخاب نمی‌شود و صفحه زوم نمی‌شود؛ فقط داخل کادرهای نوشتن می‌شود متن را انتخاب کرد */
+html,body,*{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
+html,body{touch-action:manipulation;-webkit-text-size-adjust:100%}
+input,textarea,select{font-size:max(16px,1rem)}
+/* نام کامل روز | Full Weekday: نام کامل روزهای هفته در کپسول‌ها جا می‌شود */
+.dcell small{font-size:.6875rem;white-space:nowrap;overflow:hidden;text-overflow:clip;max-width:100%}
+/* شایستگی‌ها | Quick Competency Styles: دکمهٔ بالای صفحه و برگهٔ ثبت سریع */
+.qc-wrap{margin:0 0 12px}
+.qc-btn{min-height:44px;font-size:1rem}
+.qc-btn svg{width:20px;height:20px}
+.qc-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 16px 10px}
+.qc-nav b{font-size:1.0625rem;text-align:center}
+.qcr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px}
+.qcr .ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qcc{display:inline-flex;align-items:center;gap:8px;flex:none}
+.qcg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:999px;background:var(--fill)}
+.qcg .stp{width:32px;height:32px;background:var(--card)}
+.qcg .stp svg{width:16px;height:16px}
+.qv{min-width:30px;text-align:center;font-weight:800;font-size:1rem;color:var(--label-3)}
+.qv.pos{color:var(--green)}.qv.neg{color:var(--red)}
+.qcg{direction:ltr}
+.qcg.pos{background:rgba(52,199,89,.16)}.qcg.neg{background:rgba(255,59,48,.13)}
+.qc-wrap{margin-top:12px}
+
 </style>
 </head>
 <body>
@@ -653,7 +678,7 @@ const obj = x => (x && typeof x === 'object' ? x : {});
 const JM = ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'];
 const DAYN = { 6: 'شنبه', 0: 'یکشنبه', 1: 'دوشنبه', 2: 'سه‌شنبه', 3: 'چهارشنبه', 4: 'پنج‌شنبه', 5: 'جمعه' };
 const DY = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
-const DYS = ['ش', 'ی', 'د', 'س', 'چ'];
+const DYS = ['شنبه', 'یکشنبه', 'دوشنبه', 'سه‌شنبه', 'چهارشنبه'];
 /* تبدیل به شمسی | To Jalali: تاریخ میلادی را به سال، ماه و روز شمسی تبدیل می‌کند */
 const jd = dt => {
   const o = {};
@@ -1960,7 +1985,7 @@ const Nav = {
     const sp = r.spec = fnp(r, r.p || {});
     const st = Nav.stack(), prev = st[st.length - 2];
     let lead = sp.lead;
-    if (lead === undefined) lead = st.length > 1 ? '<button class="nav-btn nav-back" data-act="back">' + ico('chev-r') + '<span>' + esc((prev && prev.spec && prev.spec.title) || 'بازگشت') + '</span></button>' : '';
+    if (lead === undefined) lead = st.length > 1 ? '<button class="nav-btn nav-back" data-act="back" aria-label="بازگشت">' + ico('chev-r') + '</button>' : '';
     el.classList.toggle('has-tabs', !!sp.tabs);
     el.innerHTML = '<div class="nav' + (sp.large ? '' : ' solid') + '"><div class="nav-bg"></div><div class="nav-row"><div class="nav-side">' + lead + '</div><div class="nav-title">' + esc(sp.title || '') + '</div><div class="nav-side">' + (sp.trail || '') + '</div></div></div>'
       + '<div class="scroll">' + (sp.large ? '<h1 class="large-title">' + esc(sp.title) + '</h1>' : '') + (sp.sub ? '<p class="page-sub">' + sp.sub + '</p>' : '') + sp.body + '</div>';
@@ -2055,6 +2080,12 @@ const telH = p => (p ? '<a class="tint" dir="ltr" href="' + esc(telHref(p)) + '"
 /* ---- ۹.۸ رویدادهای لمس | 9.8 Event Binding ---- */
 /* رویدادها | Events: لمس هر عنصر دارای data-act کار ثبت‌شدهٔ ACT را اجرا می‌کند؛ نوشتن در data-in به INP می‌رسد؛ کشیدن از لبهٔ راست به چپ = بازگشت */
 const bindEvents = () => {
+  /* بدون زوم و انتخاب | No Zoom No Select: نیشگون، دوبار لمس و انتخاب متن و منوی لمس طولانی در همهٔ برنامه بسته است (جز داخل کادرهای نوشتن) */
+  ['gesturestart', 'gesturechange', 'gestureend'].forEach(n => document.addEventListener(n, e => e.preventDefault(), { passive: false }));
+  document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  document.addEventListener('selectstart', e => { if (!e.target.closest || !e.target.closest('input,textarea')) e.preventDefault(); });
+  document.addEventListener('contextmenu', e => { if (!e.target.closest('input,textarea')) e.preventDefault(); });
+  document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
   document.addEventListener('click', e => {
     const el = e.target.closest('[data-act]'); if (!el) return;
     const f = ACT[el.dataset.act]; if (!f) return;
@@ -2249,7 +2280,7 @@ ACT.openCourse = (el, a) => Nav.enter(a);
 /* خروج از دوره | Leave Course Action: دکمهٔ «دوره‌ها» بالای هر تب */
 ACT.leaveCourse = () => Nav.leave();
 /* دکمهٔ بازگشت به دوره‌ها | Courses Back Button: چپ‌ترین دکمهٔ بالای صفحهٔ اصلی هر تب */
-const leaveBtn = '<button class="nav-btn nav-back" data-act="leaveCourse">' + ico('chev-r') + '<span>دوره‌ها</span></button>';
+const leaveBtn = '<button class="nav-btn nav-back" data-act="leaveCourse" aria-label="دوره‌ها">' + ico('chev-r') + '</button>';
 
 /* ---- ۱۱.۴ نوار شیفت و زنگ | 11.4 Shift & Bell Bar ---- */
 /* زنگ فعلی | Bell Now: مثل برنامهٔ دسکتاپ؛ نام زنگ (یا تفریح یا مراسم)، شیفت هفته و ثانیه‌های مانده تا پایان زنگ (یا تا شروع زنگ بعدی)؛ lesson نام درس همان زنگ است */
@@ -2358,11 +2389,10 @@ const attPill = v => (v === 1 ? '<span class="pill green">حاضر</span>' : v =
 const attDayView = (c, st) => {
   const k = st.sel, d = kdate(k), ad = attDay(c, k), marks = {};
   weekDays(st.off).forEach(x => { if (attDay(c, dkey(x)).rec) marks[dkey(x)] = 1; });
-  let h = dayStripH({ off: st.off, sel: k, marks, pick: 'attPick', nav: 'attWeek' });
-  h += '<div class="day-head"><b>' + esc(jFull(d)) + '</b>' + (attLocked(c, k) ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
+  let h = '<div class="day-head"><b>' + esc(jFull(d)) + '</b>' + (attLocked(c, k) ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
+  h += dayStripH({ off: st.off, sel: k, marks, pick: 'attPick', nav: 'attWeek' });
   const tile = (f, cls, n, t) => '<button class="stat ' + cls + (st.f === f ? ' on' : '') + '" data-act="attFilter" data-a="' + f + '"><b>' + fn(n) + '</b><span>' + t + '</span></button>';
   h += '<div class="stats">' + tile('a', 'red', ad.a, 'غایب') + '</div>';
-  if (!ad.rec) h += '<div class="banner info">' + ico('info') + '<span>برای این روز هنوز ثبت نشده؛ با دکمهٔ کنار هر دانش‌آموز ثبت کن.</span></div>';
   const L = STU(c).filter(s => { const v = attOf(c, k, s.id); return st.f === 'all' || (st.f === 'p' && v === 1) || (st.f === 'a' && v === 0) || (st.f === 'n' && v !== 1 && v !== 0); });
   const lk = attLocked(c, k);
   h += attTools(c, k, lk, ad);
@@ -2466,6 +2496,42 @@ const chkMarks = (c, l, it, off) => {
 };
 /* مقدار شایستگی | Competency Count: تعداد و دلیل‌های یک ثبت مثبت یا منفی شایستگی */
 const cNum = x => (x && typeof x === 'object' ? (+x.n || 0) : 0);
+/* ---- ۱۳.۲b شایستگی‌ها (ثبت سریع) | 13.2b Quick Competency Entry ---- */
+/* ثبت سریع شایستگی | Quick Competency: مثل برنامهٔ اصلی، دکمهٔ «شایستگی‌ها» برگه‌ای با همهٔ دانش‌آموزان باز می‌کند؛ برای هر نفر شمارندهٔ مثبت و منفی روز انتخاب‌شده (با دکمهٔ روز قبل/بعد/امروز)؛ با هر «+» دلیل اختیاری پرسیده می‌شود. ردیف شمارندهٔ شایستگی همان مورد نوع «شایستگی» در چک‌لیست است */
+const qcKey = c => { if (GM(c) === 'q') return null; for (const l of CLS(c)) for (const it of itemsOf(c, l)) if (ity(it) === 'c') return l.id + '.' + it.id; return null; };
+const qcBtn = c => (qcKey(c) ? '<div class="pad-x qc-wrap"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button></div>' : '');
+let QC = null;
+const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
+const qcCap = (c, sid, k, key) => { const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
+const qcBody = () => {
+  const c = C(), k = QC.k, key = QC.key, tk = dkey(new Date());
+  if (QC.rs) { const s = stuById(c, QC.rs.sid); return '<div class="sec-sub">' + esc(sn(s)) + ' · ' + (QC.rs.w === 'p' ? 'شایستگی مثبت' : 'شایستگی منفی') + '</div><div class="pad-x"><input class="fld" id="qcWhy" data-enter="qcWhySave" maxlength="120" placeholder="دلیل (اختیاری)"><div class="spacer"></div><button class="btn primary" data-act="qcWhySave">ثبت دلیل</button><div class="spacer"></div><button class="btn gray" data-act="qcWhySkip">بدون دلیل</button></div>'; }
+  const hd = '<div class="qc-nav"><button class="dnav" data-act="qcGo" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(k))) + '</b><button class="dnav" data-act="qcGo" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>' + (k !== tk ? '<div class="pad-x"><button class="btn plain" data-act="qcToday">امروز</button></div>' : '');
+  const L = STU(c);
+  return hd + (L.length ? '<div class="group">' + L.map((s, i) => '<div class="row qcr" data-qs="' + esc(s.id) + '"><span class="ttl">' + fn(i + 1) + '. ' + esc(sn(s)) + '</span>' + qcCap(c, s.id, k, key) + '</div>').join('') + '</div>' : emptyH('users', 'دانش‌آموزی نیست', ''));
+};
+const qcPaint = () => { const b = $('#qcBody'); if (b && QC) b.innerHTML = qcBody(); };
+ACT.qcOpen = () => { const c = C(), key = qcKey(c); if (!key) return; const d = defDay(); QC = { key, k: dkey(d), rs: null }; Sheet.open({ title: 'شایستگی‌ها', body: '<div id="qcBody">' + qcBody() + '</div>', after: sh => { const cl = sh.querySelector('[data-act=sheetClose]'); if (cl) cl.addEventListener('click', () => { QC = null; Nav.refresh(); }); } }); };
+ACT.qcGo = (el, a) => { let d = kdate(QC.k); do { d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + +a, 12); } while (isOff(d)); QC.k = dkey(d); qcPaint(); };
+ACT.qcToday = () => { QC.k = dkey(defDay()); qcPaint(); };
+/* افزودن یا کم‌کردن | Add or Remove: مثبت (cp) و منفی (cn) هر دانش‌آموز؛ برای افزودن بعدش دلیل پرسیده می‌شود */
+ACT.qcA = (el, sid, w) => {
+  const c = C(), k = QC.k, key = QC.key, kind = w[0], dl = w[1] === '+' ? 1 : -1, op = kind === 'p' ? 'cp' : 'cn';
+  const o = kind === 'p' ? posVal(c, sid, k, key) : dayVal(c, sid, k, key, false), n0 = cNum(o), n = Math.max(0, n0 + dl); if (n === n0) return;
+  const other = kind === 'p' ? dayVal(c, sid, k, key, false) : posVal(c, sid, k, key);
+  const t = String((o && o.t) || (other && other.t) || ''), r = arr(o && o.r).slice(0, n);
+  while (r.length < n) r.push('');
+  if (!edit({ k: op, day: k, sid, key, v: n || t.trim() ? { n, t, r } : null })) return toast(LKMSG, true);
+  if (dl > 0) { QC.rs = { sid, w: kind, i: n - 1 }; qcPaint(); const f = $('#qcWhy'); if (f) setTimeout(() => f.focus(), 250); } else qcPaint();
+};
+/* دلیل ثبت | Reason: دلیل اختیاری آخرین ثبت را در همان شمارنده می‌گذارد */
+ACT.qcWhySave = () => {
+  const rs = QC && QC.rs; if (!rs) return;
+  const v = ($('#qcWhy') || {}).value || '', c = C(), k = QC.k, key = QC.key, op = rs.w === 'p' ? 'cp' : 'cn', o = rs.w === 'p' ? posVal(c, rs.sid, k, key) : dayVal(c, rs.sid, k, key, false);
+  if (v.trim() && o) { const r = arr(o.r).slice(0, cNum(o)); while (r.length < cNum(o)) r.push(''); r[rs.i] = v.trim(); edit({ k: op, day: k, sid: rs.sid, key, v: { n: cNum(o), t: o.t || '', r } }); }
+  QC.rs = null; qcPaint();
+};
+ACT.qcWhySkip = () => { if (QC) { QC.rs = null; qcPaint(); } };
 const cWhy = x => (x && typeof x === 'object' ? arr(x.r).slice(0, cNum(x)).map(z => String(z || '').trim()).filter(Boolean).concat(String(x.t || '').trim() ? [String(x.t).trim()] : []) : []);
 
 /* ---- ۱۳.۲ صفحهٔ اصلی چک‌لیست | 13.2 Checklist Root ---- */
@@ -2473,7 +2539,7 @@ const cWhy = x => (x && typeof x === 'object' ? arr(x.r).slice(0, cNum(x)).map(z
 PAGES.chk = r => {
   const c = C(), st = r.st, q = GM(c) === 'q';
   if (!st.v) st.v = 'les';
-  let b = segH([['les', 'بر اساس درس'], ['stu', 'بر اساس دانش‌آموز']], st.v, 'chkView');
+  let b = segH([['les', 'بر اساس درس'], ['stu', 'بر اساس دانش‌آموز']], st.v, 'chkView') + qcBtn(c);
   if (st.v === 'les') {
     const L = CLS(c);
     if (!L.length) b += emptyH('clipboard', 'درسی در چک‌لیست نیست', 'در برنامهٔ اصلی چک‌لیست دوره را تنظیم کن.');
@@ -2542,11 +2608,11 @@ PAGES.chkL = (r, p) => {
   if (st.item == null) st.item = String((items[0] || {}).id);
   if (!st.sel) { const ld = lastDayOf(c, l.id, q), d = ld ? kdate(ld) : defDay(); st.sel = dkey(d); st.off = weekOff(d); }
   const it = items.find(x => String(x.id) === st.item) || items[0] || { id: '0', t: '' };
-  let b = '';
+  let b = qcBtn(c);
   if (items.length > 1 || (items[0] && items[0].t)) b += '<div class="chips">' + items.map(x => '<button class="chip' + (String(x.id) === st.item ? ' on' : '') + '" data-act="chkItem" data-a="' + esc(x.id) + '"><span class="cl">' + esc(itTitle(l, x)) + '</span></button>').join('') + '</div>';
-  b += dayStripH({ off: st.off, sel: st.sel, marks: chkMarks(c, l, it, st.off), pick: 'chkPick', nav: 'chkWeek' });
   const dl = lessonLocked(c, st.sel, l.id, q), ty0 = q ? 'q' : ity(it);
   b += '<div class="day-head"><b>' + esc(jFull(kdate(st.sel))) + '</b>' + (dl ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
+  b += dayStripH({ off: st.off, sel: st.sel, marks: chkMarks(c, l, it, st.off), pick: 'chkPick', nav: 'chkWeek' });
   if (dl) b += '<div class="banner warn">' + ico('lock') + '<span>نمره‌های این درس در این روز در برنامهٔ اصلی قفل شده؛ برای تغییر، آنجا قفل را باز کن.</span></div>';
   b += '<div id="chkSum">' + chkSummary(c, l, it, st.sel, q) + '</div>';
   const S2 = STU(c);
@@ -2851,7 +2917,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-21T20:27:25.877Z';
+const APP_BUILD = '2026-11-21T20:52:00.111Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
