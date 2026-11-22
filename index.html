@@ -673,7 +673,7 @@ input,textarea,select{font-size:max(16px,1rem)}
 .pn-cap{display:flex;align-items:center;gap:6px;min-height:34px;cursor:pointer}.pn-cap b{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pn-cap i{font-style:normal;font-weight:800;min-width:22px;text-align:center;border-radius:999px;padding:0 6px;background:var(--fill)}
 .pn-col.pos .pn-cap i{color:var(--green)}.pn-col.neg .pn-cap i{color:var(--red)}
-.pn-cap svg{width:14px;height:14px;color:var(--label-3);transition:transform .2s}.pn-g.open .pn-cap svg{transform:rotate(-90deg)}
+.pn-cap svg{width:14px;height:14px;color:var(--label-3);transition:transform .2s}.pn-g.open .pn-cap>svg{transform:rotate(-90deg)}
 .pn-p{display:block;color:var(--label-3);font-size:.75rem;line-height:1.5;padding:0 2px 4px}
 .pn-es{border-top:1px solid rgba(0,0,0,.07);padding-top:4px}.pn-e{display:flex;align-items:flex-start;gap:6px;padding:5px 0;font-size:.8125rem;line-height:1.5}
 .pn-e .pn-t{flex:1;min-width:0}.pn-d{display:block;color:var(--label-3);font-size:.6875rem}
@@ -681,6 +681,14 @@ input,textarea,select{font-size:max(16px,1rem)}
 .pn-ck svg{width:12px;height:12px}
 .pn-e.sel .pn-ck,.pn-ck.on{background:var(--red);border-color:var(--red);color:#fff}.pn-col.pos .pn-e.sel .pn-ck,.pn-col.pos .pn-ck.on{background:var(--green);border-color:var(--green)}
 .pn-in{min-height:34px;padding:4px 8px;font-size:.8125rem}
+
+/* دکمهٔ قفل | Lock Button: اندازهٔ ثابت؛ خاموش خاکستری و روشن نارنجی */
+.btn.glk{width:100%;background:var(--fill);color:var(--label-2)}.btn.glk svg{width:18px;height:18px}
+.btn.glk.lkon{background:rgba(255,149,0,.2);color:var(--orange)}.btn.glk:disabled{opacity:.45}
+/* هم‌قد کردن کپسول‌ها | Equal Capsules: ارتفاع ثابت و نام کامل‌تر (تا دو خط) */
+.pn-cap{height:44px;min-height:44px}.pn-cap b{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:.875rem;line-height:1.25}
+.pn-cap svg{transform:none}.pn-g.open .pn-cap>svg{transform:rotate(-90deg)}
+.pn-in{resize:none;overflow:hidden;line-height:1.5;white-space:pre-wrap}
 
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
@@ -1981,7 +1989,7 @@ const setCell = (c, store, sid, d, key, val, empty) => {
    att: حضور (v یک=حاضر، صفر=غایب، null=پاک) | attLk: قفل روز | g: نمرهٔ ۱ تا ۴ | q: نمرهٔ ۰ تا ۲۰ | t: توضیح متنی | cn: شایستگی منفی | cp: شایستگی مثبت
    خروجی apply: true یعنی انجام شد، false یعنی چون روز یا نمره قفل بود رد شد. */
 const Ed = {
-  part: { ls: 'homework', att: 'attendance', attLk: 'attendance', g: 'checklist', q: 'checklist', t: 'checklist', cn: 'checklist', cp: 'checklist' },
+  part: { ls: 'homework', att: 'attendance', attLk: 'attendance', g: 'checklist', q: 'checklist', t: 'checklist', cn: 'checklist', cp: 'checklist', chLk: 'checklist' },
   apply(c, o) {
     switch (o.k) {
       case 'att': {
@@ -1994,6 +2002,13 @@ const Ed = {
       case 'attLk': {
         c.attl = c.attl || {};
         if (o.on) c.attl[o.day] = 1; else delete c.attl[o.day];
+        return true;
+      }
+      /* قفل نمرات روز | Grades Day Lock: قفل نمرات یک درس در یک روز؛ مثل برنامهٔ اصلی با کلید «شناسهٔ درس» (کمی: q:شناسه) در chkd، و استثناهای قبلی (chkx) پاک می‌شوند */
+      case 'chLk': {
+        c.chkd = c.chkd || {}; const m = c.chkd[o.day] = c.chkd[o.day] || {};
+        (o.keys || []).forEach(k => { if (o.on) { m[k] = 1; if (((c.chkx || {})[o.day] || {})[k]) delete c.chkx[o.day][k]; } else delete m[k]; });
+        if (!Object.keys(m).length) delete c.chkd[o.day];
         return true;
       }
       case 'g': case 'q': {
@@ -2619,8 +2634,8 @@ const attRow = (c, s, k, lk) => {
 /* ابزار روز | Day Tools: قفل کردن یا باز کردن قفل روز */
 const attTools = (c, k, lk, ad) => {
   if (!STU(c).length) return '';
-  if (lk) return '<div class="pad-x"><button class="btn gray sm" data-act="attLock" data-a="0">' + ico('lock') + 'باز کردن قفل</button></div><div class="spacer"></div>';
-  return '<div class="pad-x tools2">' + (ad.rec ? '<button class="btn gray sm" data-act="attLock" data-a="1">' + ico('lock') + 'قفل کردن روز</button>' : '') + '</div>';
+  /* دکمهٔ قفل روز | Day Lock Button: همیشه همین یک دکمه با همین اندازه و جا؛ با قفل شدن فقط رنگش عوض می‌شود */
+  return '<div class="pad-x tools2"><button class="btn sm glk' + (lk ? ' lkon' : '') + '" data-act="attLock" data-a="' + (lk ? 0 : 1) + '"' + (!lk && !ad.rec ? ' disabled' : '') + '>' + ico('lock') + 'قفل روز</button></div>';
 };
 
 /* ---- ۱۲.۴ نمای ماهانه | 12.4 Month View ---- */
@@ -2710,11 +2725,19 @@ const negList = (c, k, w) => {
   const out = []; STU(c).forEach(s => { let n = 0; const why = []; keys.forEach(key => { const x = w === 'p' ? posVal(c, s.id, k, key) : dayVal(c, s.id, k, key, false), m = cNum(x); if (m) { n += m; cWhy(x).forEach(y => why.push(y)); } }); if (n) out.push({ s, n, why }); });
   return out;
 };
+/* قفل نمرات روز | Grades Day Lock: کلیدهای قفل همهٔ درس‌های دوره برای یک روز؛ وقتی همه قفل باشند «قفل‌شده» حساب می‌شود (مثل برنامهٔ اصلی در chkd) */
+const gKeys = c => CLS(c).map(l => (GM(c) === 'q' ? 'q:' : '') + l.id);
+const gLocked = (c, k) => { const K = gKeys(c); return K.length > 0 && K.every(x => !!(((c.chkd || {})[k] || {})[x])); };
+ACT.gLock = (el, k) => {
+  const c = C(), K = gKeys(c); if (!K.length) return;
+  if (gLocked(c, k)) return ask('قفل نمرات این روز برای همهٔ درس‌ها باز شود؟ بعد از آن می‌شود دوباره نمره را تغییر داد.', 'باز کردن قفل', () => { edit({ k: 'chLk', day: k, keys: K, on: false }); toast('قفل نمرات باز شد'); Nav.refresh(); });
+  edit({ k: 'chLk', day: k, keys: K, on: true }); toast('نمرات این روز قفل شد'); Nav.refresh();
+};
 /* دکمه‌های شایستگی | Competency Buttons: «شایستگی‌ها» و کپسول «مثبت و منفی روز» با شمارش هر دو؛ k روز موردنظر است (پیش‌فرض امروز) */
 const qcBtn = (c, k) => {
   if (!qcKey(c)) return '';
-  k = k || dkey(defDay()); const sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
-  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp"><bdi dir="ltr">+' + fn(P) + '</bdi></b><b><bdi dir="ltr">−' + fn(N) + '</bdi></b>' : '') + '</button></div>';
+  k = k || dkey(defDay()); const gl = gLocked(c, k), sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp"><bdi dir="ltr">+' + fn(P) + '</bdi></b><b><bdi dir="ltr">−' + fn(N) + '</bdi></b>' : '') + '</button></div><div class="pad-x qc-wrap"><button class="btn sm glk' + (gl ? ' lkon' : '') + '" data-act="gLock" data-a="' + k + '">' + ico('lock') + 'قفل نمرات</button></div>';
 };
 /* ---- ۱۳.۲ج برگهٔ مثبت و منفی | 13.2c Positive & Negative Sheet ---- */
 /* مثبت و منفی | Pos/Neg Sheet: برگهٔ دو ستونه (مثبت‌ها و منفی‌ها) برای کل کلاس در یک روز یا یک ماه، یا برای یک دانش‌آموز؛ با «ویرایش» می‌شود دلیل را عوض کرد یا مورد را (تکی یا چندتایی، با تأیید) حذف کرد و روی سرور ذخیره می‌شود */
@@ -2733,7 +2756,7 @@ const pnAll = (c, sid) => {
 const pnList = c => pnAll(c, PN.sid).filter(e => PN.f === 'day' ? e.k === PN.k : PN.f === 'month' ? pnYm(e.k) === PN.ym : true);
 const pnEnt = e => '<div class="pn-e' + (PN.sel.has(e.id) ? ' sel' : '') + '">' + (PN.edit ? '<span class="pn-ck" data-act="pnSel" data-a="' + esc(e.id) + '">' + ico('check') + '</span>' : '')
   + '<div class="pn-t">' + (PN.sid || PN.f !== 'day' ? '<small class="pn-d">' + esc(jFull(kdate(e.k))) + '</small>' : '')
-  + (PN.edit ? '<input class="fld pn-in" data-chg="pnWhy" data-a="' + esc(e.id) + '" value="' + esc(e.why) + '" maxlength="120" placeholder="دلیل">' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>') + '</div></div>';
+  + (PN.edit ? '<textarea class="fld pn-in" rows="1" data-in="pnGrow" data-chg="pnWhy" data-a="' + esc(e.id) + '" maxlength="200" placeholder="دلیل">' + esc(e.why) + '</textarea>' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>') + '</div></div>';
 /* کپسول هر دانش‌آموز | Student Capsule: نام (یا تاریخ در نمای یک دانش‌آموز) و تعداد؛ اگر بیش از یکی باشد با لمس کامل دیده می‌شود */
 const pnGroup = (L, w) => {
   const gk = e => (PN.sid ? e.k : e.sid), G = {}, order = [];
@@ -2751,13 +2774,16 @@ const pnBody = () => {
   const c = C(), all = pnAll(c, PN.sid), L = pnList(c), P = L.filter(e => e.w === 'p'), N = L.filter(e => e.w === 'n');
   let h = segH(PN.sid ? [['month', 'ماه'], ['all', 'همه']] : [['day', 'روز'], ['month', 'ماه']], PN.f, 'pnF');
   if (PN.f === 'day') h += '<div class="qc-nav"><button class="dnav" data-act="pnD" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(PN.k))) + '</b><button class="dnav" data-act="pnD" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>';
-  if (PN.f === 'month') { const ms = [...new Set(all.map(e => pnYm(e.k)).concat([PN.ym]))].sort((a, b) => b - a); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === PN.ym ? ' on' : '') + '" data-act="pnM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
+  if (PN.f === 'month') { const ms = [...new Set(all.map(e => pnYm(e.k)).concat([PN.ym]))].sort((a, b) => a - b); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === PN.ym ? ' on' : '') + '" data-act="pnM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
   const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? pnGroup(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
   return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
 };
 /* دکمه‌های بالای برگه | Header Buttons: «ویرایش» و (در حالت ویرایش) «تمام» و «حذف» به شکل کپسول، گوشهٔ راست */
 const pnAct = () => (PN.edit ? '<button class="cap-b tint" data-act="pnEdit">تمام</button><button class="cap-b red" data-act="pnDel"' + (PN.sel.size ? '' : ' disabled') + '>حذف' + (PN.sel.size ? ' ' + fn(PN.sel.size) : '') + '</button>' : '<button class="cap-b tint" data-act="pnEdit">ویرایش</button>');
-const pnPaint = () => { const b = $('#pnBody'); if (b && PN) Morph.html(b, pnBody()); const a = $('#shAct'); if (a && PN) Morph.html(a, pnAct()); };
+/* بزرگ‌شدن کادر نوشتن | Auto Grow: متن بلند به خط بعد می‌رود و کادر بلندتر می‌شود */
+const pnGrow = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
+INP.pnGrow = (v, el) => pnGrow(el);
+const pnPaint = () => { const b = $('#pnBody'); if (b && PN) { Morph.html(b, pnBody()); $$('.pn-in', b).forEach(pnGrow); } const a = $('#shAct'); if (a && PN) Morph.html(a, pnAct()); };
 const pnShow = () => Sheet.open({ title: PN.sid ? 'مثبت و منفی' : 'مثبت و منفی روز', act: pnAct(), body: '<div id="pnBody">' + pnBody() + '</div>' });
 ACT.qcNeg = (el, k) => { PN = { sid: null, f: 'day', k, ym: pnYm(k), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
 ACT.stuPN = () => { const c = C(), r = Nav.top(), all = pnAll(c, r.p.sid), tk = dkey(defDay()); PN = { sid: r.p.sid, f: 'month', k: tk, ym: all.length ? pnYm(all[0].k) : pnYm(tk), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
@@ -2795,7 +2821,7 @@ ACT.pnDel = () => {
 };
 let QC = null;
 const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
-const qcCap = (c, sid, k, key) => { const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
+const qcCap = (c, sid, k, key) => { const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
 const qcBody = () => {
   const c = C(), k = QC.k, key = QC.key, tk = dkey(new Date());
   if (QC.rs) { const s = stuById(c, QC.rs.sid); return '<div class="sec-sub">' + esc(sn(s)) + ' · ' + (QC.rs.w === 'p' ? 'شایستگی مثبت' : 'شایستگی منفی') + '</div><div class="pad-x"><div class="hw-lab">دلیل (الزامی)</div><input class="fld" id="qcWhy" data-in="qcWhy" data-enter="qcWhySave" maxlength="120" placeholder="دلیل این ثبت را بنویس"><div class="spacer"></div><button class="btn primary" id="qcWhyOk" data-act="qcWhySave" disabled>ثبت</button><div class="spacer"></div><button class="btn gray" data-act="qcWhySkip">لغو</button></div>'; }
@@ -3217,7 +3243,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T14:37:15.648Z';
+const APP_BUILD = '2026-11-22T14:51:56.918Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
