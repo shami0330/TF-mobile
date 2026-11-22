@@ -3586,11 +3586,11 @@ ACT.hwPdf = async () => {
 (async function boot() {
   Look.apply(); Tabs.render(); bindEvents();
   await Cache.open();
-  /* نسخهٔ نصب‌شده | Installed Override: اگر نسخهٔ تازه‌ای دانلود شده باشد (و فایل میزبان بعد از آن عوض نشده باشد) همان اجرا می‌شود؛ در صفحهٔ blob: دوباره بررسی نمی‌شود تا حلقه نشود */
+  /* پاک‌کردن نسخهٔ ذخیره‌شده | Clear Stored Copy: روی آدرس واقعی وب (github.io) دیگر به صفحهٔ موقت blob: نمی‌رویم، چون «افزودن به صفحهٔ اصلی» روی آن کار نمی‌کند؛ نسخهٔ ذخیره‌شدهٔ قدیمی پاک می‌شود و سرویس‌ورکر خودش نسخهٔ تازه را می‌آورد */
   if (location.protocol !== 'blob:' && location.protocol !== 'file:') {
     const ov = await Cache.get('kv', 'ovr');
     if (ov && ov.base !== HOST_BUILD) { Cache.del('kv', 'ovr'); Pref.del('updinst'); Pref.del('updlast'); } /* خود فایل میزبان تازه شده؛ نسخهٔ ذخیره‌شده کهنه است */
-    else if (ov && ov.html) { try { location.replace(URL.createObjectURL(new Blob([ov.html], { type: 'text/html' })) + location.hash); return; } catch (e) { /* ادامه با نسخهٔ خود فایل */ } }
+    else if (ov) Cache.del('kv', 'ovr'); /* پاک‌کردن نسخهٔ قدیمی | Clear Old Copy: نسخهٔ ذخیره‌شده پاک می‌شود و برنامه با فایل اصلی همان آدرس ادامه می‌دهد */
   }
   /* سرویس‌ورکر | Service Worker Register: فقط روی آدرس وب ثبت می‌شود (نه فایل محلی و نه نسخهٔ blob) */
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
