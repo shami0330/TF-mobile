@@ -702,6 +702,15 @@ input,textarea,select{font-size:max(16px,1rem)}
 /* زنگ فعلی | Current Period: زنگ جاری پررنگ و بقیه کمرنگ */
 .group.hascur .per:not(.cur){opacity:.42}.wk.hascur td:not(.cur):not(.e){opacity:.45}
 
+/* ---- ویرایش با مداد | Pencil Editing: ظاهر خانه‌های فرم ویرایش، ردیف لینک و دکمه‌های پایین فرم ---- */
+.ef-g{margin-bottom:10px;overflow:hidden}.ef-g:empty{display:none}
+.ef{display:flex;align-items:center;gap:10px;min-height:48px;padding:4px 14px;position:relative}.ef+.ef{border-top:.5px solid var(--sep)}
+.ef>span{flex:0 0 38%;font-size:.9375rem;font-weight:600}.ef input,.ef select,.ef textarea{flex:1;min-width:0;font-size:max(16px,1rem);padding:8px 0;background:none;color:inherit}
+.ef select{height:40px}.ef.sl::after{content:'▾';color:var(--label-3);font-size:.8rem}
+.ef.ar{align-items:flex-start;flex-direction:column;gap:2px;padding:8px 14px}.ef.ar>span{flex:none}.ef.ar textarea{width:100%;resize:none;line-height:1.7}
+.ef-lk{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center;padding:6px 10px}.ef-lk .cap-b{order:2}.ef-lk [data-lu]{order:3;flex:1 1 100%}.ef-lk+.ef-lk{border-top:.5px solid var(--sep)}.ef-lk input{flex:1;min-width:0;padding:8px 0;font-size:max(16px,1rem)}.ef-lk [data-lt]{flex:1 1 0;order:1;font-weight:600}
+.ef-add{display:flex;gap:8px;justify-content:center;margin:4px 0 12px}.ef-del{display:flex;justify-content:center;margin:8px 0 18px}
+
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
 /* تکلیف‌ساز | Homework Maker: صفحهٔ تنظیم‌ها، نوار پایین، برگهٔ سفید پیش‌نمایش و چاپ A4 */
@@ -1459,10 +1468,11 @@ const Sync = {
       else if (row) { text = await Srv.unzip(await Srv.download(row.f)); Sync.remote = true; }
       let o;
       try { o = text ? JSON.parse(text) : { app: 'class-man-part', v: 1, c: {} }; } catch (e) { throw new Error('دادهٔ بخش «' + n + '» روی سرور سالم نیست'); }
-      if (!o.c || typeof o.c !== 'object') o.c = {};
+      const isC = n === 'courses';
+      if (!isC && (!o.c || typeof o.c !== 'object')) o.c = {};
       let skipped = 0;
       /* دستور ls | Local-Storage Op: یک کلید کامل (مثل cls_hw2) در بخش ls نوشته می‌شود و کلیدهای دیگر دست‌نخورده می‌مانند */
-      ops.forEach(op => { if (op.k === 'ls') { if (!o.ls || typeof o.ls !== 'object') o.ls = {}; o.ls[op.key] = op.v; return; } const e = o.c[op.cid] = o.c[op.cid] || {}; if (!Ed.apply(e, op)) skipped++; });
+      ops.forEach(op => { if (op.k === 'ls') { if (!o.ls || typeof o.ls !== 'object') o.ls = {}; o.ls[op.key] = op.v; return; } /* بخش دوره‌ها | Courses Part: این بخش به شکل db.courses است و هر دوره با شناسه پیدا می‌شود */ const e = isC ? (o.db && Array.isArray(o.db.courses) ? o.db.courses.find(x => String(x.id) === String(op.cid)) : null) : (o.c[op.cid] = o.c[op.cid] || {}); if (!e) { skipped++; return; } if (!Ed.apply(e, op)) skipped++; });
       const out = JSON.stringify(o);
       if (out === text) return skipped;
       const z = await Srv.gz(out), h = await Srv.hash(out), fid = 'p-' + n + '-' + h.slice(0, 12);
@@ -1485,7 +1495,7 @@ const Sync = {
     if (navigator.onLine === false) { Sync.set('offline'); return; }
     Sync.busy = true; Sync.remote = false; Sync.set('saving');
     const batch = Sync.q.slice(), parts = {}; let skipped = 0;
-    batch.forEach(o => { const n = Ed.part[o.k]; if (n) (parts[n] = parts[n] || []).push(o); });
+    batch.forEach(o => { const n = Ed.partOf(o); if (n) (parts[n] = parts[n] || []).push(o); });
     try {
       for (const n of Object.keys(parts)) skipped += await Sync.savePart(n, parts[n]);
       Sync.q = Sync.q.filter(o => batch.indexOf(o) < 0); Sync.persist();
@@ -1999,11 +2009,26 @@ const setCell = (c, store, sid, d, key, val, empty) => {
   if (!Object.keys(b).length) delete a[d];
   if (!Object.keys(a).length) delete c[store][sid];
 };
+/* ویرایش عمومی | Generic Edit Ops: set (نوشتن یک مقدار)، arrAdd (افزودن به فهرست)، arrDel (حذف از فهرست) روی هر کلید دوره با «مسیر»؛ عضو فهرست با {f:'id',v:مقدار} پیدا می‌شود تا با تغییر ترتیب روی دسکتاپ هم درست کار کند */
+const edStep = (cur, sg) => (sg && typeof sg === 'object' ? (Array.isArray(cur) ? cur.find(x => x && String(x[sg.f]) === String(sg.v)) : undefined) : (cur == null ? undefined : cur[sg]));
+const edGet = (c, path, make) => {
+  let cur = c;
+  for (let i = 0; i < path.length; i++) {
+    let nx = edStep(cur, path[i]);
+    if (nx == null || typeof nx !== 'object') { if (!make || (path[i] && typeof path[i] === 'object')) return undefined; nx = typeof path[i] === 'number' && typeof path[i + 1] === 'number' ? [] : {}; cur[path[i]] = nx; }
+    cur = nx;
+  }
+  return cur;
+};
+/* بخش مقصد | Target Part: کلیدهای برنامه و کادر در بخش خودشان و بقیه در بخش «courses» ذخیره می‌شوند (مثل برنامهٔ اصلی) */
+const ED_PART = { sch: 'schedule', bel: 'schedule', staff: 'staff', staffX: 'staff', staffT: 'staff', reps: 'staff' };
 /* عملیات ثبت | Edit Ops: هر تغییر یک «دستور» کوچک است که روی آبجکت دوره اجرا می‌شود؛ همان دستور هم روی حافظهٔ گوشی و هم روی داده‌ی تازهٔ سرور اجرا می‌شود
    att: حضور (v یک=حاضر، صفر=غایب، null=پاک) | attLk: قفل روز | g: نمرهٔ ۱ تا ۴ | q: نمرهٔ ۰ تا ۲۰ | t: توضیح متنی | cn: شایستگی منفی | cp: شایستگی مثبت
    خروجی apply: true یعنی انجام شد، false یعنی چون روز یا نمره قفل بود رد شد. */
 const Ed = {
   part: { ls: 'homework', att: 'attendance', attLk: 'attendance', g: 'checklist', q: 'checklist', t: 'checklist', cn: 'checklist', cp: 'checklist', chLk: 'checklist' },
+  /* بخش یک دستور | Part Of Op: اسم بخش سرور که این دستور در آن ذخیره می‌شود */
+  partOf(o) { return Ed.part[o.k] || (o.k === 'set' || o.k === 'arrAdd' || o.k === 'arrDel' ? ED_PART[o.path[0]] || 'courses' : null); },
   apply(c, o) {
     switch (o.k) {
       case 'att': {
@@ -2011,6 +2036,22 @@ const Ed = {
         c.attd = c.attd || {};
         const m = c.attd[o.day] = c.attd[o.day] || {};
         if (o.v === 0 || o.v === 1) m[o.sid] = o.v; else delete m[o.sid];
+        return true;
+      }
+      case 'set': {
+        const par = edGet(c, o.path.slice(0, -1), true), last = o.path[o.path.length - 1]; if (!par || (last && typeof last === 'object')) return false;
+        if (o.v === undefined || o.v === null) { if (Array.isArray(par)) par[last] = ''; else delete par[last]; } else par[last] = o.v;
+        return true;
+      }
+      case 'arrAdd': {
+        const a = edGet(c, o.path, true); if (!Array.isArray(a)) return false;
+        const id = o.item && (o.item.id != null ? ['id', o.item.id] : o.item.uid != null ? ['uid', o.item.uid] : null);
+        if (!(id && a.some(x => x && String(x[id[0]]) === String(id[1])))) a.push(o.item);
+        return true;
+      }
+      case 'arrDel': {
+        const a = edGet(c, o.path, false); if (!Array.isArray(a)) return false;
+        const i = a.findIndex(x => x && String(x[o.sel.f]) === String(o.sel.v)); if (i >= 0) a.splice(i, 1);
         return true;
       }
       case 'attLk': {
@@ -3155,7 +3196,7 @@ const schWeekView = c => {
 PAGES.sch = r => {
   const c = C(), st = r.st;
   if (!st.mode) { st.mode = 'day'; const td = todayD(); st.di = isOff(td) ? 0 : satIdx(td); }
-  return { title: 'برنامه', large: true, tabs: true, lead: leaveBtn, body: segH([['day', 'روزانه'], ['week', 'هفتگی']], st.mode, 'schMode') + (st.mode === 'day' ? schStrip(st) + schDayView(c, st) : schWeekView(c)) };
+  return { title: 'برنامه', large: true, tabs: true, lead: leaveBtn, trail: edBtn('sch'), body: segH([['day', 'روزانه'], ['week', 'هفتگی']], st.mode, 'schMode') + (st.mode === 'day' ? schStrip(st) + schDayView(c, st) : schWeekView(c)) };
 };
 ACT.schMode = (el, a) => { stOf().mode = a; Nav.refresh(); };
 ACT.schDay = (el, a) => { stOf().di = +a; Nav.refresh(); };
@@ -3177,7 +3218,7 @@ const stuListH = (c, q) => {
 /* صفحهٔ دانش‌آموزان | Students Page: نوار جستجو و فهرست */
 PAGES.stu = r => {
   const c = C(), q = r.st.q || '';
-  return { title: 'دانش‌آموزان', large: true, tabs: true, lead: leaveBtn,
+  return { title: 'دانش‌آموزان', large: true, tabs: true, lead: leaveBtn, trail: edBtn('stuAdd'),
     body: '<div class="search' + (q ? ' has' : '') + '">' + ico('search') + '<input type="search" data-in="stuQ" placeholder="جستجوی نام" value="' + esc(q) + '" autocomplete="off"><button class="clr" data-act="stuClr" aria-label="پاک کردن">' + ico('x') + '</button></div><div id="stuList">' + stuListH(c, q) + '</div>' };
 };
 /* جستجوی زنده | Live Search: فقط فهرست را تازه می‌کند تا کادر جستجو فوکوس خود را از دست ندهد */
@@ -3252,7 +3293,7 @@ PAGES.stuD = (r, p) => {
   const pv = L[i - 1], nx = L[i + 1], fnm = x => esc((x && (x.fn || sn(x))) || '');
   const stepBtn = (o, d, ic) => '<button class="stepb' + (o ? '' : ' off') + '"' + (o ? ' data-act="stuStep" data-a="' + d + '"' : ' disabled') + '>' + (d < 0 ? ico(ic) : '') + '<span>' + (o ? fnm(o) : '—') + '</span>' + (d > 0 ? ico(ic) : '') + '</button>';
   b = '<div class="stepbar">' + stepBtn(pv, -1, 'chev-r') + '<div class="stepn"><b>' + fn(i + 1) + '</b> از ' + fn(L.length) + '</div>' + stepBtn(nx, 1, 'chev-l') + '</div>' + b;
-  return { title: sn(s), tabs: false, body: b };
+  return { title: sn(s), tabs: false, trail: edBtn('stu', { sid: s.id }), body: b };
 };
 ACT.stuSeg = (el, a) => { stOf().seg = a; Nav.refresh(); };
 ACT.stuStep = (el, a) => {
@@ -3270,7 +3311,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T19:52:11.111Z';
+const APP_BUILD = '2026-11-22T20:23:58.161Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3301,7 +3342,7 @@ PAGES.info = () => {
   const c = C();
   const rows = kvH('نام معلم', esc(c.teacher)) + kvH('مدرسه', esc(c.school)) + kvH('نوع مدرسه', SCTN[scTy(c)]) + kvH('آدرس مدرسه', esc(c.addr)) + kvH('تلفن مدرسه', telH(c.sphone)) + kvH('سال تحصیلی', esc(pd(c.year))) + kvH('شیوهٔ نمره‌دهی', GM(c) === 'q' ? 'کمی (۰ تا ۲۰)' : 'توصیفی (کیفی)');
   const reps = [['par', 'نمایندهٔ اولیا'], ['cls', 'نمایندهٔ کلاس']].map(x => kvH(x[1], esc(repTxt(c, x[0])))).join('');
-  return { title: 'اطلاعات دوره', body: '<div class="cc">' + tile(c, 52, 'cap', cIdx(c)) + '<div class="grow"><div class="t1">' + esc(c.name || '') + '</div><div class="t2">' + esc(courseSub(c)) + '</div></div></div>'
+  return { title: 'اطلاعات دوره', trail: edBtn('crs'), body: '<div class="cc">' + tile(c, 52, 'cap', cIdx(c)) + '<div class="grow"><div class="t1">' + esc(c.name || '') + '</div><div class="t2">' + esc(courseSub(c)) + '</div></div></div>'
     + groupH('مشخصات', rows) + groupH('نماینده‌ها', reps) + '<div class="group">' + rowH({ lead: icSq('briefcase', '#af52de'), ttl: 'کادر مدرسه', chev: true, attr: pushA('staff') }) + '</div>' };
 };
 
@@ -3309,14 +3350,14 @@ PAGES.info = () => {
 /* کادر مدرسه | Staff Page: سمت، نام و شمارهٔ تماس هر نفر */
 PAGES.staff = () => {
   const c = C(), L = stList(c), sf = obj(c.staff), st = obj(c.staffT), sp = obj(c.sphoto);
-  return { title: 'کادر مدرسه', body: L.length ? '<div class="group">' + L.map(x => rowH({ lead: avatar({ fn: sf[x.k] || x.role, photo: sp[x.k] }, 42), ttl: esc(x.role), sub: esc(sf[x.k] || '—'), trail: st[x.k] ? '<a class="tint" dir="ltr" href="' + esc(telHref(st[x.k])) + '">' + ico('phone') + '</a>' : '' })).join('') + '</div>' : emptyH('briefcase', 'کادری ثبت نشده', 'در برنامهٔ اصلی کادر مدرسه را وارد کن.') };
+  return { title: 'کادر مدرسه', trail: edBtn('stf'), body: L.length ? '<div class="group">' + L.map(x => rowH({ lead: avatar({ fn: sf[x.k] || x.role, photo: sp[x.k] }, 42), ttl: esc(x.role), sub: esc(sf[x.k] || '—'), trail: st[x.k] ? '<a class="tint" dir="ltr" href="' + esc(telHref(st[x.k])) + '">' + ico('phone') + '</a>' : '' })).join('') + '</div>' : emptyH('briefcase', 'کادری ثبت نشده', 'در برنامهٔ اصلی کادر مدرسه را وارد کن.') };
 };
 
 /* ---- ۱۶.۵ درس‌ها | 16.5 Lessons ---- */
 /* فهرست درس‌ها | Lessons Page: همهٔ درس‌های دوره */
 PAGES.lessons = () => {
   const c = C(), L = arr(c.lessons);
-  return { title: 'درس‌ها', body: L.length ? '<div class="group">' + L.map((l, i) => rowH({ lead: lesIco(i), ttl: esc(l.name), sub: fn(arr(l.plans).length) + ' طرح درس · ' + fn(arr(l.links).length) + ' لینک', chev: true, attr: pushA('lesD', { uid: l.uid }) })).join('') + '</div>' : emptyH('book', 'درسی ثبت نشده', 'در برنامهٔ اصلی درس‌ها را اضافه کن.') };
+  return { title: 'درس‌ها', trail: edBtn('lesAdd'), body: L.length ? '<div class="group">' + L.map((l, i) => rowH({ lead: lesIco(i), ttl: esc(l.name), sub: fn(arr(l.plans).length) + ' طرح درس · ' + fn(arr(l.links).length) + ' لینک', chev: true, attr: pushA('lesD', { uid: l.uid }) })).join('') + '</div>' : emptyH('book', 'درسی ثبت نشده', 'در برنامهٔ اصلی درس‌ها را اضافه کن.') };
 };
 /* بودجه‌بندی | Budget Table: جدول ماه × نیمه با بازهٔ صفحه یا درس؛ خانهٔ نیمهٔ جاری رنگی است */
 const budTable = l => {
@@ -3337,14 +3378,14 @@ PAGES.lesD = (r, p) => {
   b += pl.length ? groupH('طرح درس‌ها', pl.map(x => rowH({ lead: icSq('list', '#ff9500'), ttl: esc(x.top || 'بدون عنوان'), sub: esc(x.time || ''), chev: true, attr: pushA('planD', { uid: l.uid, id: x.id }) })).join('')) : '';
   b += lk.length ? groupH('لینک‌ها', lk.map(x => '<a class="row tap has-lead" href="' + esc(x.u) + '" target="_blank" rel="noopener noreferrer"><span class="lead">' + icSq('cloud', '#0a84ff') + '</span><span class="main"><div class="ttl">' + esc(x.t || x.u) + '</div><div class="sub" dir="ltr">' + esc(x.u) + '</div></span>' + ico('chev-l', 'chev') + '</a>').join('')) : '';
   if (!bt && !pl.length && !lk.length) b += emptyH('book-open', 'چیزی ثبت نشده', 'بودجه‌بندی، طرح درس یا لینکی برای این درس ثبت نشده است.');
-  return { title: l.name, body: b };
+  return { title: l.name, trail: edBtn('les', { uid: l.uid }), body: b };
 };
 /* صفحهٔ طرح درس | Lesson Plan Page: بخش‌های پرشدهٔ طرح */
 PAGES.planD = (r, p) => {
   const c = C(), l = lessonByUid(c, p.uid), pl = l && arr(l.plans).find(x => String(x.id) === String(p.id));
   if (!pl) return { title: 'طرح درس', body: emptyH('alert', 'طرح پیدا نشد', '') };
   const secs = PS.filter(x => String(pl[x[0]] || '').trim());
-  return { title: 'طرح درس', body: '<div class="cc"><div class="grow"><div class="t1">' + esc(pl.top || 'بدون عنوان') + '</div><div class="t2">' + esc(l.name) + (pl.time ? ' · ' + esc(pl.time) : '') + '</div></div></div>'
+  return { title: 'طرح درس', trail: edBtn('plan', { uid: p.uid, id: p.id }), body: '<div class="cc"><div class="grow"><div class="t1">' + esc(pl.top || 'بدون عنوان') + '</div><div class="t2">' + esc(l.name) + (pl.time ? ' · ' + esc(pl.time) : '') + '</div></div></div>'
     + (secs.length ? '<div class="group">' + secs.map(x => '<div class="plan-sec"><h4>' + x[1] + '</h4><p>' + esc(pl[x[0]]) + '</p></div>').join('') + '</div>' : emptyH('list', 'بخشی پر نشده', '')) };
 };
 
@@ -3885,6 +3926,150 @@ ACT.hwPdf = async () => {
     const a = document.createElement('a'); a.href = URL.createObjectURL(bl); a.download = nm; document.body.append(a); a.click(); setTimeout(() => { a.remove(); URL.revokeObjectURL(a.href); }, 4000); toast('PDF ذخیره شد');
   } catch (e) { Sheet.close(true); toast('ساخت PDF در این مرورگر ممکن نشد؛ از دکمهٔ چاپ استفاده کن', true); }
 };
+
+
+/* ================================================================
+   ۱۸) ویرایش با مداد | 18) Pencil Editing
+   هر صفحه‌ای که اطلاعاتش در برنامهٔ اصلی ویرایش‌شدنی است (دانش‌آموز، دوره، کادر مدرسه، درس، بودجه‌بندی، طرح درس، لینک، برنامهٔ هفتگی) یک دکمهٔ مداد بالای خودش دارد؛ فرم ویرایش در یک برگهٔ پایین باز می‌شود و با «ذخیره» همان‌جا، در بقیهٔ صفحه‌ها و روی سرور عوض می‌شود.
+   ================================================================ */
+
+/* ---- ۱۸.۱ دکمهٔ مداد | 18.1 Pencil Button ---- */
+/* دکمهٔ مداد | Pencil Button: دکمهٔ گرد بالای صفحه؛ kind نوع فرم و p شناسه‌های لازم (مثل شناسهٔ دانش‌آموز) است */
+const edBtn = (kind, p) => '<button class="cap-b ic tint" data-act="edOpen" data-a="' + kind + '" data-b="' + esc(JSON.stringify(p || {})) + '" aria-label="' + (/Add$/.test(kind) ? 'افزودن' : 'ویرایش') + '">' + ico(/Add$/.test(kind) ? 'plus' : 'pencil') + '</button>';
+
+/* ---- ۱۸.۲ ساخت فرم | 18.2 Form Builder ---- */
+/* وضعیت فرم باز | Open Form State: فرمی که الان باز است (برای ذخیره و حذف) */
+const ED = { cur: null };
+/* یک خانهٔ فرم | Form Field: t = text / tel / num / area / sel / h (تیتر گروه)؛ o = گزینه‌های انتخابی؛ v = مقدار فعلی */
+const efH = f => {
+  if (f.t === 'h') return '</div><div class="group-h">' + esc(f.l) + '</div><div class="group ef-g">';
+  const v = f.v == null ? '' : String(f.v), at = ' data-ef="' + f.k + '" data-o="' + esc(v) + '"';
+  let el;
+  if (f.t === 'area') el = '<textarea' + at + ' rows="3" autocomplete="off">' + esc(v) + '</textarea>';
+  else if (f.t === 'sel') el = '<select' + at + '>' + arr(f.o).map(o => '<option value="' + esc(o[0]) + '"' + (String(o[0]) === v ? ' selected' : '') + '>' + esc(o[1]) + '</option>').join('') + '</select>';
+  else el = '<input' + at + ' value="' + esc(v) + '" autocomplete="off"' + (f.t === 'tel' ? ' inputmode="tel" dir="ltr" class="ltr-in"' : f.t === 'num' ? ' inputmode="numeric" dir="ltr" class="ltr-in"' : '') + '>';
+  return '<label class="ef' + (f.t === 'area' ? ' ar' : '') + (f.t === 'sel' ? ' sl' : '') + '"><span>' + esc(f.l) + '</span>' + el + '</label>';
+};
+/* باز کردن فرم | Open Form: o = {title, fields, req (کلیدهای ناگزیر)، save(vals,changed,sheet)، del:{msg,fn}، extra (HTML اضافه)} */
+const edSheet = o => {
+  ED.cur = o;
+  const body = '<div class="group ef-g">' + o.fields.map(efH).join('') + '</div>' + (o.extra || '')
+    + (o.del ? '<div class="ef-del"><button class="cap-b red" data-act="edDel">' + esc(o.del.label || 'حذف') + '</button></div>' : '');
+  Sheet.open({ title: o.title, act: '<button class="cap-b tint" data-act="edSave">ذخیره</button>', body });
+};
+/* ذخیرهٔ فرم | Save Form: فقط خانه‌هایی که عوض شده‌اند به‌صورت دستور ثبت می‌شوند؛ ناگزیرها باید پر باشند */
+ACT.edSave = () => {
+  const E = ED.cur, sh = $('.sheet'); if (!E || !sh) return;
+  const vals = {}, ch = {};
+  $$('[data-ef]', sh).forEach(el => { const v = el.value.trim(); vals[el.dataset.ef] = v; if (v !== (el.dataset.o || '')) ch[el.dataset.ef] = v; });
+  const miss = arr(E.req).find(k => !vals[k]);
+  if (miss) { const f = E.fields.find(x => x.k === miss); toast('«' + (f ? f.l : 'نام') + '» را پر کن', true); return; }
+  if (E.save(vals, ch, sh) === false) { toast('ذخیره نشد', true); return; }
+  ED.cur = null; Sheet.close(); toast('ذخیره شد'); Nav.refresh();
+};
+/* حذف از فرم | Delete From Form: پرسش تأیید و سپس اجرای حذف */
+ACT.edDel = () => { const E = ED.cur; if (!E || !E.del) return; ask(E.del.msg, E.del.label || 'حذف', () => { if (E.del.fn() === false) return toast('حذف نشد', true); ED.cur = null; toast('حذف شد'); if (E.del.back) Nav.pop(); else Nav.refresh(); }, true); };
+/* ثبت یک مقدار | Set Value: نوشتن یک مقدار در مسیر داده؛ مقدار خالی کلید را پاک می‌کند */
+const edSet = (path, v) => edit({ k: 'set', path, v: v === '' ? null : v });
+const edId = p => p + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+
+/* ---- ۱۸.۳ فرم دانش‌آموز | 18.3 Student Form ---- */
+/* فرم دانش‌آموز | Student Form: نام، جنسیت و همهٔ فیلدهای پروندهٔ دانش‌آموز؛ دانش‌آموز تازه هم با همین فرم ساخته می‌شود */
+const AREA_SF = ['addr', 'weak', 'good', 'ill', 'talent', 'help'];
+const stuFields = s => [{ t: 'h', l: 'نام' }, { k: 'fn', l: 'نام', v: s.fn }, { k: 'ln', l: 'نام خانوادگی', v: s.ln },
+  { k: 'gender', l: 'جنسیت', t: 'sel', v: s.gender || '', o: [['', '—'], ['دختر', 'دختر'], ['پسر', 'پسر']] }]
+  .concat(SF.map(f => f[0] === 'h' ? { t: 'h', l: f[1] } : { k: f[0], l: f[1], v: s[f[0]], t: f[2] === 'p' ? 'tel' : AREA_SF.includes(f[0]) ? 'area' : 'text' }));
+const stuVal = (k, v) => ['shad', 'fphone', 'ephone'].includes(k) ? fd(v) : v;
+const ED_FORMS = {};
+ED_FORMS.stu = p => {
+  const c = C(), s = stuById(c, p.sid); if (!s) return;
+  const sel = { f: 'id', v: s.id };
+  edSheet({ title: 'ویرایش دانش‌آموز', fields: stuFields(s), req: ['fn'],
+    save: (vals, ch) => { Object.keys(ch).forEach(k => edSet(['students', sel, k], stuVal(k, ch[k]))); },
+    del: { label: 'حذف دانش‌آموز', msg: 'این دانش‌آموز از دوره حذف شود؟ نمره‌ها و حضور و غیابش هم از دسترس خارج می‌شود.', back: true, fn: () => edit({ k: 'arrDel', path: ['students'], sel }) } });
+};
+ED_FORMS.stuAdd = () => {
+  edSheet({ title: 'دانش‌آموز تازه', fields: stuFields({}), req: ['fn'],
+    save: vals => { const it = { id: edId('s') }; Object.keys(vals).forEach(k => { if (vals[k]) it[k] = stuVal(k, vals[k]); }); return edit({ k: 'arrAdd', path: ['students'], item: it }); } });
+};
+
+/* ---- ۱۸.۴ فرم دوره | 18.4 Course Form ---- */
+/* فرم دوره | Course Form: مشخصات دوره و نماینده‌ها */
+ED_FORMS.crs = () => {
+  const c = C(), r = obj(c.reps), par = obj(r.par), cl = obj(r.cls);
+  edSheet({ title: 'ویرایش اطلاعات دوره',
+    fields: [{ t: 'h', l: 'مشخصات' }, { k: 'name', l: 'نام دوره', v: c.name }, { k: 'teacher', l: 'نام معلم', v: c.teacher }, { k: 'grade', l: 'پایه', v: c.grade }, { k: 'cls', l: 'کلاس', v: c.cls }, { k: 'year', l: 'سال تحصیلی', t: 'num', v: c.year },
+      { t: 'h', l: 'مدرسه' }, { k: 'school', l: 'نام مدرسه', v: c.school }, { k: 'stype', l: 'نوع مدرسه', t: 'sel', v: scTy(c), o: [['g', SCTN.g], ['b', SCTN.b], ['m', SCTN.m]] }, { k: 'addr', l: 'آدرس', t: 'area', v: c.addr }, { k: 'sphone', l: 'تلفن مدرسه', t: 'tel', v: c.sphone },
+      { t: 'h', l: 'نمایندهٔ اولیا' }, { k: 'par.t', l: 'عنوان (مثلاً آقای)', v: par.t }, { k: 'par.ln', l: 'نام خانوادگی', v: par.ln },
+      { t: 'h', l: 'نمایندهٔ کلاس' }, { k: 'cls.fn', l: 'نام', v: cl.fn }, { k: 'cls.ln', l: 'نام خانوادگی', v: cl.ln }],
+    req: ['name'],
+    save: (vals, ch) => { Object.keys(ch).forEach(k => { const q = k.split('.'); edSet(q.length > 1 ? ['reps', q[0], q[1]] : [k], k === 'sphone' || k === 'year' ? fd(ch[k]) : ch[k]); }); } });
+};
+
+/* ---- ۱۸.۵ فرم کادر مدرسه | 18.5 Staff Form ---- */
+/* فرم کادر | Staff Form: نام و شمارهٔ هر سمت؛ سمت‌های دلخواه قبلی هم نشان داده می‌شوند */
+ED_FORMS.stf = () => {
+  const c = C(), sf = obj(c.staff), st = obj(c.staffT), X = arr(c.staffX).filter(x => x && x.k), roles = STL.filter(l => !X.some(x => x.k === l[0])).concat(X.map(x => [x.k, x.role || 'سایر']));
+  const fields = []; roles.forEach(l => { fields.push({ t: 'h', l: l[1] }, { k: 'n.' + l[0], l: 'نام', v: sf[l[0]] }, { k: 't.' + l[0], l: 'شماره تماس', t: 'tel', v: st[l[0]] }); });
+  edSheet({ title: 'ویرایش کادر مدرسه', fields, save: (vals, ch) => { Object.keys(ch).forEach(k => edSet([k[0] === 'n' ? 'staff' : 'staffT', k.slice(2)], k[0] === 't' ? fd(ch[k]) : ch[k])); } });
+};
+
+/* ---- ۱۸.۶ فرم درس و بودجه‌بندی | 18.6 Lesson & Budget Form ---- */
+/* ردیف لینک | Link Row: دو کادر عنوان و نشانی با دکمهٔ پاک کردن */
+const lkRow = (t, u) => '<div class="ef-lk"><input data-lt placeholder="عنوان" value="' + esc(t || '') + '" autocomplete="off"><input data-lu dir="ltr" class="ltr-in" placeholder="https://…" value="' + esc(u || '') + '" autocomplete="off"><button class="cap-b ic" data-act="edLkDel" aria-label="پاک کردن">' + ico('x') + '</button></div>';
+ACT.edLkAdd = () => { const b = $('#edLks'); if (b) { b.insertAdjacentHTML('beforeend', lkRow('', '')); const i = $$('[data-lt]', b).pop(); if (i) i.focus(); } };
+ACT.edLkDel = el => { const r = el.closest('.ef-lk'); if (r) r.remove(); };
+/* فرم درس | Lesson Form: نام درس، بودجه‌بندی هر ماه (از…تا… برای دو نیمه) و لینک‌ها؛ دکمه‌های افزودن طرح درس و حذف درس */
+ED_FORMS.les = p => {
+  const c = C(), l = lessonByUid(c, p.uid); if (!l) return;
+  const sel = { f: 'uid', v: l.uid }, B = obj(l.bud), fields = [{ k: 'name', l: 'نام درس', v: l.name }];
+  MB.forEach((m, i) => { fields.push({ t: 'h', l: 'بودجه‌بندی ' + m }); [0, 1].forEach(h => { const x = obj(B[i + '_' + h]); fields.push({ k: 'a' + i + '_' + h, l: (h ? 'نیمهٔ دوم: از' : 'نیمهٔ اول: از'), t: 'num', v: x.a }, { k: 'b' + i + '_' + h, l: 'تا', t: 'num', v: x.b }); }); });
+  const lk = arr(l.links).filter(x => x), extra = '<div class="group-h">لینک‌ها</div><div class="group ef-g2" id="edLks">' + lk.map(x => lkRow(x.t, x.u)).join('') + '</div><div class="ef-add"><button class="cap-b tint" data-act="edLkAdd">+ افزودن لینک</button><button class="cap-b tint" data-act="edPlanNew" data-a="' + esc(l.uid) + '">+ طرح درس تازه</button></div>';
+  edSheet({ title: 'ویرایش درس', fields, extra, req: ['name'],
+    save: (vals, ch, sh) => {
+      if (ch.name != null) edSet(['lessons', sel, 'name'], ch.name);
+      MB.forEach((m, i) => [0, 1].forEach(h => { const ka = 'a' + i + '_' + h, kb = 'b' + i + '_' + h; if (ka in ch || kb in ch) { const a = fd(vals[ka]), b = fd(vals[kb]); edSet(['lessons', sel, 'bud', i + '_' + h], a || b ? { a, b } : ''); } }));
+      const now = $$('#edLks .ef-lk', sh).map(r => ({ t: $('[data-lt]', r).value.trim(), u: $('[data-lu]', r).value.trim() })).filter(x => x.u);
+      if (JSON.stringify(now.map(x => [x.t, x.u])) !== JSON.stringify(lk.map(x => [x.t || '', x.u || '']).filter(x => x[1]))) edSet(['lessons', sel, 'links'], now);
+    },
+    del: { label: 'حذف درس', msg: 'این درس با بودجه‌بندی، طرح‌ها و لینک‌هایش حذف شود؟', back: true, fn: () => edit({ k: 'arrDel', path: ['lessons'], sel }) } });
+};
+/* درس تازه | New Lesson: فقط نام درس */
+ED_FORMS.lesAdd = () => edSheet({ title: 'درس تازه', fields: [{ k: 'name', l: 'نام درس' }], req: ['name'],
+  save: vals => edit({ k: 'arrAdd', path: ['lessons'], item: { uid: edId('L'), name: vals.name, bud: {}, plans: [], att: [], links: [] } }) });
+
+/* ---- ۱۸.۷ فرم طرح درس | 18.7 Lesson Plan Form ---- */
+/* خانه‌های طرح | Plan Fields: عنوان، زمان و همهٔ بخش‌های طرح درس */
+const planFields = pl => [{ k: 'top', l: 'عنوان درس', v: pl.top }, { k: 'time', l: 'زمان', v: pl.time }].concat(PS.map(x => ({ k: x[0], l: x[1], t: 'area', v: pl[x[0]] })));
+/* ویرایش طرح | Edit Plan: تغییر یا حذف یک طرح درس */
+ED_FORMS.plan = p => {
+  const c = C(), l = lessonByUid(c, p.uid), pl = l && arr(l.plans).find(x => String(x.id) === String(p.id)); if (!pl) return;
+  const sel = { f: 'uid', v: l.uid }, ps = { f: 'id', v: pl.id };
+  edSheet({ title: 'ویرایش طرح درس', fields: planFields(pl),
+    save: (vals, ch) => { Object.keys(ch).forEach(k => edSet(['lessons', sel, 'plans', ps, k], ch[k])); },
+    del: { label: 'حذف طرح درس', msg: 'این طرح درس حذف شود؟', back: true, fn: () => edit({ k: 'arrDel', path: ['lessons', sel, 'plans'], sel: ps }) } });
+};
+/* طرح تازه | New Plan: ساخت طرح درس تازه برای درس */
+const planNew = uid => edSheet({ title: 'طرح درس تازه', fields: planFields({}),
+  save: vals => { const it = { id: edId('P') }; Object.keys(vals).forEach(k => { if (vals[k]) it[k] = vals[k]; }); return edit({ k: 'arrAdd', path: ['lessons', { f: 'uid', v: uid }, 'plans'], item: it }); } });
+ACT.edPlanNew = (el, a) => { ED.cur = null; setTimeout(() => planNew(a), 150); Sheet.close(); };
+
+/* ---- ۱۸.۸ فرم برنامهٔ هفتگی | 18.8 Weekly Schedule Form ---- */
+/* برنامهٔ هفتگی | Weekly Schedule Form: برای هر روز و هر زنگ یک درس انتخاب می‌شود */
+ED_FORMS.sch = () => {
+  const c = C(), L = arr(c.lessons), opts = [['', '— بدون درس —']].concat(L.map(l => [l.uid, l.name])), fields = [], W = weekDays(0), was = {};
+  DY.forEach((d, di) => {
+    const per = dayPlan(c, di, W[di]).filter(x => x.t === 'p'); fields.push({ t: 'h', l: d });
+    /* اگر ساعت زنگی ثبت نشده باشد شش زنگ پیش‌فرض نشان داده می‌شود */
+    if (!per.length) for (let i = 0; i < 6; i++) per.push({ i, name: 'زنگ ' + G[i] });
+    per.forEach(x => { const u = (((c.sch || {})[di]) || [])[x.i] || ''; was[di + '_' + x.i] = 1; fields.push({ k: 'p' + di + '_' + x.i, l: x.name, t: 'sel', v: L.some(l => l.uid === u) ? u : '', o: opts }); });
+  });
+  edSheet({ title: 'ویرایش برنامهٔ هفتگی', fields, save: (vals, ch) => { Object.keys(ch).forEach(k => { const q = k.slice(1).split('_'); edSet(['sch', +q[0], +q[1]], ch[k]); }); } });
+};
+
+/* ---- ۱۸.۹ بازکننده | 18.9 Opener ---- */
+/* باز کردن فرم | Open Form: کار دکمهٔ مداد؛ فرم مربوط به نوع را باز می‌کند */
+ACT.edOpen = (el, a, b) => { let p = {}; try { p = b ? JSON.parse(b) : {}; } catch (e) { /* پارامتر خراب */ } if (ED_FORMS[a]) ED_FORMS[a](p); };
 
 
 /* ================================================================
