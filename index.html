@@ -628,6 +628,11 @@ input,textarea,select{font-size:max(16px,1rem)}
 .qcg.pos{background:rgba(52,199,89,.16)}.qcg.neg{background:rgba(255,59,48,.13)}
 .qc-wrap{margin-top:12px}
 
+/* منفی‌های روز | Day Negatives Capsule: کپسول قرمز کنار دکمهٔ شایستگی‌ها */
+.qc-two{display:flex;gap:8px}.qc-two .btn{flex:1;white-space:nowrap}
+.qc-neg{min-height:44px;font-size:1rem;background:rgba(255,59,48,.13);color:var(--red)}
+.qc-neg svg{width:20px;height:20px}.qc-neg b{background:var(--red);color:#fff;border-radius:999px;padding:0 7px;margin-inline-start:4px;font-size:.8125rem}
+
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
 /* تکلیف‌ساز | Homework Maker: صفحهٔ تنظیم‌ها، نوار پایین، برگهٔ سفید پیش‌نمایش و چاپ A4 */
@@ -1815,7 +1820,7 @@ const absList = (c, sid) => Object.keys(c.attd || {}).filter(k => c.attd[k][sid]
 const attTot = (c, sid) => { let p = 0, a = 0; Object.keys(c.attd || {}).forEach(k => { const v = c.attd[k][sid]; if (v === 1) p++; else if (v === 0) a++; }); return { p, a }; };
 /* امروز | Today: تاریخ امروز ساعت ظهر؛ و روز پیش‌فرض (امروز یا آخرین روز مدرسه) */
 const todayD = () => { const d = new Date(); d.setHours(12, 0, 0, 0); return d; };
-const defDay = () => { const d = todayD(); let i = 0; while (isOff(d) && i++ < 7) d.setDate(d.getDate() - 1); return d; };
+const defDay = () => todayD();
 /* هفتهٔ یک روز | Week Offset: یک روز چند هفته از هفتهٔ جاری فاصله دارد */
 const weekOff = d => Math.round((satN(d) - satN(new Date())) / 7);
 
@@ -2631,7 +2636,23 @@ const cNum = x => (x && typeof x === 'object' ? (+x.n || 0) : 0);
 /* ---- ۱۳.۲b شایستگی‌ها (ثبت سریع) | 13.2b Quick Competency Entry ---- */
 /* ثبت سریع شایستگی | Quick Competency: مثل برنامهٔ اصلی، دکمهٔ «شایستگی‌ها» برگه‌ای با همهٔ دانش‌آموزان باز می‌کند؛ برای هر نفر شمارندهٔ مثبت و منفی روز انتخاب‌شده (با دکمهٔ روز قبل/بعد/امروز)؛ با هر «+» دلیل اختیاری پرسیده می‌شود. ردیف شمارندهٔ شایستگی همان مورد نوع «شایستگی» در چک‌لیست است */
 const qcKey = c => { if (GM(c) === 'q') return null; for (const l of CLS(c)) for (const it of itemsOf(c, l)) if (ity(it) === 'c') return l.id + '.' + it.id; return null; };
-const qcBtn = c => (qcKey(c) ? '<div class="pad-x qc-wrap"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button></div>' : '');
+/* منفی‌های روز | Day Negatives: همهٔ شایستگی‌های منفی ثبت‌شدهٔ یک روز در کل کلاس، به‌ترتیب دانش‌آموز، همراه با دلیل‌ها */
+const negList = (c, k) => {
+  const keys = []; CLS(c).forEach(l => itemsOf(c, l).forEach(it => { if (ity(it) === 'c') keys.push(l.id + '.' + it.id); }));
+  const out = []; STU(c).forEach(s => { let n = 0; const why = []; keys.forEach(key => { const x = dayVal(c, s.id, k, key, false), m = cNum(x); if (m) { n += m; cWhy(x).forEach(w => why.push(w)); } }); if (n) out.push({ s, n, why }); });
+  return out;
+};
+/* دکمه‌های شایستگی | Competency Buttons: «شایستگی‌ها» و کپسول قرمز «منفی‌های روز» با شمارش؛ k روز موردنظر است (پیش‌فرض امروز) */
+const qcBtn = (c, k) => {
+  if (!qcKey(c)) return '';
+  k = k || dkey(defDay()); const n = negList(c, k).reduce((a, x) => a + x.n, 0);
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">' + ico('minus') + 'منفی‌های روز' + (n ? ' <b>' + fn(n) + '</b>' : '') + '</button></div>';
+};
+/* فهرست منفی‌ها | Negatives Sheet: برگهٔ پایین با نام هر دانش‌آموز، تعداد منفی و دلیل‌هایش */
+ACT.qcNeg = (el, k) => {
+  const c = C(), L = negList(c, k);
+  Sheet.open({ title: 'منفی‌های روز', body: '<div class="sec-sub">' + esc(jFull(kdate(k))) + '</div>' + (L.length ? '<div class="group">' + L.map(x => rowH({ lead: avatar(x.s, 40), ttl: esc(sn(x.s)), sub: x.why.length ? esc(x.why.join(' · ')) : 'بدون توضیح', wrap: true, trail: '<span class="count-dot red">' + fn(x.n) + '</span>' })).join('') + '</div>' : emptyH('check', 'منفی ثبت نشده', 'برای این روز شایستگی منفی ثبت نشده است.')) });
+};
 let QC = null;
 const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
 const qcCap = (c, sid, k, key) => { const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
@@ -2739,9 +2760,9 @@ PAGES.chkL = (r, p) => {
   if (!l) return { title: 'درس', body: emptyH('alert', 'درس پیدا نشد', '') };
   const items = itemsOf(c, l), st = r.st;
   if (st.item == null) st.item = String((items[0] || {}).id);
-  if (!st.sel) { const ld = lastDayOf(c, l.id, q), d = ld ? kdate(ld) : defDay(); st.sel = dkey(d); st.off = weekOff(d); }
+  if (!st.sel) { const d = defDay(); st.sel = dkey(d); st.off = weekOff(d); }
   const it = items.find(x => String(x.id) === st.item) || items[0] || { id: '0', t: '' };
-  let b = qcBtn(c);
+  let b = qcBtn(c, st.sel);
   if (items.length > 1 || (items[0] && items[0].t)) b += '<div class="chips">' + items.map(x => '<button class="chip' + (String(x.id) === st.item ? ' on' : '') + '" data-act="chkItem" data-a="' + esc(x.id) + '"><span class="cl">' + esc(itTitle(l, x)) + '</span></button>').join('') + '</div>';
   const dl = lessonLocked(c, st.sel, l.id, q), ty0 = q ? 'q' : ity(it);
   b += '<div class="day-head"><b>' + esc(jFull(kdate(st.sel))) + '</b>' + (dl ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
@@ -3054,7 +3075,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T09:49:05.279Z';
+const APP_BUILD = '2026-11-22T11:19:39.241Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
