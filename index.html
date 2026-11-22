@@ -282,7 +282,8 @@ button.stat:active{opacity:.6}
 .backdrop.on{opacity:1}
 .sheet{position:absolute;inset-inline:0;bottom:0;max-height:88%;display:flex;flex-direction:column;background:var(--bg);border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .45s var(--ease);pointer-events:auto;box-shadow:0 -8px 40px rgba(0,0,0,.2);padding-bottom:var(--sab)}
 .sheet.on{transform:none}
-.sheet.dragging{transition:none}
+.sheet.dragging{transition:none;will-change:transform}
+.sheet{touch-action:pan-y}
 .sheet .grab{flex:none;padding:8px 0 4px;touch-action:none}
 .sheet .grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--label-3);margin:0 auto}
 .sheet .sh-head{flex:none;display:flex;align-items:center;justify-content:space-between;padding:4px 16px 10px;touch-action:none}
@@ -632,6 +633,25 @@ input,textarea,select{font-size:max(16px,1rem)}
 .qc-two{display:flex;gap:8px}.qc-two .btn{flex:1;white-space:nowrap}
 .qc-neg{min-height:44px;font-size:1rem;background:rgba(255,59,48,.13);color:var(--red)}
 .qc-neg svg{width:20px;height:20px}.qc-neg b{background:var(--red);color:#fff;border-radius:999px;padding:0 7px;margin-inline-start:4px;font-size:.8125rem}
+
+/* ستون‌های مثبت و منفی | Positive/Negative Columns: دو ستون کنار هم در برگهٔ «مثبت و منفی روز» */
+.qc-neg b.gp{background:var(--green)}
+.pn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 16px 16px;direction:rtl}
+.pn-col{min-width:0;border-radius:14px;padding:8px;background:var(--fill)}
+.pn-col.pos{background:rgba(52,199,89,.12)}.pn-col.neg{background:rgba(255,59,48,.10)}
+.pn-h{font-weight:800;text-align:center;padding:4px 0 8px}.pn-col.pos .pn-h{color:var(--green)}.pn-col.neg .pn-h{color:var(--red)}
+.pn-c{background:var(--card);border-radius:10px;padding:8px 10px;margin-bottom:6px}
+.pn-n{display:flex;justify-content:space-between;gap:6px;font-weight:600}.pn-n i{font-style:normal;font-weight:800}
+.pn-col.pos .pn-n i{color:var(--green)}.pn-col.neg .pn-n i{color:var(--red)}
+.pn-c small{display:block;margin-top:2px;color:var(--label-3);font-size:.75rem;line-height:1.5}
+.pn-0{text-align:center;color:var(--label-3);padding:12px 0}
+
+/* انتخاب و حذف | Select & Delete: حالت انتخاب‌شدهٔ موردها و دکمهٔ «همه» */
+.pn-c{position:relative;cursor:pointer}.pn-c .pn-ck{position:absolute;top:8px;inset-inline-start:8px;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--label-3);display:flex;align-items:center;justify-content:center;color:transparent}
+.pn-c .pn-ck svg{width:12px;height:12px}.pn-c .pn-n{padding-inline-start:26px}.pn-c small{padding-inline-start:26px}
+.pn-c.sel{outline:2px solid var(--red)}.pn-col.pos .pn-c.sel{outline-color:var(--green)}.pn-c.sel .pn-ck{background:var(--red);border-color:var(--red);color:#fff}.pn-col.pos .pn-c.sel .pn-ck{background:var(--green);border-color:var(--green)}
+.pn-all{margin-inline-start:6px;border:0;background:rgba(0,0,0,.06);border-radius:999px;padding:1px 8px;font-size:.75rem;color:var(--label-2)}
+#pnDel{width:100%;min-height:46px}#pnDel:disabled{opacity:.4}
 
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
@@ -2027,11 +2047,29 @@ const Sheet = {
     sh.innerHTML = '<div class="grab"><i></i></div><div class="sh-head"><h3>' + esc(o.title || '') + '</h3><button class="nav-btn bold" data-act="sheetClose">بستن</button></div><div class="sh-body">' + o.body + '</div>';
     ov.append(bd, sh); Sheet.els = [bd, sh];
     bd.addEventListener('click', () => Sheet.close());
-    let y0 = null, dy = 0;
-    const down = e => { if (e.target.closest('button')) return; y0 = e.clientY; dy = 0; sh.classList.add('dragging'); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) { /* مهم نیست */ } };
-    const move = e => { if (y0 == null) return; dy = Math.max(0, e.clientY - y0); sh.style.transform = 'translateY(' + dy + 'px)'; };
-    const up = () => { if (y0 == null) return; y0 = null; sh.classList.remove('dragging'); if (dy > 90) Sheet.close(); else sh.style.transform = ''; };
-    $$('.grab,.sh-head', sh).forEach(h => { h.addEventListener('pointerdown', down); h.addEventListener('pointermove', move); h.addEventListener('pointerup', up); h.addEventListener('pointercancel', up); });
+    /* کشیدن برای بستن | Drag to Close: برگه را می‌شود از دستگیره، سرتیتر یا خود متن (وقتی بالای فهرست است) پایین کشید؛ همراه انگشت می‌آید، با کشیدن زیاد یا ضربهٔ سریع از همان جا روان پایین می‌رود و بسته می‌شود */
+    const body = $('.sh-body', sh); let y0 = null, dy = 0, vy = 0, ly = 0, lt = 0, armed = false;
+    const start = (y, tg) => { if (tg.closest('button,input,textarea,select')) return; if (body.contains(tg) && body.scrollTop > 0) return; y0 = y; dy = 0; vy = 0; ly = y; lt = performance.now(); armed = false; };
+    const move = (y, e) => {
+      if (y0 == null) return; const d = y - y0;
+      if (!armed) { if (d < -6) { y0 = null; return; } if (d < 6) return; armed = true; sh.classList.add('dragging'); bd.style.transition = 'none'; }
+      const now = performance.now(); dy = Math.max(0, d); vy = (y - ly) / Math.max(1, now - lt); ly = y; lt = now;
+      sh.style.transform = 'translate3d(0,' + dy + 'px,0)'; bd.style.opacity = Math.max(0, 1 - dy / Math.max(1, sh.offsetHeight));
+      if (e && e.cancelable) e.preventDefault();
+    };
+    const end = () => {
+      if (y0 == null) return; const was = armed; y0 = null; armed = false; if (!was) return;
+      sh.classList.remove('dragging'); bd.style.transition = ''; bd.style.opacity = ''; sh.style.transform = '';
+      if (dy > sh.offsetHeight * 0.3 || vy > 0.6) Sheet.close();
+    };
+    sh.addEventListener('touchstart', e => start(e.touches[0].clientY, e.target), { passive: true });
+    sh.addEventListener('touchmove', e => move(e.touches[0].clientY, e), { passive: false });
+    sh.addEventListener('touchend', end, { passive: true }); sh.addEventListener('touchcancel', end, { passive: true });
+    $$('.grab,.sh-head', sh).forEach(h => {
+      h.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; start(e.clientY, e.target); if (y0 != null) { try { h.setPointerCapture(e.pointerId); } catch (_) { /* مهم نیست */ } } });
+      h.addEventListener('pointermove', e => { if (e.pointerType === 'mouse') move(e.clientY, e); });
+      h.addEventListener('pointerup', e => { if (e.pointerType === 'mouse') end(); });
+    });
     Photos.hydrate(sh);
     requestAnimationFrame(() => requestAnimationFrame(() => { bd.classList.add('on'); sh.classList.add('on'); }));
     if (o.after) o.after(sh);
@@ -2636,22 +2674,49 @@ const cNum = x => (x && typeof x === 'object' ? (+x.n || 0) : 0);
 /* ---- ۱۳.۲b شایستگی‌ها (ثبت سریع) | 13.2b Quick Competency Entry ---- */
 /* ثبت سریع شایستگی | Quick Competency: مثل برنامهٔ اصلی، دکمهٔ «شایستگی‌ها» برگه‌ای با همهٔ دانش‌آموزان باز می‌کند؛ برای هر نفر شمارندهٔ مثبت و منفی روز انتخاب‌شده (با دکمهٔ روز قبل/بعد/امروز)؛ با هر «+» دلیل اختیاری پرسیده می‌شود. ردیف شمارندهٔ شایستگی همان مورد نوع «شایستگی» در چک‌لیست است */
 const qcKey = c => { if (GM(c) === 'q') return null; for (const l of CLS(c)) for (const it of itemsOf(c, l)) if (ity(it) === 'c') return l.id + '.' + it.id; return null; };
-/* منفی‌های روز | Day Negatives: همهٔ شایستگی‌های منفی ثبت‌شدهٔ یک روز در کل کلاس، به‌ترتیب دانش‌آموز، همراه با دلیل‌ها */
-const negList = (c, k) => {
+/* مثبت و منفی روز | Day Positives & Negatives: شایستگی‌های مثبت (w=p) یا منفی (w=n) ثبت‌شدهٔ یک روز در کل کلاس، به‌ترتیب دانش‌آموز، همراه با دلیل‌ها */
+const negList = (c, k, w) => {
   const keys = []; CLS(c).forEach(l => itemsOf(c, l).forEach(it => { if (ity(it) === 'c') keys.push(l.id + '.' + it.id); }));
-  const out = []; STU(c).forEach(s => { let n = 0; const why = []; keys.forEach(key => { const x = dayVal(c, s.id, k, key, false), m = cNum(x); if (m) { n += m; cWhy(x).forEach(w => why.push(w)); } }); if (n) out.push({ s, n, why }); });
+  const out = []; STU(c).forEach(s => { let n = 0; const why = []; keys.forEach(key => { const x = w === 'p' ? posVal(c, s.id, k, key) : dayVal(c, s.id, k, key, false), m = cNum(x); if (m) { n += m; cWhy(x).forEach(y => why.push(y)); } }); if (n) out.push({ s, n, why }); });
   return out;
 };
-/* دکمه‌های شایستگی | Competency Buttons: «شایستگی‌ها» و کپسول قرمز «منفی‌های روز» با شمارش؛ k روز موردنظر است (پیش‌فرض امروز) */
+/* دکمه‌های شایستگی | Competency Buttons: «شایستگی‌ها» و کپسول «مثبت و منفی روز» با شمارش هر دو؛ k روز موردنظر است (پیش‌فرض امروز) */
 const qcBtn = (c, k) => {
   if (!qcKey(c)) return '';
-  k = k || dkey(defDay()); const n = negList(c, k).reduce((a, x) => a + x.n, 0);
-  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">' + ico('minus') + 'منفی‌های روز' + (n ? ' <b>' + fn(n) + '</b>' : '') + '</button></div>';
+  k = k || dkey(defDay()); const sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp">' + fn(P) + '+</b><b>' + fn(N) + '−</b>' : '') + '</button></div>';
 };
-/* فهرست منفی‌ها | Negatives Sheet: برگهٔ پایین با نام هر دانش‌آموز، تعداد منفی و دلیل‌هایش */
+/* موردهای قابل حذف | Removable Entries: هر دلیل ثبت‌شده (یا هر مورد بی‌دلیل) یک مورد جدا برای انتخاب و حذف است */
+const negEnts = (c, k, w) => {
+  const keys = []; CLS(c).forEach(l => itemsOf(c, l).forEach(it => { if (ity(it) === 'c') keys.push(l.id + '.' + it.id); }));
+  const out = []; STU(c).forEach(s => keys.forEach(key => { const x = w === 'p' ? posVal(c, s.id, k, key) : dayVal(c, s.id, k, key, false), m = cNum(x), r = arr(x && x.r).slice(0, m); for (let i = 0; i < m; i++) out.push({ sid: s.id, s, key, w, i, why: String(r[i] || '').trim() }); }));
+  return out;
+};
+/* ستون‌های مثبت و منفی | Two Columns Sheet: برگهٔ پایین با دو ستون جدا؛ هر مورد با لمس انتخاب می‌شود و با تأیید، تکی یا چندتایی حذف می‌شود */
+let PN = null;
+const negCol = (E, title, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + title + ' <b>' + fn(E.length) + '</b>' + (E.length ? '<button class="pn-all" data-act="pnAll" data-a="' + w + '">همه</button>' : '') + '</div>' + (E.length ? E.map(x => { const id = PN.ents.push(x) - 1; return '<div class="pn-c" data-act="pnSel" data-a="' + id + '" data-w="' + w + '"><span class="pn-ck">' + ico('check') + '</span><div class="pn-n"><span>' + esc(sn(x.s)) + '</span></div>' + (x.why ? '<small>' + esc(x.why) + '</small>' : '<small>بدون توضیح</small>') + '</div>'; }).join('') : '<div class="pn-0">ندارد</div>') + '</div>';
 ACT.qcNeg = (el, k) => {
-  const c = C(), L = negList(c, k);
-  Sheet.open({ title: 'منفی‌های روز', body: '<div class="sec-sub">' + esc(jFull(kdate(k))) + '</div>' + (L.length ? '<div class="group">' + L.map(x => rowH({ lead: avatar(x.s, 40), ttl: esc(sn(x.s)), sub: x.why.length ? esc(x.why.join(' · ')) : 'بدون توضیح', wrap: true, trail: '<span class="count-dot red">' + fn(x.n) + '</span>' })).join('') + '</div>' : emptyH('check', 'منفی ثبت نشده', 'برای این روز شایستگی منفی ثبت نشده است.')) });
+  const c = C(); PN = { k, ents: [], sel: new Set() };
+  Sheet.open({ title: 'مثبت و منفی روز', body: '<div class="sec-sub">' + esc(jFull(kdate(k))) + ' · برای حذف، مورد را انتخاب کن</div><div class="pn-grid">' + negCol(negEnts(c, k, 'p'), 'مثبت‌ها', 'pos', 'p') + negCol(negEnts(c, k, 'n'), 'منفی‌ها', 'neg', 'n') + '</div><div class="pad-x"><button class="btn destructive" id="pnDel" data-act="pnDel" disabled>حذف موردهای انتخاب‌شده</button></div>' });
+};
+const pnPaint = () => { $$('.pn-c').forEach(e => e.classList.toggle('sel', PN.sel.has(+e.dataset.a))); const b = $('#pnDel'); if (b) { b.disabled = !PN.sel.size; b.textContent = PN.sel.size ? 'حذف ' + fn(PN.sel.size) + ' مورد انتخاب‌شده' : 'حذف موردهای انتخاب‌شده'; } };
+ACT.pnSel = (el, id) => { if (!PN) return; id = +id; PN.sel.has(id) ? PN.sel.delete(id) : PN.sel.add(id); pnPaint(); };
+ACT.pnAll = (el, w) => { if (!PN) return; const ids = PN.ents.map((x, i) => (x.w === w ? i : -1)).filter(i => i >= 0), all = ids.every(i => PN.sel.has(i)); ids.forEach(i => (all ? PN.sel.delete(i) : PN.sel.add(i))); pnPaint(); };
+/* حذف با تأیید | Confirmed Delete: موردهای انتخاب‌شده از دلیل‌ها و شمارندهٔ همان دانش‌آموز کم می‌شوند و روی سرور ذخیره می‌شود */
+ACT.pnDel = () => {
+  if (!PN || !PN.sel.size) return; const k = PN.k, E = [...PN.sel].map(i => PN.ents[i]), n = E.length;
+  ask(fn(n) + ' مورد حذف شود؟ این کار برگشت‌پذیر نیست.', 'حذف ' + fn(n) + ' مورد', () => {
+    const c = C(), g = {}; E.forEach(x => { (g[x.sid + '|' + x.key + '|' + x.w] = g[x.sid + '|' + x.key + '|' + x.w] || { x, idx: new Set() }).idx.add(x.i); });
+    let ok = true;
+    Object.values(g).forEach(({ x, idx }) => {
+      const p = x.w === 'p', o = p ? posVal(c, x.sid, k, x.key) : dayVal(c, x.sid, k, x.key, false), other = p ? dayVal(c, x.sid, k, x.key, false) : posVal(c, x.sid, k, x.key);
+      const n0 = cNum(o), r0 = arr(o && o.r).slice(0, n0); while (r0.length < n0) r0.push('');
+      const r = r0.filter((_, i) => !idx.has(i)), m = r.length, t = String((o && o.t) || (other && other.t) || '');
+      if (!edit({ k: p ? 'cp' : 'cn', day: k, sid: x.sid, key: x.key, v: m || t.trim() ? { n: m, t, r } : null })) ok = false;
+    });
+    if (!ok) toast(LKMSG, true); else toast('حذف شد');
+    Nav.refresh(); setTimeout(() => ACT.qcNeg(null, k), 150);
+  }, true);
 };
 let QC = null;
 const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
@@ -3075,7 +3140,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T11:19:39.241Z';
+const APP_BUILD = '2026-11-22T14:21:09.967Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
