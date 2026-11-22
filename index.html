@@ -136,6 +136,9 @@ bdi{unicode-bidi:isolate}
 .tab:active{opacity:.5}
 .tab .tb-badge{position:absolute;top:2px;min-width:16px;height:16px;border-radius:8px;background:var(--red);color:#fff;font-size:.6875rem;line-height:16px;text-align:center;padding:0 4px}
 
+/* دکمهٔ برگشت کپسولی | Round Back Capsule: دکمهٔ برگشت داخل یک کپسول گرد */
+.nav-back{background:var(--fill);border-radius:999px;min-height:36px;min-width:44px;padding:0 12px}
+
 
 /* ---- ۲.۱ فهرست‌ها | 2.1 Lists ---- */
 /* گروه فهرست | Inset Group: جعبهٔ سفید گوشه‌گرد مثل «تنظیمات» آیفون؛ هر ردیف با خط جداکنندهٔ ظریف */
@@ -286,8 +289,10 @@ button.stat:active{opacity:.6}
 .sheet{touch-action:pan-y}
 .sheet .grab{flex:none;padding:8px 0 4px;touch-action:none}
 .sheet .grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--label-3);margin:0 auto}
-.sheet .sh-head{flex:none;display:flex;align-items:center;justify-content:space-between;padding:4px 16px 10px;touch-action:none}
-.sheet .sh-head h3{font-size:1.1875rem;font-weight:800}
+.sheet .sh-head{flex:none;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;padding:4px 16px 10px;touch-action:none}
+.sheet .sh-head h3{font-size:1.1875rem;font-weight:800;text-align:center;white-space:nowrap}
+.sheet .sh-head .nav-btn{justify-self:end}
+.sh-act{display:flex;gap:6px;justify-self:start;min-width:0}
 .sheet .sh-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding-bottom:18px}
 /* برگهٔ عملیات | Action Sheet: دکمه‌های انتخاب پایین صفحه (مثل خروج از حساب) */
 .asheet{position:absolute;inset-inline:10px;bottom:calc(10px + var(--sab));transform:translateY(120%);transition:transform .4s var(--ease);pointer-events:auto}
@@ -652,6 +657,30 @@ input,textarea,select{font-size:max(16px,1rem)}
 .pn-c.sel{outline:2px solid var(--red)}.pn-col.pos .pn-c.sel{outline-color:var(--green)}.pn-c.sel .pn-ck{background:var(--red);border-color:var(--red);color:#fff}.pn-col.pos .pn-c.sel .pn-ck{background:var(--green);border-color:var(--green)}
 .pn-all{margin-inline-start:6px;border:0;background:rgba(0,0,0,.06);border-radius:999px;padding:1px 8px;font-size:.75rem;color:var(--label-2)}
 #pnDel{width:100%;min-height:46px}#pnDel:disabled{opacity:.4}
+
+/* کپسول مثبت و منفی دانش‌آموز | Student Pos/Neg Capsule: دو ستون داخل یک کپسول */
+.stat.pn2{display:flex;flex:2;gap:0;padding:0}.pn2c{flex:1;padding:11px 8px 9px}.pn2c+.pn2c{border-inline-start:1px solid var(--sep,rgba(0,0,0,.1))}
+.pn2c b{display:block;font-size:1.5rem;font-weight:800;line-height:1.35}.pn2c span{display:block;font-size:.8125rem;color:var(--label-2);font-weight:600}
+.pn2c.green b{color:var(--green)}.pn2c.red b{color:var(--red)}
+
+/* کپسول‌های مثبت و منفی | Pos/Neg Capsules: کپسول هر دانش‌آموز، موردهای بازشده، دکمه‌های کپسولی سرتیتر و چیپ ماه */
+.cap-b{border:0;border-radius:999px;padding:0 14px;min-height:34px;font-size:.9375rem;font-weight:700;white-space:nowrap}
+.cap-b.tint{background:var(--tint-weak);color:var(--tint)}.cap-b.red{background:rgba(255,59,48,.14);color:var(--red)}.cap-b:disabled{opacity:.4}
+.pn-months{display:flex;gap:6px;overflow-x:auto;padding:0 16px 10px;-webkit-overflow-scrolling:touch}
+.pn-months .chip{flex:none;border:0;border-radius:999px;padding:6px 14px;background:var(--fill);color:var(--label-2);font-weight:600;white-space:nowrap}
+.pn-months .chip.on{background:var(--tint);color:#fff}
+.pn-g{background:var(--card);border-radius:18px;padding:6px 10px;margin-bottom:6px}
+.pn-cap{display:flex;align-items:center;gap:6px;min-height:34px;cursor:pointer}.pn-cap b{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pn-cap i{font-style:normal;font-weight:800;min-width:22px;text-align:center;border-radius:999px;padding:0 6px;background:var(--fill)}
+.pn-col.pos .pn-cap i{color:var(--green)}.pn-col.neg .pn-cap i{color:var(--red)}
+.pn-cap svg{width:14px;height:14px;color:var(--label-3);transition:transform .2s}.pn-g.open .pn-cap svg{transform:rotate(-90deg)}
+.pn-p{display:block;color:var(--label-3);font-size:.75rem;line-height:1.5;padding:0 2px 4px}
+.pn-es{border-top:1px solid rgba(0,0,0,.07);padding-top:4px}.pn-e{display:flex;align-items:flex-start;gap:6px;padding:5px 0;font-size:.8125rem;line-height:1.5}
+.pn-e .pn-t{flex:1;min-width:0}.pn-d{display:block;color:var(--label-3);font-size:.6875rem}
+.pn-ck{flex:none;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--label-3);display:inline-flex;align-items:center;justify-content:center;color:transparent}
+.pn-ck svg{width:12px;height:12px}
+.pn-e.sel .pn-ck,.pn-ck.on{background:var(--red);border-color:var(--red);color:#fff}.pn-col.pos .pn-e.sel .pn-ck,.pn-col.pos .pn-ck.on{background:var(--green);border-color:var(--green)}
+.pn-in{min-height:34px;padding:4px 8px;font-size:.8125rem}
 
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
@@ -2044,7 +2073,8 @@ const Sheet = {
     Sheet.close(true);
     const ov = $('#overlay'), bd = document.createElement('div'), sh = document.createElement('div');
     bd.className = 'backdrop'; sh.className = 'sheet';
-    sh.innerHTML = '<div class="grab"><i></i></div><div class="sh-head"><h3>' + esc(o.title || '') + '</h3><button class="nav-btn bold" data-act="sheetClose">بستن</button></div><div class="sh-body">' + o.body + '</div>';
+    /* سرتیتر برگه | Sheet Header: سه خانه؛ راست = دکمه‌های کار (مثل ویرایش و حذف)، وسط = عنوان، چپ = بستن */
+    sh.innerHTML = '<div class="grab"><i></i></div><div class="sh-head"><div class="sh-act" id="shAct">' + (o.act || '') + '</div><h3>' + esc(o.title || '') + '</h3><button class="nav-btn bold" data-act="sheetClose">بستن</button></div><div class="sh-body">' + o.body + '</div>';
     ov.append(bd, sh); Sheet.els = [bd, sh];
     bd.addEventListener('click', () => Sheet.close());
     /* کشیدن برای بستن | Drag to Close: برگه را می‌شود از دستگیره، سرتیتر یا خود متن (وقتی بالای فهرست است) پایین کشید؛ همراه انگشت می‌آید، با کشیدن زیاد یا ضربهٔ سریع از همان جا روان پایین می‌رود و بسته می‌شود */
@@ -2081,10 +2111,10 @@ const Sheet = {
     const its = arr(o.items);
     as.innerHTML = '<div class="box">' + (o.msg ? '<div class="msg">' + esc(o.msg) + '</div>' : '') + its.map((x, i) => '<button class="' + (x.cls || '') + '" data-i="' + i + '">' + esc(x.t) + '</button>').join('') + '</div><button class="cancel">' + esc(o.cancel || 'لغو') + '</button>';
     ov.append(bd, as); Sheet.els = [bd, as];
-    bd.addEventListener('click', () => Sheet.close());
+    bd.addEventListener('click', () => { Sheet.close(); if (o.onCancel) setTimeout(o.onCancel, 120); });
     as.addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b) return;
-      if (b.classList.contains('cancel')) return Sheet.close();
+      if (b.classList.contains('cancel')) { Sheet.close(); if (o.onCancel) setTimeout(o.onCancel, 120); return; }
       const x = its[+b.dataset.i]; Sheet.close(); if (x && x.fn) setTimeout(x.fn, 120);
     });
     requestAnimationFrame(() => requestAnimationFrame(() => { bd.classList.add('on'); as.classList.add('on'); }));
@@ -2589,7 +2619,7 @@ const attRow = (c, s, k, lk) => {
 /* ابزار روز | Day Tools: قفل کردن یا باز کردن قفل روز */
 const attTools = (c, k, lk, ad) => {
   if (!STU(c).length) return '';
-  if (lk) return '<div class="banner warn">' + ico('lock') + '<span>حضور و غیاب این روز قفل است تا اشتباهی عوض نشود.</span></div><div class="pad-x"><button class="btn gray sm" data-act="attLock" data-a="0">' + ico('lock') + 'باز کردن قفل</button></div><div class="spacer"></div>';
+  if (lk) return '<div class="pad-x"><button class="btn gray sm" data-act="attLock" data-a="0">' + ico('lock') + 'باز کردن قفل</button></div><div class="spacer"></div>';
   return '<div class="pad-x tools2">' + (ad.rec ? '<button class="btn gray sm" data-act="attLock" data-a="1">' + ico('lock') + 'قفل کردن روز</button>' : '') + '</div>';
 };
 
@@ -2684,39 +2714,84 @@ const negList = (c, k, w) => {
 const qcBtn = (c, k) => {
   if (!qcKey(c)) return '';
   k = k || dkey(defDay()); const sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
-  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp">' + fn(P) + '+</b><b>' + fn(N) + '−</b>' : '') + '</button></div>';
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp"><bdi dir="ltr">+' + fn(P) + '</bdi></b><b><bdi dir="ltr">−' + fn(N) + '</bdi></b>' : '') + '</button></div>';
 };
-/* موردهای قابل حذف | Removable Entries: هر دلیل ثبت‌شده (یا هر مورد بی‌دلیل) یک مورد جدا برای انتخاب و حذف است */
-const negEnts = (c, k, w) => {
-  const keys = []; CLS(c).forEach(l => itemsOf(c, l).forEach(it => { if (ity(it) === 'c') keys.push(l.id + '.' + it.id); }));
-  const out = []; STU(c).forEach(s => keys.forEach(key => { const x = w === 'p' ? posVal(c, s.id, k, key) : dayVal(c, s.id, k, key, false), m = cNum(x), r = arr(x && x.r).slice(0, m); for (let i = 0; i < m; i++) out.push({ sid: s.id, s, key, w, i, why: String(r[i] || '').trim() }); }));
-  return out;
-};
-/* ستون‌های مثبت و منفی | Two Columns Sheet: برگهٔ پایین با دو ستون جدا؛ هر مورد با لمس انتخاب می‌شود و با تأیید، تکی یا چندتایی حذف می‌شود */
+/* ---- ۱۳.۲ج برگهٔ مثبت و منفی | 13.2c Positive & Negative Sheet ---- */
+/* مثبت و منفی | Pos/Neg Sheet: برگهٔ دو ستونه (مثبت‌ها و منفی‌ها) برای کل کلاس در یک روز یا یک ماه، یا برای یک دانش‌آموز؛ با «ویرایش» می‌شود دلیل را عوض کرد یا مورد را (تکی یا چندتایی، با تأیید) حذف کرد و روی سرور ذخیره می‌شود */
 let PN = null;
-const negCol = (E, title, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + title + ' <b>' + fn(E.length) + '</b>' + (E.length ? '<button class="pn-all" data-act="pnAll" data-a="' + w + '">همه</button>' : '') + '</div>' + (E.length ? E.map(x => { const id = PN.ents.push(x) - 1; return '<div class="pn-c" data-act="pnSel" data-a="' + id + '" data-w="' + w + '"><span class="pn-ck">' + ico('check') + '</span><div class="pn-n"><span>' + esc(sn(x.s)) + '</span></div>' + (x.why ? '<small>' + esc(x.why) + '</small>' : '<small>بدون توضیح</small>') + '</div>'; }).join('') : '<div class="pn-0">ندارد</div>') + '</div>';
-ACT.qcNeg = (el, k) => {
-  const c = C(); PN = { k, ents: [], sel: new Set() };
-  Sheet.open({ title: 'مثبت و منفی روز', body: '<div class="sec-sub">' + esc(jFull(kdate(k))) + ' · برای حذف، مورد را انتخاب کن</div><div class="pn-grid">' + negCol(negEnts(c, k, 'p'), 'مثبت‌ها', 'pos', 'p') + negCol(negEnts(c, k, 'n'), 'منفی‌ها', 'neg', 'n') + '</div><div class="pad-x"><button class="btn destructive" id="pnDel" data-act="pnDel" disabled>حذف موردهای انتخاب‌شده</button></div>' });
+const pnYm = k => { const j = jd(kdate(k)); return j.y * 100 + j.m; };
+const pnYmT = ym => JM[(ym % 100) - 1] + ' ' + fn(Math.floor(ym / 100));
+/* همهٔ موردها | All Entries: هر دلیل ثبت‌شدهٔ مثبت یا منفی یک مورد جدا است (شناسهٔ پایدار: دانش‌آموز|روز|مورد|نوع|ردیف) */
+const pnAll = (c, sid) => {
+  const km = {}; CLS(c).forEach(l => itemsOf(c, l).forEach(it => { if (ity(it) === 'c') km[l.id + '.' + it.id] = itTitle(l, it); }));
+  const out = []; (sid ? [stuById(c, sid)] : STU(c)).filter(Boolean).forEach(s => ['p', 'n'].forEach(w => {
+    const src = w === 'p' ? (c.chkp || {})[s.id] : (chkSrc(c, false) || {})[s.id];
+    Object.keys(src || {}).forEach(k => Object.keys(km).forEach(key => { const x = (src[k] || {})[key], m = cNum(x), r = arr(x && x.r).slice(0, m); for (let i = 0; i < m; i++) out.push({ id: [s.id, k, key, w, i].join('|'), sid: s.id, s, k, key, w, i, name: km[key], why: String(r[i] || '').trim() }); }));
+  }));
+  return out.sort((a, b) => (a.k < b.k ? 1 : a.k > b.k ? -1 : 0));
 };
-const pnPaint = () => { $$('.pn-c').forEach(e => e.classList.toggle('sel', PN.sel.has(+e.dataset.a))); const b = $('#pnDel'); if (b) { b.disabled = !PN.sel.size; b.textContent = PN.sel.size ? 'حذف ' + fn(PN.sel.size) + ' مورد انتخاب‌شده' : 'حذف موردهای انتخاب‌شده'; } };
-ACT.pnSel = (el, id) => { if (!PN) return; id = +id; PN.sel.has(id) ? PN.sel.delete(id) : PN.sel.add(id); pnPaint(); };
-ACT.pnAll = (el, w) => { if (!PN) return; const ids = PN.ents.map((x, i) => (x.w === w ? i : -1)).filter(i => i >= 0), all = ids.every(i => PN.sel.has(i)); ids.forEach(i => (all ? PN.sel.delete(i) : PN.sel.add(i))); pnPaint(); };
-/* حذف با تأیید | Confirmed Delete: موردهای انتخاب‌شده از دلیل‌ها و شمارندهٔ همان دانش‌آموز کم می‌شوند و روی سرور ذخیره می‌شود */
+const pnList = c => pnAll(c, PN.sid).filter(e => PN.f === 'day' ? e.k === PN.k : PN.f === 'month' ? pnYm(e.k) === PN.ym : true);
+const pnEnt = e => '<div class="pn-e' + (PN.sel.has(e.id) ? ' sel' : '') + '">' + (PN.edit ? '<span class="pn-ck" data-act="pnSel" data-a="' + esc(e.id) + '">' + ico('check') + '</span>' : '')
+  + '<div class="pn-t">' + (PN.sid || PN.f !== 'day' ? '<small class="pn-d">' + esc(jFull(kdate(e.k))) + '</small>' : '')
+  + (PN.edit ? '<input class="fld pn-in" data-chg="pnWhy" data-a="' + esc(e.id) + '" value="' + esc(e.why) + '" maxlength="120" placeholder="دلیل">' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>') + '</div></div>';
+/* کپسول هر دانش‌آموز | Student Capsule: نام (یا تاریخ در نمای یک دانش‌آموز) و تعداد؛ اگر بیش از یکی باشد با لمس کامل دیده می‌شود */
+const pnGroup = (L, w) => {
+  const gk = e => (PN.sid ? e.k : e.sid), G = {}, order = [];
+  L.forEach(e => { const k = gk(e); if (!G[k]) { G[k] = []; order.push(k); } G[k].push(e); });
+  return order.map(k => {
+    const g = G[k], id = w + ':' + k, open = PN.edit || PN.open.has(id), n = g.length, all = g.every(e => PN.sel.has(e.id));
+    const head = PN.sid ? jFull(kdate(g[0].k)) : sn(g[0].s);
+    return '<div class="pn-g' + (open && n > 1 ? ' open' : '') + '"><div class="pn-cap" data-act="' + (PN.edit ? 'pnGrp' : n > 1 ? 'pnTog' : 'noop') + '" data-a="' + esc(id) + '">'
+      + (PN.edit ? '<span class="pn-ck' + (all ? ' on' : '') + '">' + ico('check') + '</span>' : '') + '<b>' + esc(head) + '</b>' + (n > 1 ? '<i>' + fn(n) + '</i>' + (PN.edit ? '' : ico('chev-l')) : '') + '</div>'
+      + (n === 1 && !PN.edit ? '<small class="pn-p">' + esc(g[0].why || 'بدون توضیح') + (PN.f !== 'day' && !PN.sid ? ' · ' + esc(jFull(kdate(g[0].k))) : '') + '</small>' : '')
+      + (open && (n > 1 || PN.edit) ? '<div class="pn-es">' + g.map(pnEnt).join('') + '</div>' : '') + '</div>';
+  }).join('');
+};
+const pnBody = () => {
+  const c = C(), all = pnAll(c, PN.sid), L = pnList(c), P = L.filter(e => e.w === 'p'), N = L.filter(e => e.w === 'n');
+  let h = segH(PN.sid ? [['month', 'ماه'], ['all', 'همه']] : [['day', 'روز'], ['month', 'ماه']], PN.f, 'pnF');
+  if (PN.f === 'day') h += '<div class="qc-nav"><button class="dnav" data-act="pnD" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(PN.k))) + '</b><button class="dnav" data-act="pnD" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>';
+  if (PN.f === 'month') { const ms = [...new Set(all.map(e => pnYm(e.k)).concat([PN.ym]))].sort((a, b) => b - a); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === PN.ym ? ' on' : '') + '" data-act="pnM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
+  const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? pnGroup(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
+  return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
+};
+/* دکمه‌های بالای برگه | Header Buttons: «ویرایش» و (در حالت ویرایش) «تمام» و «حذف» به شکل کپسول، گوشهٔ راست */
+const pnAct = () => (PN.edit ? '<button class="cap-b tint" data-act="pnEdit">تمام</button><button class="cap-b red" data-act="pnDel"' + (PN.sel.size ? '' : ' disabled') + '>حذف' + (PN.sel.size ? ' ' + fn(PN.sel.size) : '') + '</button>' : '<button class="cap-b tint" data-act="pnEdit">ویرایش</button>');
+const pnPaint = () => { const b = $('#pnBody'); if (b && PN) Morph.html(b, pnBody()); const a = $('#shAct'); if (a && PN) Morph.html(a, pnAct()); };
+const pnShow = () => Sheet.open({ title: PN.sid ? 'مثبت و منفی' : 'مثبت و منفی روز', act: pnAct(), body: '<div id="pnBody">' + pnBody() + '</div>' });
+ACT.qcNeg = (el, k) => { PN = { sid: null, f: 'day', k, ym: pnYm(k), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
+ACT.stuPN = () => { const c = C(), r = Nav.top(), all = pnAll(c, r.p.sid), tk = dkey(defDay()); PN = { sid: r.p.sid, f: 'month', k: tk, ym: all.length ? pnYm(all[0].k) : pnYm(tk), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
+ACT.noop = () => {};
+ACT.pnF = (el, a) => { PN.f = a; PN.sel.clear(); PN.open.clear(); pnPaint(); };
+ACT.pnD = (el, a) => { const d = kdate(PN.k); d.setDate(d.getDate() + +a); PN.k = dkey(d); PN.ym = pnYm(PN.k); PN.sel.clear(); PN.open.clear(); pnPaint(); };
+ACT.pnM = (el, a) => { PN.ym = +a; PN.sel.clear(); PN.open.clear(); pnPaint(); };
+ACT.pnTog = (el, id) => { PN.open.has(id) ? PN.open.delete(id) : PN.open.add(id); pnPaint(); };
+ACT.pnEdit = () => { PN.edit = !PN.edit; PN.sel.clear(); pnPaint(); };
+ACT.pnSel = (el, id) => { PN.sel.has(id) ? PN.sel.delete(id) : PN.sel.add(id); pnPaint(); };
+ACT.pnGrp = (el, id) => { const L = pnList(C()).filter(e => (e.w + ':' + (PN.sid ? e.k : e.sid)) === id), all = L.every(e => PN.sel.has(e.id)); L.forEach(e => (all ? PN.sel.delete(e.id) : PN.sel.add(e.id))); pnPaint(); };
+/* ویرایش دلیل | Edit Reason: دلیل همان مورد عوض می‌شود (خالی نمی‌شود) و روی سرور ذخیره می‌شود */
+ACT.pnWhy = (el, v) => {
+  const [sid, k, key, w, i] = String(el.dataset.a).split('|'), c = C(), p = w === 'p', o = p ? posVal(c, sid, k, key) : dayVal(c, sid, k, key, false), other = p ? dayVal(c, sid, k, key, false) : posVal(c, sid, k, key);
+  const n = cNum(o), r = arr(o && o.r).slice(0, n); while (r.length < n) r.push('');
+  if (!String(v).trim()) { el.value = r[+i] || ''; return toast('دلیل نمی‌تواند خالی باشد', true); }
+  r[+i] = String(v).trim();
+  if (!edit({ k: p ? 'cp' : 'cn', day: k, sid, key, v: { n, t: String((o && o.t) || (other && other.t) || ''), r } })) { el.value = ''; return toast(LKMSG, true); }
+  toast('ذخیره شد');
+};
+/* حذف با تأیید | Confirmed Delete: موردهای انتخاب‌شده از دلیل‌ها و شمارندهٔ همان دانش‌آموز کم می‌شوند و روی سرور ذخیره می‌شود؛ بعد برگه دوباره باز می‌شود */
 ACT.pnDel = () => {
-  if (!PN || !PN.sel.size) return; const k = PN.k, E = [...PN.sel].map(i => PN.ents[i]), n = E.length;
-  ask(fn(n) + ' مورد حذف شود؟ این کار برگشت‌پذیر نیست.', 'حذف ' + fn(n) + ' مورد', () => {
-    const c = C(), g = {}; E.forEach(x => { (g[x.sid + '|' + x.key + '|' + x.w] = g[x.sid + '|' + x.key + '|' + x.w] || { x, idx: new Set() }).idx.add(x.i); });
+  if (!PN || !PN.sel.size) return; const E = pnAll(C(), PN.sid).filter(e => PN.sel.has(e.id)), n = E.length;
+  Sheet.action({ msg: fn(n) + ' مورد حذف شود؟ این کار برگشت‌پذیر نیست.', items: [{ t: 'حذف ' + fn(n) + ' مورد', cls: 'destructive', fn: () => {
+    const c = C(), g = {}; E.forEach(x => { const q = x.sid + '|' + x.k + '|' + x.key + '|' + x.w; (g[q] = g[q] || { x, idx: new Set() }).idx.add(x.i); });
     let ok = true;
     Object.values(g).forEach(({ x, idx }) => {
-      const p = x.w === 'p', o = p ? posVal(c, x.sid, k, x.key) : dayVal(c, x.sid, k, x.key, false), other = p ? dayVal(c, x.sid, k, x.key, false) : posVal(c, x.sid, k, x.key);
+      const p = x.w === 'p', o = p ? posVal(c, x.sid, x.k, x.key) : dayVal(c, x.sid, x.k, x.key, false), other = p ? dayVal(c, x.sid, x.k, x.key, false) : posVal(c, x.sid, x.k, x.key);
       const n0 = cNum(o), r0 = arr(o && o.r).slice(0, n0); while (r0.length < n0) r0.push('');
       const r = r0.filter((_, i) => !idx.has(i)), m = r.length, t = String((o && o.t) || (other && other.t) || '');
-      if (!edit({ k: p ? 'cp' : 'cn', day: k, sid: x.sid, key: x.key, v: m || t.trim() ? { n: m, t, r } : null })) ok = false;
+      if (!edit({ k: p ? 'cp' : 'cn', day: x.k, sid: x.sid, key: x.key, v: m || t.trim() ? { n: m, t, r } : null })) ok = false;
     });
-    if (!ok) toast(LKMSG, true); else toast('حذف شد');
-    Nav.refresh(); setTimeout(() => ACT.qcNeg(null, k), 150);
-  }, true);
+    toast(ok ? 'حذف شد' : LKMSG, !ok); PN.sel.clear(); Nav.refresh(); setTimeout(pnShow, 150);
+  } }], onCancel: () => pnShow() });
 };
 let QC = null;
 const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
@@ -3044,7 +3119,7 @@ const stuListH = (c, q) => {
   const L = STU(c).filter(s => !q || stuMatch(s, q));
   if (!L.length) return emptyH('search', q ? 'نتیجه‌ای پیدا نشد' : 'دانش‌آموزی ثبت نشده', q ? 'نام دیگری را امتحان کن.' : 'در برنامهٔ اصلی دانش‌آموزان را اضافه کن.');
   return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: esc(sn(s)), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: a ? '<span class="count-dot red" title="روز غیبت">' + fn(a) + '</span>' : '', chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
-    + '<div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' دانش‌آموز' + (q ? ' از ' + fn(STU(c).length) : '') + ' · عدد قرمز تعداد روزهای غیبت است</div>';
+    + '<div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' دانش‌آموز' + (q ? ' از ' + fn(STU(c).length) : '') + '</div>';
 };
 /* صفحهٔ دانش‌آموزان | Students Page: نوار جستجو و فهرست */
 PAGES.stu = r => {
@@ -3089,7 +3164,9 @@ const stuCardH = (c, s) => {
 const stuAttH = (c, s) => {
   const t = attTot(c, s.id), bh = behOf(c, s.id);
   const cap = (w, cls, n, lab) => '<button class="stat ' + cls + '" data-act="stuList" data-a="' + w + '"><b>' + fn(n) + '</b><span>' + lab + '</span></button>';
-  return '<div class="stats">' + cap('p', 'green', bh.tp, 'ثبت مثبت') + cap('a', 'red', t.a, 'روز غیبت') + cap('n', 'red', bh.tn, 'ثبت منفی') + '</div><div class="group-f" style="text-align:center">برای دیدن فهرست هر مورد، روی آن بزن.</div>';
+  /* مثبت و منفی | Pos/Neg Capsule: یک کپسول با دو ستون (مثبت‌ها و منفی‌ها)؛ لمسش برگهٔ کامل را باز می‌کند */
+  const pn = '<button class="stat pn2" data-act="stuPN"><span class="pn2c green"><b><bdi dir="ltr">+' + fn(bh.tp) + '</bdi></b><span>مثبت</span></span><span class="pn2c red"><b><bdi dir="ltr">−' + fn(bh.tn) + '</bdi></b><span>منفی</span></span></button>';
+  return '<div class="stats">' + cap('a', 'red', t.a, 'روز غیبت') + pn + '</div>';
 };
 /* فهرست هر کپسول | Capsule List: با لمس هر کپسول، فهرست غیبت‌ها (به تفکیک ماه) یا ثبت‌های مثبت و منفی همراه با دلیل در یک برگه باز می‌شود */
 ACT.stuList = (el, w) => {
@@ -3140,7 +3217,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T14:21:09.967Z';
+const APP_BUILD = '2026-11-22T14:37:15.648Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3342,7 +3419,7 @@ ACT.updGo = () => Upd.ask();
 /* صفحهٔ ابزار | Tools Page: فهرست ابزارها؛ هر ردیف یک ابزار را باز می‌کند */
 PAGES.tool = r => ({
   title: 'ابزار', large: true, tabs: true, lead: leaveBtn,
-  body: '<div class="group">' + rowH({ lead: icSq('pencil', '#e11d48'), ttl: 'تکلیف‌ساز', sub: 'ساخت برگهٔ تمرین ریاضی با پاسخ‌نامه و چاپ', chev: true, attr: pushA('hw') }) + '</div>'
+  body: '<div class="group">' + rowH({ lead: icSq('pencil', '#e11d48'), ttl: 'تکلیف‌ساز', sub: esc((HWD.h.title || 'تکلیف') + ' · ' + fn(HWD.s.length) + ' سؤال · ' + fn(HWD.doc.p.length) + ' صفحه') + (S.demo || !Srv.has() ? '' : ' · همگام با سرور'), chev: true, attr: pushA('hw') }) + '</div>'
     + '<div class="group-f">ابزارهای بیشتر برنامهٔ اصلی به‌تدریج اینجا اضافه می‌شوند.</div>'
 });
 
