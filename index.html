@@ -1141,7 +1141,7 @@ const Srv = {
   PJ: (window.TFM_CONFIG && window.TFM_CONFIG.pj) || '6aff7b450009ea180ff2',
   DB: 'tf', TB: 'parts', BK: 'blobs',
   /* بخش‌هایی که این نسخه لازم دارد | Needed Parts: بقیه (چیدمان، تخته، سؤال‌ها، یادداشت‌ها، پیام‌ها، آزمون) اصلاً دانلود نمی‌شوند */
-  PARTS: ['courses', 'attendance', 'checklist', 'schedule', 'staff'],
+  PARTS: ['courses', 'attendance', 'checklist', 'schedule', 'staff', 'homework'],
   st: { email: '', uid: '', fb: '' }
 };
 /* حافظهٔ نشست | Session Memory: ایمیل و نشانهٔ نشست فقط روی همین گوشی می‌ماند (رمز هرگز نه) */
@@ -1252,7 +1252,9 @@ Srv.merge = texts => {
   if (texts.photos) { try { idx = JSON.parse(texts.photos) || {}; } catch (e) { idx = {}; } }
   /* درس‌های بدون شناسه شناسه می‌گیرند تا برنامهٔ هفتگی پیدایشان کند */
   m.db.courses.forEach(c => arr(c.lessons).forEach((l, i) => { if (!l.uid) l.uid = 'L' + c.id + '_' + i; }));
-  return { db: m.db, photos: idx };
+  /* تکلیف‌ساز | Homework Part: بخش «homework» سرور (کلیدهای localStorage برنامهٔ اصلی)؛ اگر خراب بود نادیده گرفته می‌شود تا بقیهٔ برنامه کار کند */
+  let hw = null; try { const h = ps('homework'); hw = h && h.ls && typeof h.ls === 'object' ? h.ls : null; } catch (e) { hw = null; }
+  return { db: m.db, photos: idx, hw };
 };
 /* دریافت | Load All: ۱) نسخهٔ بخش‌ها را می‌پرسد ۲) فقط بخش‌های تازه‌تر از حافظه را می‌گیرد ۳) در حافظه ذخیره می‌کند؛ cb(درصد، پیام) برای نمایش پیشرفت است */
 Srv.loadAll = async cb => {
@@ -1264,7 +1266,7 @@ Srv.loadAll = async cb => {
   const want = Srv.PARTS.concat(['photos']).filter(n => meta[n]);
   const texts = {}, rev = {};
   let done = 0;
-  const NAMES = { courses: 'دوره‌ها', attendance: 'حضور و غیاب', checklist: 'چک‌لیست', schedule: 'برنامه', staff: 'کادر مدرسه', photos: 'فهرست عکس‌ها' };
+  const NAMES = { courses: 'دوره‌ها', attendance: 'حضور و غیاب', checklist: 'چک‌لیست', schedule: 'برنامه', staff: 'کادر مدرسه', photos: 'فهرست عکس‌ها', homework: 'تکلیف‌ساز' };
   const one = async n => {
     const row = meta[n];
     rev[n] = row.r || 0;
@@ -1383,7 +1385,8 @@ const Sync = {
       try { o = text ? JSON.parse(text) : { app: 'class-man-part', v: 1, c: {} }; } catch (e) { throw new Error('دادهٔ بخش «' + n + '» روی سرور سالم نیست'); }
       if (!o.c || typeof o.c !== 'object') o.c = {};
       let skipped = 0;
-      ops.forEach(op => { const e = o.c[op.cid] = o.c[op.cid] || {}; if (!Ed.apply(e, op)) skipped++; });
+      /* دستور ls | Local-Storage Op: یک کلید کامل (مثل cls_hw2) در بخش ls نوشته می‌شود و کلیدهای دیگر دست‌نخورده می‌مانند */
+      ops.forEach(op => { if (op.k === 'ls') { if (!o.ls || typeof o.ls !== 'object') o.ls = {}; o.ls[op.key] = op.v; return; } const e = o.c[op.cid] = o.c[op.cid] || {}; if (!Ed.apply(e, op)) skipped++; });
       const out = JSON.stringify(o);
       if (out === text) return skipped;
       const z = await Srv.gz(out), h = await Srv.hash(out), fid = 'p-' + n + '-' + h.slice(0, 12);
@@ -1423,7 +1426,7 @@ const Sync = {
   /* بازسازی از حافظه | Rebase: داده را از آخرین متن‌های ذخیره‌شده دوباره می‌سازد و تغییرهای هنوز ارسال‌نشده را روی آن می‌گذارد */
   async rebase() {
     const r = await Srv.fromCache(); if (!r) return;
-    S.db = r.db;
+    S.db = r.db; if (typeof HWSync !== 'undefined') HWSync.from(r.hw);
     Sync.q.forEach(o => { const c = arr(S.db.courses).find(x => String(x.id) === o.cid); if (c) Ed.apply(c, o); });
     if (!(document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) && typeof Nav !== 'undefined' && Nav.el) Nav.refresh();
   },
@@ -1437,7 +1440,7 @@ const Sync = {
       if (!stale && !force) return false;
       const photosNew = meta.photos && (meta.photos.r || 0) > ((cache.rev || {}).photos || 0);
       const res = await Srv.loadAll();
-      S.db = res.db; S.offline = false; S.t = Date.now();
+      S.db = res.db; S.offline = false; S.t = Date.now(); if (typeof HWSync !== 'undefined') HWSync.from(res.hw);
       if (photosNew) Photos.reset(res.photos);
       if (!(document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) && Nav.el) Nav.refresh();
       return true;
@@ -1924,7 +1927,7 @@ const setCell = (c, store, sid, d, key, val, empty) => {
    att: حضور (v یک=حاضر، صفر=غایب، null=پاک) | attLk: قفل روز | g: نمرهٔ ۱ تا ۴ | q: نمرهٔ ۰ تا ۲۰ | t: توضیح متنی | cn: شایستگی منفی | cp: شایستگی مثبت
    خروجی apply: true یعنی انجام شد، false یعنی چون روز یا نمره قفل بود رد شد. */
 const Ed = {
-  part: { att: 'attendance', attLk: 'attendance', g: 'checklist', q: 'checklist', t: 'checklist', cn: 'checklist', cp: 'checklist' },
+  part: { ls: 'homework', att: 'attendance', attLk: 'attendance', g: 'checklist', q: 'checklist', t: 'checklist', cn: 'checklist', cp: 'checklist' },
   apply(c, o) {
     switch (o.k) {
       case 'att': {
@@ -2059,6 +2062,47 @@ const Tabs = {
   sync(show, key) { const tb = $('#tabbar'); tb.classList.toggle('hidden', !show); $$('.tab', tb).forEach(b => b.classList.toggle('on', b.dataset.a === key)); }
 };
 
+/* ---- ۹.۵ب تازه‌سازی بخشی | 9.5b Partial Update (Morph) ---- */
+/* تازه‌سازی بخشی | Morph: صفحهٔ تازه را در یک جعبهٔ پنهان می‌سازد و فقط تکه‌هایی را که واقعاً فرق کرده‌اند در صفحهٔ نمایش عوض می‌کند؛ پس عکس پروفایل، جای اسکرول، صفحه‌کلید و متن نیمه‌نوشته دست نمی‌خورند و هیچ چیز چشمک نمی‌زند */
+const Morph = {
+  /* کلید ردیف | Row Key: ردیف‌های دارای شناسهٔ دانش‌آموز یا شناسهٔ خود عنصر با هم تطبیق داده می‌شوند، نه با جایشان */
+  key(n) { return n.nodeType === 1 ? (n.dataset.sid ? 's' + n.dataset.sid : n.dataset.qs ? 'q' + n.dataset.qs : n.id ? '#' + n.id : '') : ''; },
+  /* ویژگی‌ها | Attributes: ویژگی‌های عنصر قدیمی را با تازه یکی می‌کند؛ نشانی عکس و کلاس‌های «has» و «solid» که با جاوااسکریپت می‌آیند حفظ می‌شوند */
+  attrs(a, b) {
+    const img = a.tagName === 'IMG' && a.hasAttribute('data-ph'), keep = ['has', 'solid'].filter(c => a.classList.contains(c));
+    [...a.attributes].forEach(x => { if (img && (x.name === 'src' || x.name === 'data-done')) return; if (!b.hasAttribute(x.name)) a.removeAttribute(x.name); });
+    [...b.attributes].forEach(x => { if (img && (x.name === 'src' || x.name === 'data-done')) return; if (a.getAttribute(x.name) !== x.value) a.setAttribute(x.name, x.value); });
+    keep.forEach(c => a.classList.add(c));
+  },
+  /* یک گره | One Node: متن، عنصر یا جایگزینی کامل؛ مقدار کادر نوشتن فقط وقتی عوض می‌شود که مقدار اصلی تازه فرق کرده باشد (نوشتهٔ کاربر پاک نشود) */
+  node(a, b) {
+    if (a.nodeType !== 1 || b.nodeType !== 1) { if (a.nodeType === b.nodeType) { if (a.nodeValue !== b.nodeValue) a.nodeValue = b.nodeValue; return a; } a.replaceWith(b); return b; }
+    if (a.tagName !== b.tagName || (a.tagName === 'IMG' && a.getAttribute('data-ph') !== b.getAttribute('data-ph'))) { const p = a.parentElement; if (a.tagName === 'IMG' && p) p.classList.remove('has'); a.replaceWith(b); return b; }
+    const dv = a.tagName === 'TEXTAREA' ? a.defaultValue : a.getAttribute('value');
+    Morph.attrs(a, b);
+    if (a.tagName === 'IMG') return a;
+    if (a.tagName === 'TEXTAREA') { if (dv !== b.textContent) a.value = b.textContent; a.defaultValue = b.textContent; return a; }
+    if (a.tagName === 'INPUT') { if (dv !== b.getAttribute('value') && document.activeElement !== a) a.value = b.getAttribute('value') || ''; return a; }
+    Morph.kids(a, b); return a;
+  },
+  /* فرزندان | Children: فرزندان قدیمی به ترتیب با تازه‌ها یکی می‌شوند؛ ردیف‌های کلیددار جابه‌جا می‌شوند ولی ساخته نمی‌شوند دوباره */
+  kids(a, b) {
+    const bc = [...b.childNodes], km = new Map();
+    [...a.childNodes].forEach(n => { const k = Morph.key(n); if (k) km.set(k, n); });
+    bc.forEach((nb, j) => {
+      const cur = a.childNodes[j] || null, k = Morph.key(nb);
+      if (k && km.has(k)) { const f = km.get(k); km.delete(k); if (f !== cur) a.insertBefore(f, cur); Morph.node(f, nb); }
+      else if (cur && !k && !Morph.key(cur) && cur.nodeType === nb.nodeType) Morph.node(cur, nb);
+      else a.insertBefore(nb, cur);
+    });
+    while (a.childNodes.length > bc.length) a.lastChild.remove();
+  },
+  /* تازه کردن درون یک جعبه | Update Inside: محتوای یک عنصر را با HTML تازه یکی می‌کند (به‌جای innerHTML) */
+  html(el, html) { const t = document.createElement(el.tagName); t.innerHTML = html; Morph.kids(el, t); Photos.hydrate(el); },
+  /* عوض کردن یک ردیف | Swap One: خود عنصر را با HTML تازه یکی می‌کند و برمی‌گرداند */
+  swap(el, html) { const t = document.createElement('div'); t.innerHTML = html; const n = t.firstElementChild; if (!n) return el; const r = Morph.node(el, n); Photos.hydrate(r.parentElement || r); return r; }
+};
+
 /* ---- ۹.۶ ناوبری | 9.6 Navigation ---- */
 /* ناوبری | Nav: برای دوره‌ها و هر تب یک پشتهٔ صفحه نگه می‌دارد؛ هر صفحه از روی وضعیتش دوباره ساخته می‌شود (PAGES[نام](مسیر، پارامتر) ← عنوان، بدنه و …) */
 const Nav = {
@@ -2081,7 +2125,7 @@ const Nav = {
     const sc = $('.scroll', el), nv = $('.nav', el), sp = r.spec || {};
     if (sc) {
       if (r.y) sc.scrollTop = r.y;
-      if (sp.large) { nv.classList.toggle('solid', sc.scrollTop > 30); sc.addEventListener('scroll', () => nv.classList.toggle('solid', sc.scrollTop > 30), { passive: true }); }
+      if (sp.large) { nv.classList.toggle('solid', sc.scrollTop > 30); if (!sc._sb) { sc._sb = 1; sc.addEventListener('scroll', () => { const n2 = $('.nav', el); if (n2) n2.classList.toggle('solid', sc.scrollTop > 30); }, { passive: true }); } }
     }
     Photos.hydrate(el);
     if (sp.after) sp.after(el, r);
@@ -2109,7 +2153,7 @@ const Nav = {
   push(name, p, st) { if (Nav.busy) return; Nav.saveY(); Nav.stack().push({ name, p: p || {}, st: st || {} }); Nav.show('fwd'); },
   pop() { if (Nav.busy) return; const s = Nav.stack(); if (s.length < 2) return; s.pop(); Nav.show('back'); },
   /* تازه‌سازی همین صفحه | Refresh: صفحهٔ بالا را دوباره می‌سازد و جای اسکرول را نگه می‌دارد (بعد از تغییر انتخاب‌ها) */
-  refresh() { const r = Nav.top(); if (!r || !Nav.el) return; Nav.saveY(); Nav.fill(Nav.el, r); Nav.post(Nav.el, r); Nav.sync(); },
+  refresh() { const r = Nav.top(); if (!r || !Nav.el) return; Nav.saveY(); const t = document.createElement('section'); Nav.fill(t, r); Nav.el.classList.toggle('has-tabs', t.classList.contains('has-tabs')); Morph.kids(Nav.el, t); Nav.post(Nav.el, r); Nav.sync(); },
   /* عوض کردن مورد همین صفحه | Set Params: مثلاً رفتن به دانش‌آموز بعدی بدون انیمیشن صفحهٔ جدید */
   setParams(p, st) { const r = Nav.top(); if (!r) return; r.p = p; r.st = st || {}; r.y = 0; Nav.refresh(); const sc = $('.scroll', Nav.el); if (sc) sc.scrollTop = 0; },
   /* تب | Switch Tab: رفتن به تب دیگر؛ لمس تب فعال به صفحهٔ اصلی همان تب برمی‌گرداند */
@@ -2281,6 +2325,7 @@ const Auth = {
       const res = await Srv.loadAll(Screen.progress);
       S.db = res.db; S.demo = false; S.offline = false; S.t = Date.now(); Photos.reset(res.photos);
       await Sync.restore(); Sync.q.forEach(o => { const c = arr(S.db.courses).find(x => String(x.id) === o.cid); if (c) Ed.apply(c, o); });
+      HWSync.from(res.hw);
       await sleep(350); Nav.start();
     } catch (e) {
       if (e && e.code === 401) { await Srv.logout(); Screen.login('نشست تمام شد؛ دوباره وارد شو'); return; }
@@ -2292,6 +2337,7 @@ const Auth = {
   async useCache() {
     const c = Auth.cached; if (!c) return; S.db = c.db; S.demo = false; S.offline = true; S.t = c.t || 0; Photos.reset(c.photos);
     await Sync.restore(); Sync.q.forEach(o => { const x = arr(S.db.courses).find(y => String(y.id) === o.cid); if (x) Ed.apply(x, o); });
+    HWSync.from(c.hw);
     Nav.start();
   },
   /* دادهٔ نمایشی | Demo: دو دورهٔ نمونه برای امتحان بدون ورود */
@@ -2596,7 +2642,7 @@ const qcBody = () => {
   const L = STU(c);
   return hd + (L.length ? '<div class="group">' + L.map((s, i) => '<div class="row qcr" data-qs="' + esc(s.id) + '"><span class="ttl">' + fn(i + 1) + '. ' + esc(sn(s)) + '</span>' + qcCap(c, s.id, k, key) + '</div>').join('') + '</div>' : emptyH('users', 'دانش‌آموزی نیست', ''));
 };
-const qcPaint = () => { const b = $('#qcBody'); if (b && QC) b.innerHTML = qcBody(); };
+const qcPaint = () => { const b = $('#qcBody'); if (b && QC) Morph.html(b, qcBody()); };
 ACT.qcOpen = () => { const c = C(), key = qcKey(c); if (!key) return; const d = defDay(); QC = { key, k: dkey(d), rs: null }; Sheet.open({ title: 'شایستگی‌ها', body: '<div id="qcBody">' + qcBody() + '</div>', after: sh => { const cl = sh.querySelector('[data-act=sheetClose]'); if (cl) cl.addEventListener('click', () => { QC = null; Nav.refresh(); }); } }); };
 ACT.qcGo = (el, a) => { let d = kdate(QC.k); do { d = new Date(d.getFullYear(), d.getMonth(), d.getDate() + +a, 12); } while (isOff(d)); QC.k = dkey(d); qcPaint(); };
 ACT.qcToday = () => { QC.k = dkey(defDay()); qcPaint(); };
@@ -2760,8 +2806,8 @@ ACT.chkHist = (el, sid, key) => {
 /* تازه کردن ردیف | Refresh Row: فقط ردیف همان دانش‌آموز و خلاصهٔ بالای فهرست دوباره ساخته می‌شود؛ جای اسکرول و صفحه‌کلید دست نمی‌خورد */
 const chkRowNew = (x, sid) => {
   const row = $('#chkList .row[data-sid="' + sid + '"]'), s = stuById(x.c, sid);
-  if (row && s) { const t = document.createElement('div'); t.innerHTML = chkLRow(x.c, s, x.l, x.it, x.k, x.q); row.replaceWith(t.firstChild); }
-  const sm = $('#chkSum'); if (sm) sm.innerHTML = chkSummary(x.c, x.l, x.it, x.k, x.q);
+  if (row && s) Morph.swap(row, chkLRow(x.c, s, x.l, x.it, x.k, x.q));
+  const sm = $('#chkSum'); if (sm) Morph.html(sm, chkSummary(x.c, x.l, x.it, x.k, x.q));
   const mk = chkMarks(x.c, x.l, x.it, Nav.top().st.off);
   $$('.dstrip .dcell').forEach(b => { const has = !!mk[b.dataset.a], d = b.querySelector('.dot'); if (has && !d) b.insertAdjacentHTML('beforeend', '<i class="dot"></i>'); else if (!has && d) d.remove(); });
 };
@@ -2785,7 +2831,7 @@ ACT.chkQ = (el, raw) => {
   }
   if (!edit({ k: 'q', day: x.k, sid, key: x.key, v })) { toast(LKMSG, true); el.value = old != null ? qv(old) : ''; return; }
   el.value = v != null ? qv(v) : ''; el.className = 'qin' + (v != null ? ' ' + qgc(v) : '');
-  const sm = $('#chkSum'); if (sm) sm.innerHTML = chkSummary(x.c, x.l, x.it, x.k, x.q);
+  const sm = $('#chkSum'); if (sm) Morph.html(sm, chkSummary(x.c, x.l, x.it, x.k, x.q));
 };
 /* خانهٔ بعدی | Next Field: با کلید «بعدی» صفحه‌کلید به نمرهٔ دانش‌آموز بعدی می‌رود */
 ACT.chkQNext = el => { const L = $$('#chkList .qin:not([disabled])'), i = L.indexOf(el); el.blur(); if (L[i + 1]) L[i + 1].focus(); };
@@ -2820,7 +2866,7 @@ ACT.chkC = (el, sid, w) => {
   if (!CD[w].n) CD[w].n = 1;
   Sheet.open({ title: itTitle(x.l, x.it), body: '<div id="cdBody">' + cdBody() + '</div>' });
 };
-ACT.cdStep = (el, w, d) => { const o = CD[w], n = Math.max(0, Math.min(30, o.n + +d)); o.n = n; o.r = o.r.slice(0, n); const b = $('#cdBody'); if (b) b.innerHTML = cdBody(); };
+ACT.cdStep = (el, w, d) => { const o = CD[w], n = Math.max(0, Math.min(30, o.n + +d)); o.n = n; o.r = o.r.slice(0, n); const b = $('#cdBody'); if (b) Morph.html(b, cdBody()); };
 INP.cdR = (v, el) => { if (CD) CD[el.dataset.w].r[+el.dataset.i] = v; };
 INP.cdT = v => { if (CD) CD.t = v; };
 /* لغو شایستگی | Competency Cancel: برگه را بدون ثبت هیچ تغییری می‌بندد */
@@ -2921,7 +2967,7 @@ PAGES.stu = r => {
     body: '<div class="search' + (q ? ' has' : '') + '">' + ico('search') + '<input type="search" data-in="stuQ" placeholder="جستجوی نام" value="' + esc(q) + '" autocomplete="off"><button class="clr" data-act="stuClr" aria-label="پاک کردن">' + ico('x') + '</button></div><div id="stuList">' + stuListH(c, q) + '</div>' };
 };
 /* جستجوی زنده | Live Search: فقط فهرست را تازه می‌کند تا کادر جستجو فوکوس خود را از دست ندهد */
-INP.stuQ = (v, el) => { const r = Nav.top(); r.st.q = v; const L = $('#stuList'); if (L) { L.innerHTML = stuListH(C(), v); Photos.hydrate(L); } const s = el.closest('.search'); if (s) s.classList.toggle('has', !!v); };
+INP.stuQ = (v, el) => { const r = Nav.top(); r.st.q = v; const L = $('#stuList'); if (L) Morph.html(L, stuListH(C(), v)); const s = el.closest('.search'); if (s) s.classList.toggle('has', !!v); };
 ACT.stuClr = () => { const i = $('.search input'); if (i) { i.value = ''; INP.stuQ('', i); i.focus(); } };
 
 /* ---- ۱۵.۲ بخش مشخصات | 15.2 Info Segment ---- */
@@ -3008,7 +3054,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T03:24:30.324Z';
+const APP_BUILD = '2026-11-22T09:49:05.279Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3220,25 +3266,63 @@ const HW_TYPES = { none: 'فقط متن', add: 'جمع', sub: 'تفریق', mul:
 const HW_COL = { none: '#8e8e93', add: '#34c759', sub: '#ff9500', mul: '#0a84ff', div: '#af52de', io: '#5856d6', pat: '#ff2d55' };
 const HW_OPS = { add: '+', sub: '−', mul: '×', div: '÷' };
 const HW_MAXQ = 30;
-const hwNewId = () => Math.random().toString(36).slice(2, 8);
-/* سؤال تازه | New Question: مقدارهای پیش‌فرض هر نوع (مثل برنامهٔ اصلی: ۶ تمرین، ۳ ستون) */
+const HW_DEFS = () => ({ t: '', no: '', sr: '', k: 'v', op: 'none', n: 12, c: 4, a: 2, b: 2, man: '', sp: 6, it: null, sig: '' });
+/* سؤال تازه | New Question: همان فیلدهای برنامهٔ اصلی (EXS0) تا دسکتاپ بدون مشکل بخواند */
 const hwSec = op => {
-  const s = { id: hwNewId(), t: '', nz: '', no: '', op: op === 'io' || op === 'pat' ? 'none' : op, n: op === 'div' ? 4 : 6, c: 3, a: 2, b: op === 'div' ? 1 : 2, lo: null, hi: null, dr: 0, hz: 0, dv: 0, man: '', sp: 6, ln: 0, qa: '', it: null, sig: '' };
-  if (op === 'io') s.io = { rows: ['3', '5', '7', '10', '12'], k: 'add', m: '2' };
+  const s = Object.assign(HW_DEFS(), { op: op === 'io' || op === 'pat' ? 'none' : op, n: op === 'div' ? 4 : 6, c: 3, b: op === 'div' ? 1 : 2 });
+  if (op === 'io') s.hx = { o: 'io', rows: ['3', '5', '7', '10', '12'], k: 'add', m: '2' };
   if (op === 'pat') s.pt = { n: 4, m: 'f', st: '0', inc: '7', d: [], h: [] };
   if (op === 'none') s.c = 1;
   return s;
 };
-const hwKind = s => (s.io ? 'io' : s.pt ? 'pat' : s.op);
-const hwHdDef = () => ({ on: 1, bism: 'به نام نامی یزدان', school: '', grade: '', teacher: '', title: 'تکلیف', nm: 'نام و نام خانوادگی:', dts: 1, off: 0 });
-/* بارگذاری | Load: سند ذخیره‌شده؛ اگر فقط نسخهٔ قدیمی تکلیف‌ساز بود، گروه‌هایش به سؤال تبدیل می‌شود */
-const HWD = (() => {
-  const d = Pref.get('hw2', null), old = Pref.get('hw', null);
-  if (d && Array.isArray(d.s)) return { h: Object.assign(hwHdDef(), d.h), s: d.s.map(x => Object.assign(hwSec(x.op), x)), ga: 0 };
-  const s = old && Array.isArray(old.gr) ? old.gr.filter(g => g.o !== 'txt').map(g => Object.assign(hwSec(g.o), { n: +g.n || 5, a: +g.a || 2, b: +g.b || 2, lo: g.lo, hi: g.hi })) : [];
-  return { h: Object.assign(hwHdDef(), old && old.hd ? { title: old.hd.title } : {}), s: s.length ? s : [hwSec('add')], ga: 0 };
+/* نوع سؤال | Question Kind: io/pat پشتیبانی می‌شوند؛ x = نوعی که فقط در نسخهٔ اصلی ویرایش می‌شود (متن و شکل هندسی، سودوکو، ماشین چندمرحله‌ای) */
+const hwKind = s => (s.hx ? (s.hx.o === 'io' && !(Array.isArray(s.hx.st) && s.hx.st.length) ? 'io' : 'x') : s.pt ? 'pat' : s.su ? 'x' : s.op);
+const hwHdDef = () => ({ bism: 'به نام نامی یزدان', nm: 'نام و نام خانوادگی:', school: '', grade: '', teacher: '', title: 'تکلیف', series: '', note: 'همه سوالات را با مداد پاسخ دهید', dts: 0 });
+/* سند تکلیف | Homework Document: همان قالب cls_hw2 برنامهٔ اصلی (h سربرگ، p صفحه‌ها و سؤال‌ها)؛ فیلدهای ناشناس برای دسکتاپ دست‌نخورده می‌مانند */
+const hwDocNew = () => ({ h: hwHdDef(), p: [{ s: [hwSec('add')] }], e: { on: 0, title: 'اهداف ارزشیابی', lv: 4, rows: 'هدف اول\nهدف دوم\nهدف سوم' }, pv: 0, sm: 0, st: {}, sd: 0, sp: {}, ed: '', tb: [] });
+const hwNorm = d => {
+  if (!d || typeof d !== 'object') return null;
+  if (!Array.isArray(d.p)) d.p = Array.isArray(d.s) ? [{ s: d.s }] : [{ s: [] }];
+  d.h = Object.assign(hwHdDef(), d.h && typeof d.h === 'object' ? d.h : {}); delete d.h.on;
+  d.p.forEach(g => { g.s = (Array.isArray(g.s) ? g.s : []).map(x => { x = Object.assign(HW_DEFS(), x); if ('nz' in x) { x.nm2 = x.nz; delete x.nz; } if (x.io) { x.hx = Object.assign({ o: 'io' }, x.io); delete x.io; } delete x.id; if (!Array.isArray(x.it)) { x.it = null; x.sig = ''; } return x; }); });
+  if (!d.p.length) d.p = [{ s: [] }]; return d;
+};
+const hwParse = v => { try { return hwNorm(typeof v === 'string' ? JSON.parse(v) : v); } catch (e) { return null; } };
+const HWD = {
+  doc: null, ga: 0,
+  get h() { return this.doc.h; },
+  get s() { return this.doc.p.flatMap(g => g.s); }
+};
+/* بارگذاری | Load: آخرین نسخهٔ ذخیره‌شده روی گوشی؛ نسخهٔ سرور بعد از ورود جایگزینش می‌شود (HWSync) */
+(() => {
+  const v = Pref.get('hw2', null), old = Pref.get('hw', null); let d = hwParse(v);
+  if (!d && old && Array.isArray(old.gr)) { d = hwNorm({ h: { title: (old.hd && old.hd.title) || 'تکلیف' }, p: [{ s: old.gr.filter(g => g.o !== 'txt').map(g => Object.assign(hwSec(g.o), { n: +g.n || 5, a: +g.a || 2, b: +g.b || 2, lo: g.lo, hi: g.hi })) }] }); }
+  HWD.doc = d || hwNorm(hwDocNew());
+  if (!HWD.s.length && !d) HWD.doc.p[0].s.push(hwSec('add'));
 })();
-const hwSave = () => Pref.set('hw2', { h: HWD.h, s: HWD.s });
+/* جابه‌جایی در صفحه‌ها | Page-aware Edits: افزودن، حذف و جابه‌جایی سؤال‌ها بدون به‌هم‌ریختن صفحه‌بندی دستی دسکتاپ */
+const hwPush = s => HWD.doc.p[HWD.doc.p.length - 1].s.push(s);
+const hwLoc = i => { let k = 0; for (const g of HWD.doc.p) { if (i < k + g.s.length) return [g.s, i - k]; k += g.s.length; } return null; };
+const hwRemove = i => { const l = hwLoc(i); if (l) l[0].splice(l[1], 1); };
+const hwSwap = (i, j) => { const a = hwLoc(i), b = hwLoc(j); if (!a || !b) return; const t = a[0][a[1]]; a[0][a[1]] = b[0][b[1]]; b[0][b[1]] = t; };
+/* ذخیره و همگام‌سازی | Save & Sync: نسخهٔ گوشی + ارسال به بخش «homework» سرور (کلید cls_hw2) مثل برنامهٔ اصلی؛ بقیهٔ کلیدهای آن بخش دست نمی‌خورد */
+const HWSync = {
+  cur: '',
+  str() { return JSON.stringify(HWD.doc); },
+  push() {
+    const v = HWSync.str(); HWSync.cur = v; Pref.set('hw2', v);
+    if (typeof Sync === 'undefined' || S.demo || !Srv.has()) return;
+    Sync.q = Sync.q.filter(o => !(o.k === 'ls' && o.key === 'cls_hw2'));
+    Sync.add('', { k: 'ls', part: 'homework', key: 'cls_hw2', v });
+  },
+  /* از سرور | From Server: اگر تغییر ارسال‌نشده‌ای روی گوشی نیست، نسخهٔ سرور جایگزین می‌شود */
+  from(ls) {
+    const v = ls && ls.cls_hw2; if (typeof v !== 'string' || v === HWSync.cur) return;
+    if (typeof Sync !== 'undefined' && Sync.q.some(o => o.k === 'ls' && o.key === 'cls_hw2')) return;
+    const d = hwParse(v); if (!d) return; HWD.doc = d; HWSync.cur = v; Pref.set('hw2', v); HWD.fresh = 1;
+  }
+};
+const hwSave = () => HWSync.push();
 /* مقدار عددی | Number Parse: ارقام فارسی و جداکننده را می‌پذیرد؛ نامعتبر = null */
 const hwNum = v => { const t = fd(String(v == null ? '' : v)).replace(/[−–﹣‐]/g, '-').replace(/[\s,٬،]/g, ''); if (!/^-?\d{1,12}(\.\d{1,6})?$/.test(t)) return null; return +t; };
 const hwFm = n => (n < 0 ? '−' : '') + fn(Math.abs(n));
@@ -3271,9 +3355,11 @@ const hwGen = s => {
     return { x, y, o };
   });
 };
-const hwSig = s => [s.op, s.n, s.a, s.b, s.man, s.dr ? 1 : 0, s.lo == null ? '' : s.lo, s.hi == null ? '' : s.hi].join('|');
-/* تمرین‌های آماده | Ensure Items: اگر تنظیم عوض شده باشد دوباره می‌سازد */
-const hwEns = s => { if (s.op !== 'none' && (!s.it || s.sig !== hwSig(s))) { s.it = hwGen(s); s.sig = hwSig(s); } return s.it || []; };
+/* امضای تنظیم | Signature: دقیقاً مثل exSig برنامهٔ اصلی تا دسکتاپ تمرین‌های ساخته‌شدهٔ موبایل را دوباره نسازد */
+const hwSig = s => [s.op, s.n, s.a, s.b, s.man, s.dr ? 1 : 0].concat((s.op === 'add' || s.op === 'sub') && (s.lo != null || s.hi != null) ? [s.lo == null ? '' : s.lo, s.hi == null ? '' : s.hi] : []).join('|');
+const hwMx = s => Array.isArray(s.mx) && s.mx.length > 0;
+/* تمرین‌های آماده | Ensure Items: اگر تنظیم عوض شده باشد دوباره می‌سازد (سؤال‌های ترکیبی دسکتاپ دست‌نخورده می‌مانند) */
+const hwEns = s => { s.k = hwLay(s); if (s.op !== 'none' && (!s.it || (!hwMx(s) && s.sig !== hwSig(s)))) { s.it = hwGen(s); s.sig = hwSig(s); HWD.dirty = 1; } return s.it || []; };
 /* عددهای جدید | New Numbers: همهٔ تمرین‌ها (یا فقط یک سؤال) دوباره تصادفی ساخته می‌شود */
 const hwRegen = s => { (s ? [s] : HWD.s).forEach(x => { x.it = null; x.sig = ''; }); hwSave(); };
 
@@ -3318,7 +3404,7 @@ const hwDiv = (q, a) => {
 
 
 /* ---- ۱۷.۴ ماشین و الگو | 17.4 I/O Machine & Pattern ---- */
-/* ماشین ورودی و خروجی | I/O Machine: s.io = {rows: ورودی‌ها، k: عملیات، m: عدد عملیات}؛ خروجی هر ردیف از روی همین قانون حساب می‌شود */
+/* ماشین ورودی و خروجی | I/O Machine: s.hx = {rows: ورودی‌ها، k: عملیات، m: عدد عملیات}؛ خروجی هر ردیف از روی همین قانون حساب می‌شود */
 const HW_IOOPS = [['add', 'جمع (+)'], ['sub', 'تفریق (−)'], ['mul', 'ضرب (×)'], ['div', 'تقسیم (÷)'], ['mod', 'باقی‌مانده'], ['sq', 'توان دو']];
 const hwIoCalc = (g, s) => {
   const x = hwNum(s), m = hwNum(g.m), k = g.k; if (x == null || (k !== 'sq' && m == null)) return null; let r;
@@ -3348,11 +3434,12 @@ const hwPtH = (s, ga) => {
 };
 
 /* ---- ۱۷.۵ ساخت صفحه‌ها | 17.5 Page Builder ---- */
-/* تاریخ سربرگ | Header Date: امروز + off روز، به شکل «یکشنبه ۱ آذر ۱۴۰۵» */
-const hwDt = off => { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + (+off || 0)); return jFull(d); };
+/* تاریخ سربرگ | Header Date: dts زمان (میلی‌ثانیهٔ) روز انتخاب‌شده است، مثل برنامهٔ اصلی؛ به شکل «یکشنبه ۱ آذر ۱۴۰۵» */
+const hwDt = ts => { const d = new Date(+ts); d.setHours(12, 0, 0, 0); return jFull(d); };
+const hwDtNow = n => { const d = new Date(+HWD.h.dts || Date.now()); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() + (n || 0)); return d.getTime(); };
 /* سربرگ | Header Box: همان کادر برنامهٔ اصلی؛ بسم‌الله بالا، نام و مدرسه/پایه، آموزگار و عنوان با تاریخ */
 const hwHeadH = () => {
-  const H = HWD.h, tt = String(H.title || '').trim(), dt = +H.dts ? hwDt(H.off) : '', t = tt && dt ? tt + ' – ' + dt : tt || dt;
+  const H = HWD.h, tt = String(H.title || '').trim(), dt = +H.dts ? hwDt(H.dts) : '', t = tt && dt ? tt + ' – ' + dt : tt || dt;
   return '<div class="exhd"><div class="exbs">' + esc(H.bism) + '</div><div class="exg"><div class="exc1"><div>' + esc(H.nm) + '</div><div>' + esc(H.school) + (String(H.grade).trim() ? ' – پایه ' + esc(H.grade) : '') + '</div></div><div class="exc2"></div><div class="exc3"><div>' + (String(H.teacher).trim() ? 'آموزگار: ' + esc(H.teacher) : '') + '</div><div>' + esc(t) + '</div></div></div></div>';
 };
 /* چینش | Layout Mode: افقی (مثل ۴+۲=) یا ستونی؛ اگر اولین خط دلخواه با «=» تمام شود افقی است */
@@ -3373,7 +3460,9 @@ const hwCell = (q, k, ga) => {
 const hwBlocks = (s, no, ga) => {
   const bl = [], lab = no ? no + '. ' : '', t = String(s.t || '');
   if (lab || t.trim()) bl.push({ html: '<div class="ext">' + lab + esc(t).replace(/\n/g, '<br>') + '</div>', keep: 1 });
-  if (s.io) bl.push({ html: '<div class="exx">' + hwIoH(s.io, ga) + '</div>' });
+  const kd = hwKind(s);
+  if (kd === 'x') bl.push({ html: '<div class="ext" style="border:1px dashed #999;padding:3mm;color:#777;text-align:center">سؤال ویژهٔ نسخهٔ مک (در موبایل فقط نمایش داده می‌شود)</div>' });
+  else if (kd === 'io') bl.push({ html: '<div class="exx">' + hwIoH(s.hx, ga) + '</div>' });
   else if (s.pt) bl.push({ html: hwPtH(s, ga) });
   else if (s.op === 'none') { const qa = String(s.qa || '').trim(); if (qa) bl.push({ html: '<div class="ext exga' + (ga ? '' : ' hid') + '">' + esc(qa).replace(/\n/g, '<br>') + '</div>' }); }
   else {
@@ -3386,7 +3475,7 @@ const hwBlocks = (s, no, ga) => {
   return bl;
 };
 /* شماره‌گذاری | Numbering: خودکار (فقط سؤال‌های عادی شمرده می‌شوند)، دلخواه یا بدون شماره */
-const hwNo = (s, cnt) => (s.nz === 'n' ? '' : String(s.no || '').trim() ? pd(esc(String(s.no).trim())) : s.nz ? '' : fn(cnt + 1));
+const hwNo = (s, cnt) => (s.nm2 === 'n' ? '' : String(s.no || '').trim() ? pd(esc(String(s.no).trim())) : s.nm2 ? '' : fn(cnt + 1));
 /* اندازه‌گیری | Measure: ارتفاع هر بلوک (میلی‌متر) در یک جعبهٔ پنهان با همان استایل و عرض کادر سؤال‌ها */
 const HW_PXMM = 96 / 25.4, HW_AVAIL = 281 - 9;
 const hwMeasure = list => {
@@ -3398,14 +3487,15 @@ const hwMeasure = list => {
 /* صفحه‌بندی | Paginate: بلوک‌ها پشت‌سرهم در صفحه‌ها چیده می‌شوند؛ عنوان همیشه با اولین ردیف سؤالش می‌ماند؛ سؤال بلندتر از صفحه کوچک می‌شود */
 const hwPages = ga => {
   const groups = []; let cnt = 0;
-  HWD.s.forEach(s => { const no = hwNo(s, cnt); if (!s.nz && !String(s.no || '').trim()) cnt++; const bl = hwBlocks(s, no, ga); for (let i = 0; i < bl.length; i++) { let g = [bl[i]]; while (bl[i].keep && i + 1 < bl.length) { g.push(bl[++i]); if (!bl[i].keep) break; } groups.push(g); } });
-  const hd = HWD.h.on ? hwHeadH() : '', H1 = HWD.h.on ? 55 : 0, hs = hwMeasure(groups), P = [[]]; let cur = 0, pg = 0;
+  HWD.s.forEach(s => { const no = hwNo(s, cnt); if (!s.nm2 && !String(s.no || '').trim()) cnt++; const bl = hwBlocks(s, no, ga); for (let i = 0; i < bl.length; i++) { let g = [bl[i]]; while (bl[i].keep && i + 1 < bl.length) { g.push(bl[++i]); if (!bl[i].keep) break; } groups.push(g); } });
+  const hd = hwHeadH(), H1 = 55, hs = hwMeasure(groups), P = [[]]; let cur = 0, pg = 0;
   groups.forEach((g, i) => {
     const av = HW_AVAIL - (pg === 0 ? H1 : 0); let h = hs[i], html = g.map(q => q.html).join('');
     if (h > av) { html = '<div style="zoom:' + Math.max(0.3, (av - 1) / h).toFixed(3) + '">' + html + '</div>'; h = av - 1; }
     if (cur + h > av && P[pg].length) { P.push([]); pg++; cur = 0; }
     P[pg].push(html); cur += h;
   });
+  if (HWD.dirty) { HWD.dirty = 0; hwSave(); }
   if (!groups.length) P[0].push('<div class="ext" style="text-align:center;color:#888">سؤالی اضافه نشده است</div>');
   return P.map((p, i) => '<div class="apg"><div class="apc">' + (i === 0 ? hd : '') + '<div class="abx' + (i === 0 && hd ? '' : ' nohd') + '">' + p.join('') + '</div></div></div>');
 };
@@ -3414,7 +3504,8 @@ const hwPages = ga => {
 /* خلاصهٔ سؤال | Question Summary: نوع و تنظیم‌های مهم یک سؤال برای فهرست */
 const hwSum = s => {
   const k = hwKind(s);
-  if (k === 'io') return 'ماشین · ' + hwIoRule(s.io) + ' · ' + fn(s.io.rows.filter(r => String(r).trim()).length) + ' ورودی';
+  if (k === 'x') return 'ویژهٔ نسخهٔ مک · فقط در برنامهٔ اصلی ویرایش می‌شود';
+  if (k === 'io') return 'ماشین · ' + hwIoRule(s.hx) + ' · ' + fn(s.hx.rows.filter(r => String(r).trim()).length) + ' ورودی';
   if (k === 'pat') return 'الگو · ' + fn(Math.max(2, Math.min(8, +s.pt.n || 4))) + ' مرحله';
   if (k === 'none') return 'فقط متن' + (String(s.qa || '').trim() ? ' · با پاسخ' : '');
   return HW_TYPES[k] + ' · ' + hwDL(s.a) + ' ' + HW_OPS[k] + ' ' + hwDL(s.b) + ' · ' + fn(s.man && String(s.man).trim() ? String(s.man).trim().split('\n').filter(Boolean).length : s.n) + ' تمرین';
@@ -3422,28 +3513,31 @@ const hwSum = s => {
 PAGES.hw = r => {
   let cnt = 0;
   let b = '<div class="group-h">سؤال‌ها</div><div class="group">' + (HWD.s.length ? HWD.s.map((s, i) => {
-    const no = hwNo(s, cnt); if (!s.nz && !String(s.no || '').trim()) cnt++;
+    const no = hwNo(s, cnt); if (!s.nm2 && !String(s.no || '').trim()) cnt++;
     const t = String(s.t || '').trim().split('\n')[0];
     return rowH({ lead: icSq('pencil', HW_COL[hwKind(s)]), ttl: (no ? no + '. ' : '') + (t ? esc(t.slice(0, 40)) : '<span class="muted">بدون عنوان</span>'), sub: hwSum(s), chev: true, attr: ' data-act="hwEdit" data-a="' + i + '"' });
   }).join('') : '<div class="row static"><span class="ttl muted">هنوز سؤالی اضافه نشده</span></div>') + '</div>';
   b += '<div class="pad-x"><button class="btn tinted" data-act="hwAdd">' + ico('plus') + 'افزودن سؤال</button></div><div class="spacer"></div>';
   const H = HWD.h;
-  b += '<div class="group-h">سربرگ برگه</div><div class="group">' + rowH({ lead: icSq('list', '#0a84ff'), ttl: 'ویرایش سربرگ', sub: H.on ? esc([H.title, H.school, H.teacher].filter(x => String(x).trim()).join(' · ') || 'بسم‌الله، نام، عنوان و تاریخ') : 'بدون سربرگ', chev: true, attr: ' data-act="hwHd"' }) + '</div><div class="hw-bar-sp"></div>';
+  b += '<div class="group-h">سربرگ برگه</div><div class="group">' + rowH({ lead: icSq('list', '#0a84ff'), ttl: 'ویرایش سربرگ', sub: esc([H.title, H.school, H.teacher].filter(x => String(x).trim()).join(' · ') || 'بسم‌الله، نام، عنوان و تاریخ'), chev: true, attr: ' data-act="hwHd"' }) + '</div><div class="hw-bar-sp"></div>';
   return { title: 'تکلیف‌ساز', tabs: false, body: b, foot: '<div class="hw-bar"><button class="btn primary" data-act="hwPreview"' + (HWD.s.length ? '' : ' disabled') + '>' + ico('printer') + 'پیش‌نمایش، چاپ و PDF</button></div>' };
 };
 ACT.hwAdd = () => {
   if (HWD.s.length >= HW_MAXQ) return toast('حداکثر ' + fn(HW_MAXQ) + ' سؤال', true);
-  Sheet.action({ msg: 'نوع سؤال', items: ['add', 'sub', 'mul', 'div', 'none', 'io', 'pat'].map(o => ({ t: HW_TYPES[o], fn: () => { HWD.s.push(hwSec(o)); hwSave(); Nav.refresh(); setTimeout(() => ACT.hwEdit(null, HWD.s.length - 1), 330); } })) });
+  Sheet.action({ msg: 'نوع سؤال', items: ['add', 'sub', 'mul', 'div', 'none', 'io', 'pat'].map(o => ({ t: HW_TYPES[o], fn: () => { hwPush(hwSec(o)); hwSave(); Nav.refresh(); setTimeout(() => ACT.hwEdit(null, HWD.s.length - 1), 330); } })) });
 };
 /* ---- سربرگ | Header Sheet ---- */
 const hwHdBody = () => {
   const H = HWD.h, sg = (lab, k, items, cur) => '<div class="hw-opt"><div class="hw-lab">' + lab + '</div><div class="seg" style="margin:0">' + items.map(x => '<button class="' + (String(x[0]) === String(cur) ? 'on' : '') + '" data-act="hwHS" data-a="' + k + '" data-b="' + x[0] + '">' + x[1] + '</button>').join('') + '</div></div>';
   const fl = (lab, k, ph) => '<div class="hw-opt"><div class="hw-lab">' + lab + '</div><input class="fld" style="margin:0" data-in="hwH" data-k="' + k + '" value="' + esc(H[k]) + '" placeholder="' + ph + '" maxlength="80"></div>';
-  return sg('سربرگ', 'on', [[1, 'دارد'], [0, 'ندارد']], H.on) + (H.on ? fl('بالای برگه', 'bism', 'به نام نامی یزدان') + fl('عنوان تکلیف', 'title', 'تکلیف') + fl('نام مدرسه', 'school', 'نام مدرسه') + fl('پایه', 'grade', 'مثلاً سوم') + fl('آموزگار', 'teacher', 'نام آموزگار') + fl('برچسب نام دانش‌آموز', 'nm', 'نام و نام خانوادگی:') + sg('تاریخ کنار عنوان', 'dts', [[0, 'ندارد'], [1, 'دارد']], H.dts) + (+H.dts ? sg('تاریخ', 'off', [[0, 'امروز'], [1, 'فردا'], [2, 'پس‌فردا']], H.off) : '') : '');
+  const dt = +H.dts ? '<div class="hw-opt"><div class="hw-lab">' + esc(hwDt(H.dts)) + '</div><div class="seg" style="margin:0"><button data-act="hwDtS" data-a="-1">روز قبل</button><button data-act="hwDtS" data-a="1">روز بعد</button><button data-act="hwHS" data-a="dts" data-b="0">حذف تاریخ</button></div></div>' : '';
+  return fl('بالای برگه', 'bism', 'به نام نامی یزدان') + fl('عنوان تکلیف', 'title', 'تکلیف') + fl('نام مدرسه', 'school', 'نام مدرسه') + fl('پایه', 'grade', 'مثلاً سوم') + fl('آموزگار', 'teacher', 'نام آموزگار') + fl('برچسب نام دانش‌آموز', 'nm', 'نام و نام خانوادگی:') + '<div class="hw-opt"><div class="hw-lab">تاریخ کنار عنوان</div><div class="seg" style="margin:0"><button class="' + (+H.dts ? '' : 'on') + '" data-act="hwHS" data-a="dts" data-b="0">ندارد</button><button class="' + (+H.dts ? 'on' : '') + '" data-act="hwDtS" data-a="0">امروز</button></div></div>' + dt;
 };
 ACT.hwHd = () => Sheet.open({ title: 'سربرگ', body: '<div id="hwHdB">' + hwHdBody() + '</div>', after: sh => { const cl = sh.querySelector('[data-act=sheetClose]'); if (cl) cl.addEventListener('click', () => Nav.refresh()); } });
+/* گام تاریخ | Date Step: امروز یا یک روز جلو/عقب؛ مقدار به‌صورت زمان ذخیره می‌شود */
+ACT.hwDtS = (el, n) => { HWD.h.dts = hwDtNow(+n || 0); hwSave(); const e = $('#hwHdB'); if (e) e.innerHTML = hwHdBody(); };
 INP.hwH = (v, el) => { HWD.h[el.dataset.k] = v; hwSave(); };
-ACT.hwHS = (el, k, v) => { HWD.h[k] = +v; hwSave(); const e = $('#hwHdB'); if (e) e.innerHTML = hwHdBody(); };
+ACT.hwHS = (el, k, v) => { if (k === 'dts' && !+v) delete HWD.h.dts; else HWD.h[k] = +v; hwSave(); const e = $('#hwHdB'); if (e) e.innerHTML = hwHdBody(); };
 
 /* ---- ۱۷.۷ ویرایش یک سؤال | 17.7 Question Editor ---- */
 let HWE = -1;
@@ -3451,9 +3545,9 @@ const hwStp = (lab, f, v, lo, hi, txt) => '<div class="hw-opt"><div class="hw-la
 const hwSg = (lab, f, items, cur) => '<div class="hw-opt"><div class="hw-lab">' + lab + '</div><div class="seg" style="margin:0">' + items.map(x => '<button class="' + (String(x[0]) === String(cur) ? 'on' : '') + '" data-act="hwSv" data-a="' + f + '" data-b="' + x[0] + '">' + x[1] + '</button>').join('') + '</div></div>';
 const hwEdBody = () => {
   const s = HWD.s[HWE]; if (!s) return ''; const k = hwKind(s), ar = ['add', 'sub', 'mul', 'div'].includes(k);
-  let h = '<div class="hw-opt"><div class="hw-lab">نوع سؤال</div><div class="seg wrap" style="margin:0">' + ['add', 'sub', 'mul', 'div', 'none', 'io', 'pat'].map(o => '<button class="' + (k === o ? 'on' : '') + '" data-act="hwTy" data-a="' + o + '">' + HW_TYPES[o] + '</button>').join('') + '</div></div>';
-  h += '<div class="hw-opt"><div class="hw-lab">عنوان سؤال</div><textarea class="fld" style="margin:0" rows="2" data-in="hwTt" maxlength="300" placeholder="مثلاً: حاصل جمع‌ها را بنویس">' + esc(s.t || '') + '</textarea></div>';
-  h += hwSg('شمارهٔ سؤال', 'nz', [['', 'خودکار'], ['n', 'بدون شماره'], ['l', 'دلخواه']], s.nz) + (s.nz === 'l' ? '<div class="hw-opt"><input class="fld" style="margin:0" data-in="hwNo" value="' + esc(s.no || '') + '" placeholder="مثلاً: الف" maxlength="10"></div>' : '');
+  let h = k === 'x' ? '<div class="banner" style="margin:0 0 10px">' + ico('info') + '<span>این سؤال (متن و شکل هندسی، سودوکو یا ماشین چندمرحله‌ای) در نسخهٔ مک ساخته شده؛ اینجا فقط می‌توانی شماره، فاصله، ترتیب و حذفش را تغییر بدهی.</span></div>' : '<div class="hw-opt"><div class="hw-lab">نوع سؤال</div><div class="seg wrap" style="margin:0">' + ['add', 'sub', 'mul', 'div', 'none', 'io', 'pat'].map(o => '<button class="' + (k === o ? 'on' : '') + '" data-act="hwTy" data-a="' + o + '">' + HW_TYPES[o] + '</button>').join('') + '</div></div>';
+  if (k !== 'x') h += '<div class="hw-opt"><div class="hw-lab">عنوان سؤال</div><textarea class="fld" style="margin:0" rows="2" data-in="hwTt" maxlength="300" placeholder="مثلاً: حاصل جمع‌ها را بنویس">' + esc(s.t || '') + '</textarea></div>';
+  h += hwSg('شمارهٔ سؤال', 'nm2', [['', 'خودکار'], ['n', 'بدون شماره'], ['l', 'دلخواه']], s.nm2) + (s.nm2 === 'l' ? '<div class="hw-opt"><input class="fld" style="margin:0" data-in="hwNo" value="' + esc(s.no || '') + '" placeholder="مثلاً: الف" maxlength="10"></div>' : '');
   if (ar) {
     const man = String(s.man || '').trim();
     h += hwStp(k === 'div' ? 'رقم‌های مقسوم' : 'رقم اول', 'a', +s.a, 1, 6, fn(s.a) + ' رقمی') + hwStp(k === 'div' ? 'رقم‌های مقسوم‌علیه' : 'رقم دوم', 'b', +s.b, 1, 6, fn(s.b) + ' رقمی') + hwStp('تعداد تمرین', 'n', +s.n, 1, 30, fn(s.n)) + hwStp('تعداد ستون در هر ردیف', 'c', +s.c, 1, 5, fn(s.c));
@@ -3465,9 +3559,9 @@ const hwEdBody = () => {
   }
   if (k === 'none') h += '<div class="hw-opt"><div class="hw-lab">پاسخ (اختیاری؛ فقط با «نمایش پاسخ‌ها» دیده می‌شود)</div><textarea class="fld" style="margin:0" rows="2" data-in="hwQa" maxlength="400">' + esc(s.qa || '') + '</textarea></div>';
   if (k === 'io') {
-    h += '<div class="hw-opt"><div class="hw-lab">ورودی‌ها (هر خط یک عدد)</div><textarea class="fld" style="margin:0" rows="5" dir="ltr" data-in="hwIoR">' + esc(s.io.rows.join('\n')) + '</textarea><button class="btn gray" style="margin-top:8px" data-act="hwIoRnd">' + ico('shuffle') + 'ورودی‌های تصادفی</button></div>';
-    h += '<div class="hw-opt"><div class="hw-lab">عملیات ماشین</div><div class="seg wrap" style="margin:0">' + HW_IOOPS.map(o => '<button class="' + (s.io.k === o[0] ? 'on' : '') + '" data-act="hwIoK" data-a="' + o[0] + '">' + o[1] + '</button>').join('') + '</div></div>';
-    if (s.io.k !== 'sq') h += '<div class="hw-opt"><div class="hw-lab">عدد عملیات</div><input class="fld" style="margin:0" inputmode="numeric" data-in="hwIoM" value="' + esc(s.io.m) + '"></div>';
+    h += '<div class="hw-opt"><div class="hw-lab">ورودی‌ها (هر خط یک عدد)</div><textarea class="fld" style="margin:0" rows="5" dir="ltr" data-in="hwIoR">' + esc(s.hx.rows.join('\n')) + '</textarea><button class="btn gray" style="margin-top:8px" data-act="hwIoRnd">' + ico('shuffle') + 'ورودی‌های تصادفی</button></div>';
+    h += '<div class="hw-opt"><div class="hw-lab">عملیات ماشین</div><div class="seg wrap" style="margin:0">' + HW_IOOPS.map(o => '<button class="' + (s.hx.k === o[0] ? 'on' : '') + '" data-act="hwIoK" data-a="' + o[0] + '">' + o[1] + '</button>').join('') + '</div></div>';
+    if (s.hx.k !== 'sq') h += '<div class="hw-opt"><div class="hw-lab">عدد عملیات</div><input class="fld" style="margin:0" inputmode="numeric" data-in="hwIoM" value="' + esc(s.hx.m) + '"></div>';
   }
   if (k === 'pat') {
     const p = s.pt, n = Math.max(2, Math.min(8, +p.n || 4));
@@ -3485,7 +3579,7 @@ ACT.hwEdit = (el, i) => { HWE = +i; Sheet.open({ title: 'ویرایش سؤال',
 const hwEdPaint = () => { const e = $('#hwEd'); if (e) e.innerHTML = hwEdBody(); hwSave(); };
 ACT.hwTy = (el, o) => {
   const s = HWD.s[HWE]; if (!s || hwKind(s) === o) return; const d = hwSec(o);
-  ['io', 'pt'].forEach(f => delete s[f]); if (d.io) s.io = d.io; if (d.pt) s.pt = d.pt; s.op = d.op; s.it = null; s.sig = '';
+  ['hx', 'pt', 'su'].forEach(f => delete s[f]); if (d.hx) s.hx = d.hx; if (d.pt) s.pt = d.pt; s.op = d.op; s.it = null; s.sig = '';
   if (['add', 'sub', 'mul', 'div'].includes(o)) { if (!+s.n) s.n = d.n; s.b = o === 'div' && s.b > s.a ? 1 : s.b; if (o === 'none') s.c = 1; }
   if (o === 'none' || o === 'io' || o === 'pat') s.c = 1; else if (+s.c < 2) s.c = 3;
   hwEdPaint();
@@ -3497,21 +3591,21 @@ ACT.hwSt = (el, f, v) => {
   else if (f === 'n') s.n = Math.max(1, Math.min(30, s.n + d)); else if (f === 'c') s.c = Math.max(1, Math.min(5, s.c + d)); else s[f] = Math.max(1, Math.min(6, +s[f] + d));
   hwEdPaint();
 };
-ACT.hwSv = (el, f, v) => { const s = HWD.s[HWE]; if (!s) return; if (f === 'pm') s.pt.m = v; else s[f] = f === 'nz' ? v : +v; hwEdPaint(); };
+ACT.hwSv = (el, f, v) => { const s = HWD.s[HWE]; if (!s) return; if (f === 'pm') s.pt.m = v; else s[f] = f === 'nm2' ? v : +v; hwEdPaint(); };
 INP.hwTt = v => { const s = HWD.s[HWE]; if (s) { s.t = v; hwSave(); } };
 INP.hwNo = v => { const s = HWD.s[HWE]; if (s) { s.no = v; hwSave(); } };
 INP.hwMan = v => { const s = HWD.s[HWE]; if (s) { s.man = v; hwSave(); } };
 INP.hwQa = v => { const s = HWD.s[HWE]; if (s) { s.qa = v; hwSave(); } };
-INP.hwIoR = v => { const s = HWD.s[HWE]; if (s && s.io) { s.io.rows = v.split('\n'); hwSave(); } };
-INP.hwIoM = v => { const s = HWD.s[HWE]; if (s && s.io) { s.io.m = v; hwSave(); } };
+INP.hwIoR = v => { const s = HWD.s[HWE]; if (s && s.hx) { s.hx.rows = v.split('\n'); hwSave(); } };
+INP.hwIoM = v => { const s = HWD.s[HWE]; if (s && s.hx) { s.hx.m = v; hwSave(); } };
 INP.hwPt = (v, el) => { const s = HWD.s[HWE]; if (!s || !s.pt) return; if (el.dataset.k === 'd') { s.pt.d = Array.isArray(s.pt.d) ? s.pt.d : []; s.pt.d[+el.dataset.i] = v; } else s.pt[el.dataset.k] = v; hwSave(); };
 ACT.hwPtH = (el, i) => { const s = HWD.s[HWE]; if (!s || !s.pt) return; s.pt.h = Array.isArray(s.pt.h) ? s.pt.h : []; s.pt.h[+i] = s.pt.h[+i] ? 0 : 1; hwEdPaint(); };
-ACT.hwIoK = (el, k) => { const s = HWD.s[HWE]; if (s && s.io) { s.io.k = k; hwEdPaint(); } };
-ACT.hwIoRnd = () => { const s = HWD.s[HWE]; if (!s || !s.io) return; const u = new Set(); while (u.size < 5) u.add(2 + Math.floor(Math.random() * 19)); s.io.rows = [...u].sort((a, b) => a - b).map(String); hwEdPaint(); };
+ACT.hwIoK = (el, k) => { const s = HWD.s[HWE]; if (s && s.hx) { s.hx.k = k; hwEdPaint(); } };
+ACT.hwIoRnd = () => { const s = HWD.s[HWE]; if (!s || !s.hx) return; const u = new Set(); while (u.size < 5) u.add(2 + Math.floor(Math.random() * 19)); s.hx.rows = [...u].sort((a, b) => a - b).map(String); hwEdPaint(); };
 ACT.hwRg = (el, v) => { const s = HWD.s[HWE]; if (!s) return; s[el.dataset.f] = hwArV(v); hwEdPaint(); };
 ACT.hwNewNums = () => { const s = HWD.s[HWE]; if (s) { hwRegen(s); toast('عددهای جدید ساخته شد'); } };
-ACT.hwMv = (el, d) => { const j = HWE + +d; if (j < 0 || j >= HWD.s.length) return; [HWD.s[HWE], HWD.s[j]] = [HWD.s[j], HWD.s[HWE]]; HWE = j; hwEdPaint(); };
-ACT.hwDel = () => ask('این سؤال حذف شود؟', 'حذف', () => { HWD.s.splice(HWE, 1); HWE = -1; hwSave(); Sheet.close(); Nav.refresh(); }, true);
+ACT.hwMv = (el, d) => { const j = HWE + +d; if (j < 0 || j >= HWD.s.length) return; hwSwap(HWE, j); HWE = j; hwEdPaint(); };
+ACT.hwDel = () => ask('این سؤال حذف شود؟', 'حذف', () => { hwRemove(HWE); HWE = -1; hwSave(); Sheet.close(); Nav.refresh(); }, true);
 
 /* ---- ۱۷.۸ پیش‌نمایش | 17.8 Preview ---- */
 /* ضریب نمایش | Fit Zoom: صفحهٔ A4 (۷۹۴ پیکسل) متناسب با عرض گوشی کوچک می‌شود؛ حالت «درشت» تقریباً دو برابر و با کشیدن افقی */
@@ -3586,11 +3680,13 @@ ACT.hwPdf = async () => {
 (async function boot() {
   Look.apply(); Tabs.render(); bindEvents();
   await Cache.open();
-  /* پاک‌کردن نسخهٔ ذخیره‌شده | Clear Stored Copy: روی آدرس واقعی وب (github.io) دیگر به صفحهٔ موقت blob: نمی‌رویم، چون «افزودن به صفحهٔ اصلی» روی آن کار نمی‌کند؛ نسخهٔ ذخیره‌شدهٔ قدیمی پاک می‌شود و سرویس‌ورکر خودش نسخهٔ تازه را می‌آورد */
-  if (location.protocol !== 'blob:' && location.protocol !== 'file:') {
+  /* نسخهٔ ذخیره‌شده | Stored Override: روی آدرس http/https هرگز به blob: نمی‌رویم (چون «افزودن به صفحهٔ اصلی» را خراب می‌کند)؛ نسخهٔ ذخیره‌شدهٔ ovr پاک می‌شود و خود فایل میزبان اجرا می‌شود */
+  if (/^https?:$/.test(location.protocol)) {
+    try { await Cache.del('kv', 'ovr'); } catch (e) { /* مهم نیست */ }
+  } else if (location.protocol !== 'blob:' && location.protocol !== 'file:') {
     const ov = await Cache.get('kv', 'ovr');
-    if (ov && ov.base !== HOST_BUILD) { Cache.del('kv', 'ovr'); Pref.del('updinst'); Pref.del('updlast'); } /* خود فایل میزبان تازه شده؛ نسخهٔ ذخیره‌شده کهنه است */
-    else if (ov) Cache.del('kv', 'ovr'); /* پاک‌کردن نسخهٔ قدیمی | Clear Old Copy: نسخهٔ ذخیره‌شده پاک می‌شود و برنامه با فایل اصلی همان آدرس ادامه می‌دهد */
+    if (ov && ov.base !== HOST_BUILD) { Cache.del('kv', 'ovr'); Pref.del('updinst'); Pref.del('updlast'); }
+    else if (ov && ov.html) { try { location.replace(URL.createObjectURL(new Blob([ov.html], { type: 'text/html' })) + location.hash); return; } catch (e) { /* ادامه با نسخهٔ خود فایل */ } }
   }
   /* سرویس‌ورکر | Service Worker Register: فقط روی آدرس وب ثبت می‌شود (نه فایل محلی و نه نسخهٔ blob) */
   if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register('sw.js').catch(() => {});
