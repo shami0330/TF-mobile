@@ -723,6 +723,22 @@ input,textarea,select{font-size:max(16px,1rem)}
 .rkd{display:flex;align-items:flex-start;gap:6px;padding:8px 10px}.rkd+.rkd{border-top:.5px solid var(--sep)}.rkd.off textarea{opacity:.55}.rkd textarea{flex:1;margin:0}.rkd .pn-no{padding-top:10px}.rkd-b{display:flex;flex-direction:column;gap:6px}
 .ef-del .cap-b{width:46px;height:46px}.ef-del .cap-b svg{width:22px;height:22px}
 
+/* ---- آدمک‌ها | People Icons: اندازهٔ آیکون آدمک‌ها و حباب‌های غیبت، مثبت و منفی ---- */
+.ppl{width:24px;height:26px;overflow:visible;flex:none;display:inline-block;vertical-align:middle}.ppl.duo{width:32px}
+.ab-p{display:inline-flex;flex-direction:column;align-items:center;gap:0;line-height:1}.ab-p .ppl{width:20px;height:20px}.ab-p b{font-size:.8125rem;font-weight:800;color:var(--red);direction:ltr}
+.stat .ppl{display:block;margin:0 auto 2px}.pn2c b .ppl{width:20px;height:20px;margin-inline-end:4px}
+.pnb{display:inline-flex;align-items:center;gap:2px;font-weight:800;margin-inline-start:6px;background:none}.pnb .ppl{width:1.5em;height:1.5em}
+.qc-btn .ppl.duo{width:34px;height:22px;margin-inline-end:4px}.pn-h .ppl{width:20px;height:20px;margin-inline-end:2px}
+.qc-two .btn{padding:0 8px;gap:2px;font-size:.9375rem}.qc-neg .pnb{margin-inline-start:2px}.qc-neg .pnb .ppl{width:1.3em;height:1.3em}
+/* بزرگ‌تر شدن شیطان و فرشته | Bigger Devil & Angel: آیکون فرشته و شیطان ۲۵ درصد بزرگ‌تر از آدمک غیبت */
+.ppl.pos,.ppl.neg{width:30px;height:32.5px}.ppl.duo{width:40px;height:26px}
+.stat .ppl.pos,.stat .ppl.neg{width:30px;height:32.5px}.pn2c b .ppl.pos,.pn2c b .ppl.neg{width:25px;height:27px}
+.pnb .ppl.pos,.pnb .ppl.neg{width:1.9em;height:2em}.qc-neg .pnb .ppl.pos,.qc-neg .pnb .ppl.neg{width:1.65em;height:1.8em}
+.pn-h .ppl.pos,.pn-h .ppl.neg{width:25px;height:27px}.qc-btn .ppl.duo{width:42px;height:27.5px}
+/* ردیف شمارنده‌ها در فهرست | List Counters: مثبت، منفی و غیبت هر دانش‌آموز کنار هم؛ سه‌آدمک غیبت‌ها */
+.ab-row{display:inline-flex;gap:8px;align-items:flex-end}.ab-p.pos b{color:#1f9d45}
+.ppl.abs3{width:64px;height:38px}.stat .ppl.abs3{display:block;margin:0 auto 2px}
+
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
 /* تکلیف‌ساز | Homework Maker: صفحهٔ تنظیم‌ها، نوار پایین، برگهٔ سفید پیش‌نمایش و چاپ A4 */
@@ -956,6 +972,20 @@ const ICONS = {
   'up': '<path d="M12 19V5M5 12l7-7 7 7"/>'
 };
 /* ساخت آیکون | Make Icon: یک تصویر SVG از نام آیکون می‌سازد؛ cls کلاس اضافه برای اندازه و رنگ است */
+/* آدمک‌ها | People Icons: آدمک قرمز غیبت (abs)، آدمک قرمز شیطانی با شاخ و دم برای منفی (neg)، آدمک سبز بالدار با هاله برای مثبت (pos)، و هر دو پشت‌به‌پشت در یک آیکون (duo) */
+/* بدنهٔ آدمک‌ها | People Shapes: طرح‌های دقیق کاربر؛ شیطان شاخ‌دار با شنل و چنگک، کاربر ساده، فرشتهٔ سبز بالدار با هاله و تاج برگ */
+const PPL_DEVIL = '<path d="M45 140C45 210 75 245 95 260 120 225 145 235 175 235 205 235 220 205 250 205 260 205 270 190 275 180 235 185 205 160 175 130 150 110 125 115 110 125L70 125C55 115 40 120 45 140Z" fill="#A61C1C"/><path d="M30 165C30 135 50 120 80 120L120 120C150 120 170 135 170 165L170 185 145 195 145 160 138 160 138 197 62 197 62 160 55 160 55 195 30 185Z" fill="#D92626"/><path d="M55 125Q100 155 145 125L130 118Q100 135 70 118Z" fill="#C41E1E"/><circle cx="100" cy="80" r="42" fill="#D92626"/><path d="M65 55C48 42 45 22 56 12 58 28 66 36 78 42ZM135 55C152 42 155 22 144 12 142 28 134 36 122 42Z" fill="#D92626"/><path d="M73 66 91 74M127 66 109 74M88 96Q102 104 114 91" fill="none" stroke="#801111" stroke-width="4.5" stroke-linecap="round"/><circle cx="82" cy="77" r="4.5" fill="#801111"/><circle cx="118" cy="77" r="4.5" fill="#801111"/><g transform="translate(198 0)" fill="#B51B1B"><rect x="-4.5" y="15" width="9" height="250" rx="4.5"/><polygon points="0,0 -10,20 10,20"/><path d="M-28 24L-28 52C-28 72 28 72 28 52L28 24" fill="none" stroke="#B51B1B" stroke-width="9" stroke-linecap="round"/><polygon points="-28,8 -37,26 -19,26"/><polygon points="28,8 19,26 37,26"/></g><circle cx="198" cy="175" r="13" fill="#D92626"/>';
+const PPL_USER = '<circle cx="85" cy="80" r="44" fill="#D92626"/><path d="M15 168C15 136 36 120 68 120L102 120C134 120 155 136 155 168L155 188 130 198 130 162 123 162 123 200 47 200 47 162 40 162 40 198 15 188Z" fill="#D92626"/>';
+const PPL_ANGEL = '<path d="M75 135C45 110 15 80 5 85-2 90 8 115 25 125 12 125 10 135 28 145 18 148 22 160 45 162 58 162 68 152 75 145Z" fill="#F2F4F7" stroke="#C9D0DA" stroke-width="3" stroke-linejoin="round"/><path d="M145 135C175 110 205 80 215 85 222 90 212 115 195 125 208 125 210 135 192 145 202 148 198 160 175 162 162 162 152 152 145 145Z" fill="#F2F4F7" stroke="#C9D0DA" stroke-width="3" stroke-linejoin="round"/><ellipse cx="110" cy="22" rx="42" ry="11" fill="none" stroke="#F4C430" stroke-width="7"/><circle cx="110" cy="80" r="42" fill="#77B988"/><g fill="#F4C430"><path d="M106 60C90 62 74 72 68 85M114 60C130 62 146 72 152 85" fill="none" stroke="#F4C430" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="100" cy="56" rx="7" ry="3.5" transform="rotate(-25 100 56)"/><ellipse cx="90" cy="60" rx="7.5" ry="3.5" transform="rotate(-35 90 60)"/><ellipse cx="80" cy="66" rx="7.5" ry="3.5" transform="rotate(-45 80 66)"/><ellipse cx="72" cy="74" rx="7" ry="3.5" transform="rotate(-55 72 74)"/><ellipse cx="120" cy="56" rx="7" ry="3.5" transform="rotate(25 120 56)"/><ellipse cx="130" cy="60" rx="7.5" ry="3.5" transform="rotate(35 130 60)"/><ellipse cx="140" cy="66" rx="7.5" ry="3.5" transform="rotate(45 140 66)"/><ellipse cx="148" cy="74" rx="7" ry="3.5" transform="rotate(55 148 74)"/></g><path d="M42 168C42 136 63 120 93 120L127 120C157 120 178 136 178 168L178 188 153 198 153 162 146 162 146 200 74 200 74 162 67 162 67 198 42 188Z" fill="#77B988"/>';
+const PPL_SLASH = '<line x1="8" y1="212" x2="162" y2="32" stroke="#fff" stroke-width="26" stroke-linecap="round"/><line x1="8" y1="212" x2="162" y2="32" stroke="#801111" stroke-width="13" stroke-linecap="round"/>';
+const PPL_VB = { abs: '8 28 156 190', neg: '25 0 255 270', pos: '0 8 225 195' };
+/* سه آدمک پشت‌هم | Absence Group Icon: سه آدمک ردیف و روی هم برای «جمع غیبت‌ها»؛ فقط آدمک جلویی خط مورب دارد */
+const PPL_ROW = '<g opacity=".5" transform="translate(-15 -36)">' + PPL_USER + '</g><g opacity=".78" transform="translate(55 -36)">' + PPL_USER + '</g><g transform="translate(125 -36)">' + PPL_USER + PPL_SLASH + '</g>';
+const ppl = (k, cls) => {
+  if (k === 'abs3') return '<svg class="ppl abs3' + (cls ? ' ' + cls : '') + '" viewBox="0 0 280 164" aria-hidden="true">' + PPL_ROW + '</svg>';
+  if (k === 'duo') return '<svg class="ppl duo' + (cls ? ' ' + cls : '') + '" viewBox="0 0 300 210" aria-hidden="true"><svg x="0" y="5" width="145" height="200" viewBox="0 8 225 195">' + PPL_ANGEL + '</svg><svg x="152" y="0" width="148" height="210" viewBox="25 0 255 270">' + PPL_DEVIL + '</svg></svg>';
+  return '<svg class="ppl ' + k + (cls ? ' ' + cls : '') + '" viewBox="' + PPL_VB[k] + '" aria-hidden="true">' + (k === 'abs' ? PPL_USER + PPL_SLASH : k === 'neg' ? PPL_DEVIL : PPL_ANGEL) + '</svg>';
+};
 const ico = (n, cls) => '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + (ICONS[n] || '') + '</svg>';
 
 /* ---- ۴.۴ نمره‌ها | 4.4 Grades ---- */
@@ -2689,7 +2719,7 @@ const attDayView = (c, st) => {
   weekDays(st.off).forEach(x => { if (attDay(c, dkey(x)).rec) marks[dkey(x)] = 1; });
   let h = '<div class="day-head"><b>' + esc(jFull(d)) + '</b>' + (attLocked(c, k) ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
   h += dayStripH({ off: st.off, sel: k, marks, pick: 'attPick', nav: 'attWeek' });
-  const tile = (f, cls, n, t) => '<button class="stat ' + cls + (st.f === f ? ' on' : '') + '" data-act="attFilter" data-a="' + f + '"><b>' + fn(n) + '</b><span>' + t + '</span></button>';
+  const tile = (f, cls, n, t) => '<button class="stat ' + cls + (st.f === f ? ' on' : '') + '" data-act="attFilter" data-a="' + f + '">' + (f === 'a' ? ppl('abs') : '') + '<b>' + fn(n) + '</b><span>' + t + '</span></button>';
   h += '<div class="stats">' + tile('a', 'red', ad.a, 'غایب') + '</div>';
   const L = STU(c).filter(s => { const v = attOf(c, k, s.id); return st.f === 'all' || (st.f === 'p' && v === 1) || (st.f === 'a' && v === 0) || (st.f === 'n' && v !== 1 && v !== 0); });
   const lk = attLocked(c, k);
@@ -2725,7 +2755,7 @@ const attMonthView = (c, st) => {
   const per = L.map(s => { let a = 0; days.forEach(d => { if (attOf(c, dkey(d), s.id) === 0) a++; }); return a; });
   const tot = per.reduce((p, q) => p + q, 0), withAbs = per.filter(x => x > 0).length;
   let h = '<div class="mo-nav"><button class="dnav" data-act="attMonthGo" data-a="-1" aria-label="ماه قبل">' + ico('chev-r') + '</button><div class="t">' + JM[m - 1] + ' ' + fn(y) + '</div><button class="dnav" data-act="attMonthGo" data-a="1"' + ((y > cur.y || (y === cur.y && m >= cur.m)) ? ' disabled' : '') + ' aria-label="ماه بعد">' + ico('chev-l') + '</button></div>';
-  h += '<div class="stats"><div class="stat tint"><b>' + fn(rec) + '</b><span>روز ثبت‌شده</span></div><div class="stat red"><b>' + fn(tot) + '</b><span>جمع غیبت‌ها</span></div><div class="stat orange"><b>' + fn(withAbs) + '</b><span>دانش‌آموز غایب</span></div></div>';
+  h += '<div class="stats"><div class="stat tint"><b>' + fn(rec) + '</b><span>روز ثبت‌شده</span></div><div class="stat red">' + ppl('abs3') + '<b>' + fn(tot) + '</b><span>جمع غیبت‌ها</span></div><div class="stat orange">' + ppl('abs') + '<b>' + fn(withAbs) + '</b><span>دانش‌آموز غایب</span></div></div>';
   if (!rec) return h + emptyH('calendar', 'ثبتی در این ماه نیست', 'برای روزهای این ماه حضور و غیاب ثبت نشده است.');
   h += '<div class="group">' + L.map((s, i) => {
     const dots = '<div class="dots">' + days.map(d => { const k = dkey(d), v = attOf(c, k, s.id); return '<i class="dt ' + (k > tk ? 'f' : v === 1 ? 'p' : v === 0 ? 'a' : '') + '"></i>'; }).join('') + '</div>';
@@ -2817,7 +2847,7 @@ const bubS = n => 'font-size:' + (0.75 + Math.min(n, 30) * 0.02).toFixed(3) + 'r
 const qcBtn = (c, k) => {
   if (!qcKey(c)) return '';
   k = k || dkey(defDay()); const gl = gLocked(c, k), sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
-  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ico('award') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <b class="gp" style="' + bubS(P) + '"><bdi dir="ltr">+' + fn(P) + '</bdi></b><b style="' + bubS(N) + '"><bdi dir="ltr">−' + fn(N) + '</bdi></b>' : '') + '</button></div><div class="pad-x qc-wrap"><button class="btn sm glk' + (gl ? ' lkon' : '') + '" data-act="gLock" data-a="' + k + '">' + ico('lock') + 'قفل نمرات</button></div>';
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ppl('duo') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <span class="pnb" style="' + bubS(P) + '">' + ppl('pos') + '<bdi dir="ltr">' + fn(P) + '</bdi></span><span class="pnb" style="' + bubS(N) + '">' + ppl('neg') + '<bdi dir="ltr">' + fn(N) + '</bdi></span>' : '') + '</button></div><div class="pad-x qc-wrap"><button class="btn sm glk' + (gl ? ' lkon' : '') + '" data-act="gLock" data-a="' + k + '">' + ico('lock') + 'قفل نمرات</button></div>';
 };
 /* ---- ۱۳.۲ج برگهٔ مثبت و منفی | 13.2c Positive & Negative Sheet ---- */
 /* مثبت و منفی | Pos/Neg Sheet: برگهٔ دو ستونه (مثبت‌ها و منفی‌ها) برای کل کلاس در یک روز یا یک ماه، یا برای یک دانش‌آموز؛ با «ویرایش» می‌شود دلیل را عوض کرد یا مورد را (تکی یا چندتایی، با تأیید) حذف کرد و روی سرور ذخیره می‌شود */
@@ -2855,7 +2885,7 @@ const pnBody = () => {
   let h = segH(PN.sid ? [['month', 'ماه'], ['all', 'همه']] : [['day', 'روز'], ['month', 'ماه']], PN.f, 'pnF');
   if (PN.f === 'day') h += '<div class="qc-nav"><button class="dnav" data-act="pnD" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(PN.k))) + '</b><button class="dnav" data-act="pnD" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>';
   if (PN.f === 'month') { const ms = [...new Set(all.map(e => pnYm(e.k)).concat([PN.ym]))].sort((a, b) => a - b); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === PN.ym ? ' on' : '') + '" data-act="pnM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
-  const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? pnGroup(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
+  const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + ppl(w === 'p' ? 'pos' : 'neg') + ' ' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? pnGroup(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
   return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
 };
 /* دکمه‌های بالای برگه | Header Buttons: «ویرایش» و (در حالت ویرایش) «تمام» و «حذف» به شکل کپسول، گوشهٔ راست */
@@ -3224,7 +3254,7 @@ ACT.schDay = (el, a) => { stOf().di = +a; Nav.refresh(); };
 const stuListH = (c, q) => {
   const L = STU(c).filter(s => !q || stuMatch(s, q));
   if (!L.length) return emptyH('search', q ? 'نتیجه‌ای پیدا نشد' : 'دانش‌آموزی ثبت نشده', q ? 'نام دیگری را امتحان کن.' : 'در برنامهٔ اصلی دانش‌آموزان را اضافه کن.');
-  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnH(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: a ? '<span class="count-dot red" title="روز غیبت">' + fn(a) + '</span>' : '', chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
+  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnH(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: (() => { const bh = behOf(c, s.id), one = (k, n, t) => n ? '<span class="ab-p ' + k + '" title="' + t + '">' + ppl(k) + '<b>' + fn(n) + '</b></span>' : ''; return '<span class="ab-row">' + one('pos', bh.tp, 'مثبت') + one('neg', bh.tn, 'منفی') + one('abs', a, 'روز غیبت') + '</span>'; })(), chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
     + '<div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' دانش‌آموز' + (q ? ' از ' + fn(STU(c).length) : '') + '</div>';
 };
 /* صفحهٔ دانش‌آموزان | Students Page: نوار جستجو و فهرست */
@@ -3258,12 +3288,11 @@ const stuCardH = (c, s) => {
   /* در حالت ویرایش همهٔ ماه‌ها نشان داده می‌شوند و هر خانه با لمس قابل تغییر است؛ خانهٔ نمرهٔ دستی نقطه دارد */
   if (!r.rows.length || (!ed && !r.rows.some(x => x.n))) return emptyH('award', 'هنوز نمره‌ای نیست', 'وقتی نمره‌ها ثبت شوند، کارنامهٔ ماهانه اینجا دیده می‌شود.') + dsBoxH(s, ed);
   let h = '<div class="tblw"><table class="tbl"><tr><th class="nm">درس</th>' + MO.map((m, i) => used[i] ? '<th>' + m + '</th>' : '').join('') + '<th>کل</th></tr>';
-  const rg = s.rg || {}, cell = (x, i) => { const has = typeof ((rg[(r.q ? 'q:' : '') + x.l.id] || {})[i]) === 'number'; return ed ? '<td class="rce' + (has ? ' ov' : '') + '" data-act="rcEd" data-a="' + esc(x.l.id) + '|' + i + '">' + (rcCell(x.m[i], r.q, true) || '<span class="muted">·</span>') + '</td>' : '<td>' + rcCell(x.m[i], r.q, true) + '</td>'; };
+  const rg = s.rg || {}, cell = (x, i) => { const has = typeof ((rg[(r.q ? 'q:' : '') + x.l.id] || {})[i]) === 'number'; return ed ? '<td class="rce' + (has ? ' ov' : '') + '" data-act="rcEd" data-a="' + esc(x.l.id) + '|' + i + '">' + (rcCell(x.m[i], r.q, true) || '<span class="gp none sm">—</span>') + '</td>' : '<td>' + rcCell(x.m[i], r.q, true) + '</td>'; };
   r.rows.forEach(x => { h += '<tr><td class="nm">' + esc(x.l.name) + '</td>' + MO.map((m, i) => used[i] ? cell(x, i) : '').join('') + '<td>' + rcCell(x.all, r.q, true) + '</td></tr>'; });
   if (r.q) h += '<tr class="sum"><td class="nm">معدل</td>' + MO.map((m, i) => used[i] ? '<td>' + rcCell(r.foot.m[i], true, true) + '</td>' : '').join('') + '<td>' + rcCell(r.foot.all, true, true) + '</td></tr>';
   h += '</table></div>';
   if (!r.q) h += '<div class="legend">' + [1, 2, 3, 4].map(g => '<span class="lg"><i style="background:var(--g' + g + ')"></i>' + GN[g] + '</span>').join('') + '</div>';
-  if (ed) h += '<div class="group-f">برای تغییر نمرهٔ هر ماه روی آن بزن. نقطهٔ کنار خانه یعنی نمرهٔ دستی است.</div>';
   return h + dsBoxH(s, ed);
 };
 
@@ -3271,9 +3300,9 @@ const stuCardH = (c, s) => {
 /* غیبت و رفتار | Absence & Behavior Segment: آمار حضور، روزهای غیبت به تفکیک ماه و ثبت‌های مثبت و منفی شایستگی‌ها */
 const stuAttH = (c, s) => {
   const t = attTot(c, s.id), bh = behOf(c, s.id);
-  const cap = (w, cls, n, lab) => '<button class="stat ' + cls + '" data-act="stuList" data-a="' + w + '"><b>' + fn(n) + '</b><span>' + lab + '</span></button>';
+  const cap = (w, cls, n, lab) => '<button class="stat ' + cls + '" data-act="stuList" data-a="' + w + '">' + (w === 'a' ? ppl('abs') : '') + '<b>' + fn(n) + '</b><span>' + lab + '</span></button>';
   /* مثبت و منفی | Pos/Neg Capsule: یک کپسول با دو ستون (مثبت‌ها و منفی‌ها)؛ لمسش برگهٔ کامل را باز می‌کند */
-  const pn = '<button class="stat pn2" data-act="stuPN"><span class="pn2c green"><b><bdi dir="ltr">+' + fn(bh.tp) + '</bdi></b><span>مثبت</span></span><span class="pn2c red"><b><bdi dir="ltr">−' + fn(bh.tn) + '</bdi></b><span>منفی</span></span></button>';
+  const pn = '<button class="stat pn2" data-act="stuPN"><span class="pn2c green"><b>' + ppl('pos') + '<bdi dir="ltr">' + fn(bh.tp) + '</bdi></b><span>مثبت</span></span><span class="pn2c red"><b>' + ppl('neg') + '<bdi dir="ltr">' + fn(bh.tn) + '</bdi></b><span>منفی</span></span></button>';
   return '<div class="stats">' + cap('a', 'red', t.a, 'روز غیبت') + pn + '</div>';
 };
 /* فهرست هر کپسول | Capsule List: با لمس هر کپسول، فهرست غیبت‌ها (به تفکیک ماه) یا ثبت‌های مثبت و منفی همراه با دلیل در یک برگه باز می‌شود */
@@ -3300,14 +3329,14 @@ PAGES.stuD = (r, p) => {
   const st = r.st; if (!st.seg) st.seg = p.seg || 'info';
   const calls = [['پدر', s.fphone], ['ضروری', s.ephone]].filter(x => telHref(x[1]));
   let b = '<div class="shead">' + avatar(s, 84) + '<div class="nm">' + esc(sn(s)) + '</div><div class="meta">' + esc([s.gender, c.name].filter(Boolean).join(' · ')) + '</div>'
-    + '<div class="tags tap" data-act="edOpen" data-a="stuTg" data-b="' + esc(JSON.stringify({ sid: s.id })) + '">' + (stuTags(s).length ? stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') : '<span class="tag add">+ برچسب</span>') + '</div>'
+    + '<div class="tags tap" data-act="edOpen" data-a="stuTg" data-b="' + esc(JSON.stringify({ sid: s.id })) + '">' + (stuTags(s).length ? stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') : '<span class="tag add">+ تگ</span>') + '</div>'
     + (calls.length ? '<div class="circ">' + calls.map(x => '<a href="' + esc(telHref(x[1])) + '"><i>' + ico('phone') + '</i>' + x[0] + '</a>').join('') + '</div>' : '') + '</div>';
   b += segH([['info', 'مشخصات'], ['card', 'کارنامه'], ['att', 'غیبت و رفتار']], st.seg, 'stuSeg');
   b += st.seg === 'info' ? stuInfoH(s) : st.seg === 'card' ? stuCardH(c, s) : stuAttH(c, s);
   const pv = L[i - 1], nx = L[i + 1], fnm = x => esc((x && (x.fn || sn(x))) || '');
   const stepBtn = (o, d, ic) => '<button class="stepb' + (o ? '' : ' off') + '"' + (o ? ' data-act="stuStep" data-a="' + d + '"' : ' disabled') + '>' + (d < 0 ? ico(ic) : '') + '<span>' + (o ? fnm(o) : '') + '</span>' + (d > 0 ? ico(ic) : '') + '</button>';
   b = '<div class="stepbar">' + stepBtn(pv, -1, 'chev-r') + '<div class="stepn"><b>' + fn(i + 1) + '</b> از ' + fn(L.length) + '</div>' + stepBtn(nx, 1, 'chev-l') + '</div>' + b;
-  return { title: sn(s), tabs: false, trail: st.seg === 'card' ? edBtn('stuCard', { sid: s.id }, !!st.cardEd) : edBtn('stu', { sid: s.id }), body: b };
+  return { title: sn(s), tabs: false, trail: st.seg === 'card' ? (st.cardEd ? edBtn('stuCardX', { sid: s.id }, 0, 'x') + edBtn('stuCard', { sid: s.id }, 1) : edBtn('stuCard', { sid: s.id })) : edBtn('stu', { sid: s.id }), body: b };
 };
 ACT.stuSeg = (el, a) => { stOf().seg = a; Nav.refresh(); };
 ACT.stuStep = (el, a) => {
@@ -3325,7 +3354,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-23T08:12:08.179Z';
+const APP_BUILD = '2026-11-23T08:45:53.826Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3949,7 +3978,7 @@ ACT.hwPdf = async () => {
 
 /* ---- ۱۸.۱ دکمهٔ مداد | 18.1 Pencil Button ---- */
 /* دکمهٔ مداد | Pencil Button: دکمهٔ گرد بالای صفحه؛ kind نوع فرم و p شناسه‌های لازم (مثل شناسهٔ دانش‌آموز) است */
-const edBtn = (kind, p, on) => '<button class="cap-b ic ' + (on ? 'solid' : 'tint') + '" data-act="edOpen" data-a="' + kind + '" data-b="' + esc(JSON.stringify(p || {})) + '" aria-label="' + (/Add$/.test(kind) ? 'افزودن' : 'ویرایش') + '">' + ico(on ? 'check' : /Add$/.test(kind) ? 'plus' : 'pencil') + '</button>';
+const edBtn = (kind, p, on, ic) => '<button class="cap-b ic ' + (ic === 'x' ? 'x' : on ? 'solid' : 'tint') + '" data-act="edOpen" data-a="' + kind + '" data-b="' + esc(JSON.stringify(p || {})) + '" aria-label="' + (/Add$/.test(kind) ? 'افزودن' : 'ویرایش') + '">' + ico(ic === 'x' ? 'x' : on ? 'check' : /Add$/.test(kind) ? 'plus' : 'pencil') + '</button>';
 
 /* ---- ۱۸.۲ ساخت فرم | 18.2 Form Builder ---- */
 /* وضعیت فرم باز | Open Form State: فرمی که الان باز است (برای ذخیره و حذف) */
@@ -3994,7 +4023,7 @@ const AREA_SF = ['addr', 'weak', 'good', 'ill', 'talent', 'help'];
 const YN_ = ['بله', 'خیر'], N0_ = [...Array(11).keys()].map(String), SF_SEL = { glass: YN_, hear: YN_, lh: YN_, sib: N0_, rank: N0_ };
 const sfField = (f, s) => { const v = s[f[0]] == null ? '' : String(s[f[0]]), o = SF_SEL[f[0]]; if (o) return { k: f[0], l: f[1], t: 'sel', v, o: [['', '—']].concat((o.includes(v) || !v ? o : o.concat([v])).map(x => [x, x])) }; return { k: f[0], l: f[1], v: s[f[0]], t: f[2] === 'p' ? 'tel' : AREA_SF.includes(f[0]) ? 'area' : 'text' }; };
 const stuFields = s => [{ t: 'h', l: 'نام' }, { k: 'fn', l: 'نام', v: s.fn }, { k: 'ln', l: 'نام خانوادگی', v: s.ln },
-  { k: 'tg', l: 'برچسب‌ها (با ، جدا)', v: stuTags(s).join('، ') },
+  { k: 'tg', l: 'تگ‌ها (با ، جدا)', v: stuTags(s).join('، ') },
   { k: 'gender', l: 'جنسیت', t: 'sel', v: s.gender || '', o: [['', '—'], ['دختر', 'دختر'], ['پسر', 'پسر']] }]
   .concat(SF.map(f => f[0] === 'h' ? { t: 'h', l: f[1] } : sfField(f, s)));
 const stuVal = (k, v) => ['shad', 'fphone', 'ephone'].includes(k) ? fd(v) : k === 'tg' ? tgArr(v) : v;
@@ -4017,8 +4046,8 @@ ED_FORMS.stuAdd = () => {
 ED_FORMS.stuTg = p => {
   const c = C(), s = stuById(c, p.sid); if (!s) return;
   const all = [...new Set(STU(c).flatMap(x => stuTags(x)))], cur = stuTags(s);
-  const extra = all.length ? '<div class="group-h">برچسب‌های این دوره</div><div class="ef-chips">' + all.map(t => '<button class="chip' + (cur.includes(t) ? ' on' : '') + '" data-act="edTg" data-a="' + esc(t) + '">' + esc(t) + '</button>').join('') + '</div>' : '';
-  edSheet({ title: 'برچسب‌های ' + (s.fn || sn(s)), fields: [{ k: 'tg', l: 'برچسب‌ها', v: cur.join('، ') }], extra,
+  const extra = all.length ? '<div class="group-h">تگ‌های این دوره</div><div class="ef-chips">' + all.map(t => '<button class="chip' + (cur.includes(t) ? ' on' : '') + '" data-act="edTg" data-a="' + esc(t) + '">' + esc(t) + '</button>').join('') + '</div>' : '';
+  edSheet({ title: 'تگ‌های ' + (s.fn || sn(s)), fields: [{ k: 'tg', l: 'تگ‌ها', v: cur.join('، ') }], extra,
     save: (vals, ch) => { if ('tg' in ch) edSet(['students', { f: 'id', v: s.id }, 'tg'], tgArr(ch.tg)); } });
 };
 /* انتخاب برچسب آماده | Pick Tag Chip: برچسب را به کادر اضافه یا از آن حذف می‌کند */
@@ -4104,7 +4133,9 @@ ACT.edOpen = (el, a, b) => { let p = {}; try { p = b ? JSON.parse(b) : {}; } cat
 
 /* ---- ۱۸.۱۰ ویرایش کارنامه | 18.10 Report Card Editing ---- */
 /* ویرایش کارنامه | Report Card Edit Mode: مدادِ تب کارنامه حالت ویرایش را روشن و خاموش می‌کند؛ در این حالت هر ماه با لمس عوض می‌شود و توصیفات تحصیلی و انضباطی قابل نوشتن‌اند */
-ED_FORMS.stuCard = () => { const st = stOf(); st.cardEd = !st.cardEd; Nav.refresh(); };
+ED_FORMS.stuCard = () => { const st = stOf(), s = stuById(C(), Nav.top().p.sid); if (!s) return; if (!st.cardEd) { st.cardSnap = JSON.stringify({ rg: s.rg || null, rkDs: Array.isArray(s.rkDs) ? s.rkDs : null }); st.cardEd = true; } else { st.cardEd = false; st.cardSnap = null; toast('ذخیره شد'); } Nav.refresh(); };
+/* لغو ویرایش کارنامه | Cancel Card Edit: نمره‌های دستی و توصیفات به حالت قبل از شروع ویرایش برمی‌گردند */
+ED_FORMS.stuCardX = () => { const st = stOf(), s = stuById(C(), Nav.top().p.sid); if (!s) return; const o = JSON.parse(st.cardSnap || '{}'), sel = { f: 'id', v: s.id }; edSet(['students', sel, 'rg'], o.rg || ''); edSet(['students', sel, 'rkDs'], o.rkDs || ''); st.cardEd = false; st.cardSnap = null; toast('تغییرها لغو شد'); Nav.refresh(); };
 /* نمرهٔ دستی | Manual Grade: نمرهٔ دستی یک درس در یک ماه را روی دانش‌آموز می‌نویسد (مثل برنامهٔ اصلی روی نمرهٔ چک‌لیست اثر ندارد)؛ خالی = بازگشت به میانگین */
 const rcSet = (sid, lid, mi, q, x) => { edSet(['students', { f: 'id', v: sid }, 'rg', (q ? 'q:' : '') + lid, +mi], x == null ? '' : x); Nav.refresh(); };
 /* لمس یک ماه | Tap Month Cell: توصیفی = انتخاب یکی از چهار سطح؛ کمی = نوشتن عدد ۰ تا ۲۰ */
@@ -4112,7 +4143,8 @@ ACT.rcEd = (el, a) => {
   const c = C(), r = Nav.top(), s = stuById(c, r.p.sid); if (!s) return;
   const [lid, mi] = String(a).split('|'), rep = reportOf(c, s), row = rep.rows.find(x => String(x.l.id) === lid), q = rep.q;
   const ov = ((s.rg || {})[(q ? 'q:' : '') + lid] || {})[mi], has = typeof ov === 'number', ttl = (row ? row.l.name : '') + ' — ' + MO[+mi];
-  if (!q) { Sheet.action({ msg: ttl, items: [1, 2, 3, 4].map(g => ({ t: GN[g], fn: () => rcSet(s.id, lid, mi, q, g) })).concat(has ? [{ t: 'بازگشت به میانگین چک‌لیست', cls: 'destructive', fn: () => rcSet(s.id, lid, mi, q, null) }] : []) }); return; }
+  /* چرخش مثل چک‌لیست | Cycle Like Checklist: هر لمس یک سطح بالاتر؛ خالی ← ۱ ← ۲ ← ۳ ← ۴ ← خالی (بازگشت به میانگین) */
+  if (!q) { const cur = row && row.m[+mi] != null ? Math.min(4, Math.max(1, Math.round(row.m[+mi]))) : 0; rcSet(s.id, lid, mi, q, cur >= 1 && cur < 4 ? cur + 1 : cur === 4 ? null : 1); return; }
   const cur = row && row.m[+mi] != null ? r2(row.m[+mi]) : '';
   edSheet({ title: ttl, fields: [{ k: 'v', l: 'نمره (۰ تا ۲۰)', t: 'num', v: cur }],
     save: vals => { const t = fd(vals.v).replace('٫', '.'), x = t === '' ? null : parseFloat(t); if (x !== null && isNaN(x)) return false; rcSet(s.id, lid, mi, q, x === null ? null : Math.min(20, Math.max(0, x))); },
