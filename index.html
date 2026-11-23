@@ -738,6 +738,10 @@ input,textarea,select{font-size:max(16px,1rem)}
 /* ردیف شمارنده‌ها در فهرست | List Counters: مثبت، منفی و غیبت هر دانش‌آموز کنار هم؛ سه‌آدمک غیبت‌ها */
 .ab-row{display:inline-flex;gap:8px;align-items:flex-end}.ab-p.pos b{color:#1f9d45}
 .ppl.abs3{width:64px;height:38px}.stat .ppl.abs3{display:block;margin:0 auto 2px}
+/* آدمک حاضر و غایب | Attendance People: آدمک سبز = حاضر، آدمک قرمز خط‌خورده = غایب؛ پس‌زمینهٔ دکمه روشن می‌ماند تا آدمک دیده شود */
+.abt .ppl{width:26px;height:28px}.abt.p.on,.abt.a.on{background:var(--fill)}.abt.p.on{box-shadow:inset 0 0 0 2px var(--green)}.abt.a.on{box-shadow:inset 0 0 0 2px var(--red)}
+/* نام کامل در شایستگی‌ها | Full Names In Quick Entry: نام دانش‌آموز بریده نمی‌شود؛ اگر جا نبود در دو خط می‌آید و کپسول‌ها کوچک نمی‌شوند */
+.qcr .ttl{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.35}.qcr>:not(.ttl){flex:none}
 
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
@@ -982,6 +986,7 @@ const PPL_VB = { abs: '8 28 156 190', neg: '25 0 255 270', pos: '0 8 225 195' };
 /* سه آدمک پشت‌هم | Absence Group Icon: سه آدمک ردیف و روی هم برای «جمع غیبت‌ها»؛ فقط آدمک جلویی خط مورب دارد */
 const PPL_ROW = '<g opacity=".5" transform="translate(-15 -36)">' + PPL_USER + '</g><g opacity=".78" transform="translate(55 -36)">' + PPL_USER + '</g><g transform="translate(125 -36)">' + PPL_USER + PPL_SLASH + '</g>';
 const ppl = (k, cls) => {
+  if (k === 'pres') return '<svg class="ppl pres' + (cls ? ' ' + cls : '') + '" viewBox="8 28 156 190" aria-hidden="true">' + PPL_USER.replace(/#D92626/g, '#34a853') + '</svg>';
   if (k === 'abs3') return '<svg class="ppl abs3' + (cls ? ' ' + cls : '') + '" viewBox="0 0 280 164" aria-hidden="true">' + PPL_ROW + '</svg>';
   if (k === 'duo') return '<svg class="ppl duo' + (cls ? ' ' + cls : '') + '" viewBox="0 0 300 210" aria-hidden="true"><svg x="0" y="5" width="145" height="200" viewBox="0 8 225 195">' + PPL_ANGEL + '</svg><svg x="152" y="0" width="148" height="210" viewBox="25 0 255 270">' + PPL_DEVIL + '</svg></svg>';
   return '<svg class="ppl ' + k + (cls ? ' ' + cls : '') + '" viewBox="' + PPL_VB[k] + '" aria-hidden="true">' + (k === 'abs' ? PPL_USER + PPL_SLASH : k === 'neg' ? PPL_DEVIL : PPL_ANGEL) + '</svg>';
@@ -2487,14 +2492,14 @@ const Screen = {
   /* ورود | Login: فرم ایمیل و رمز و دکمهٔ دادهٔ نمایشی؛ msg یک پیام اولیه (مثل «نشست تمام شد») */
   login(msg) {
     const em = Pref.get('lastEmail', '');
-    Screen.show('login', '<div class="scroll"><div class="hero"><div class="logo">' + LOGO + '</div><h1>توت فرنگی</h1><p>نسخهٔ موبایل برای معلم‌ها</p></div>'
+    Screen.show('login', '<div class="scroll"><div class="hero"><div class="logo">' + LOGO + '</div><h1>توت فرنگی</h1></div>'
       + '<div id="lerr">' + (msg ? '<div class="banner">' + ico('alert') + '<span>' + esc(msg) + '</span></div>' : '') + '</div>'
       + '<div class="group"><div class="field"><label for="em">ایمیل</label><input id="em" class="ltr-in" type="email" inputmode="email" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="name@example.com" value="' + esc(em) + '" data-enter="focusPw"></div>'
       + '<div class="field"><label for="pw">رمز عبور</label><input id="pw" class="ltr-in" type="password" autocomplete="current-password" placeholder="رمز عبور" data-enter="doLogin"><button class="eye" data-act="togglePw" aria-label="نمایش رمز">' + ico('eye') + '</button></div></div>'
       + '<div class="pad-x"><button class="btn primary" id="lbtn" data-act="doLogin">ورود</button></div>'
       + '<div class="or">یا</div>'
       + '<div class="pad-x"><button class="btn tinted" data-act="doDemo">' + ico('star') + 'ورود با داده‌ی نمایشی</button></div>'
-      + '<p class="foot-note">برای ورود از همان ایمیل و رمز برنامهٔ توت فرنگی استفاده کن.<br>ثبت‌نام در این نسخه نیست و اطلاعات فقط خوانده می‌شود.<br>با داده‌ی نمایشی می‌توانی بدون حساب برنامه را امتحان کنی.</p></div>');
+      + '</div>');
   }
 };
 
@@ -2574,8 +2579,7 @@ const stamp = t => { const d = new Date(t || Date.now()); return jNum(d) + ' · 
 PAGES.courses = () => {
   const cs = arr(S.db && S.db.courses), tk = dkey(todayD());
   let b = '';
-  if (S.demo) b += '<div class="banner info">' + ico('star') + '<span>حالت نمایشی: همهٔ اطلاعات نمونه است و از سرور نیامده.</span></div>';
-  else if (S.offline) b += '<div class="banner info">' + ico('wifi-off') + '<span>اینترنت وصل نبود؛ آخرین اطلاعات ذخیره‌شدهٔ این گوشی نمایش داده می‌شود (' + esc(stamp(S.t)) + ').</span></div>';
+  if (S.offline) b += '<div class="banner info">' + ico('wifi-off') + '<span>اینترنت وصل نبود؛ آخرین اطلاعات ذخیره‌شدهٔ این گوشی نمایش داده می‌شود (' + esc(stamp(S.t)) + ').</span></div>';
   if (!S.demo && Sync.n()) b += '<div class="banner warn" role="button" data-act="syncInfo">' + ico('cloud') + '<span>' + fn(Sync.n()) + ' تغییر هنوز روی سرور ذخیره نشده؛ ' + (Sync.state === 'offline' ? 'با وصل شدن اینترنت می‌رود.' : 'برای دیدن وضعیت لمس کن.') + '</span></div>';
   if (!cs.length) b += emptyH('cap', 'هنوز دوره‌ای نیست', 'در برنامهٔ اصلی توت فرنگی یک دوره بساز و همگام‌سازی کن.');
   else {
@@ -2733,8 +2737,8 @@ const attDayView = (c, st) => {
 /* ردیف ثبت حضور | Attendance Row: عکس و نام (لمس = صفحهٔ دانش‌آموز) و دو دکمهٔ حاضر ✓ و غایب ✕؛ لمس دوبارهٔ همان دکمه وضعیت را پاک می‌کند */
 const attRow = (c, s, k, lk) => {
   const v = attOf(c, k, s.id), tg = stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('');
-  const m = v === 1 ? ['p on', 'check', 'حاضر'] : v === 0 ? ['a on', 'x', 'غایب'] : ['n', 'minus', 'ثبت نشده'];
-  const btn = '<button class="abt ' + m[0] + '" data-act="attSet" data-a="' + esc(s.id) + '" aria-label="' + m[2] + '"' + (lk ? ' disabled' : '') + '>' + ico(m[1]) + '</button>';
+  const m = v === 1 ? ['p on', 'pres', 'حاضر'] : v === 0 ? ['a on', 'abs', 'غایب'] : ['n', 'minus', 'ثبت نشده'];
+  const btn = '<button class="abt ' + m[0] + '" data-act="attSet" data-a="' + esc(s.id) + '" aria-label="' + m[2] + '"' + (lk ? ' disabled' : '') + '>' + (m[1] === 'pres' || m[1] === 'abs' ? ppl(m[1]) : ico(m[1])) + '</button>';
   return '<div class="row has-lead arow" data-sid="' + esc(s.id) + '"><span class="lead">' + avatar(s, 40) + '</span>'
     + '<span class="main tap" role="button"' + pushA('stuD', { sid: s.id, seg: 'att' }) + '><div class="ttl">' + stnH(s) + '</div>' + (tg ? '<div class="sub">' + tg + '</div>' : '') + '</span>'
     + '<span class="trail abtns">' + btn + '</span></div>';
@@ -3354,7 +3358,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-23T08:45:53.826Z';
+const APP_BUILD = '2026-11-23T12:21:50.747Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
