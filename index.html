@@ -96,10 +96,10 @@ bdi{unicode-bidi:isolate}
 .page.anim-back-in{animation:pgInBack .46s var(--ease) both;z-index:1}
 .page.anim-back-out{animation:pgOutBack .46s var(--ease) both;z-index:3;pointer-events:none;box-shadow:0 0 40px rgba(0,0,0,.18)}
 .page.anim-fade-in{animation:pgFade .2s ease-out both}
-@keyframes pgInFwd{from{transform:translateX(-100%)}to{transform:none}}
-@keyframes pgOutFwd{from{transform:none}to{transform:translateX(28%);opacity:.6}}
-@keyframes pgInBack{from{transform:translateX(28%);opacity:.6}to{transform:none;opacity:1}}
-@keyframes pgOutBack{from{transform:none}to{transform:translateX(-100%)}}
+@keyframes pgInFwd{from{transform:translateX(100%)}to{transform:none}}
+@keyframes pgOutFwd{from{transform:none}to{transform:translateX(-28%);opacity:.6}}
+@keyframes pgInBack{from{transform:translateX(-28%);opacity:.6}to{transform:none;opacity:1}}
+@keyframes pgOutBack{from{transform:none}to{transform:translateX(100%)}}
 @keyframes pgFade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.page[class*=anim-]{animation-duration:.01s!important}}
 
@@ -717,6 +717,11 @@ input,textarea,select{font-size:max(16px,1rem)}
 .stepb.off{opacity:.3;background:var(--fill)}
 .tags.tap{cursor:pointer}.tag.add{background:var(--tint-weak);color:var(--tint)}
 .ef-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 12px}.ef-chips .chip{border:0;border-radius:999px;padding:6px 14px;background:var(--fill);color:var(--label-2);font-weight:600}.ef-chips .chip.on{background:var(--tint);color:#fff}
+
+/* ---- ویرایش کارنامه | Report Card Editing: خانهٔ لمس‌شدنی ماه، نقطهٔ نمرهٔ دستی و ردیف توصیفات ---- */
+.tbl td.rce{position:relative;box-shadow:inset 0 0 0 1px var(--tint-weak);cursor:pointer}.tbl td.rce.ov::after{content:'';position:absolute;top:3px;inset-inline-start:3px;width:6px;height:6px;border-radius:50%;background:var(--tint)}
+.rkd{display:flex;align-items:flex-start;gap:6px;padding:8px 10px}.rkd+.rkd{border-top:.5px solid var(--sep)}.rkd.off textarea{opacity:.55}.rkd textarea{flex:1;margin:0}.rkd .pn-no{padding-top:10px}.rkd-b{display:flex;flex-direction:column;gap:6px}
+.ef-del .cap-b{width:46px;height:46px}.ef-del .cap-b svg{width:22px;height:22px}
 
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
@@ -1771,7 +1776,7 @@ const stuMatch = (s, q) => { const n = nz(sn(s)); return nz(q).split(/\s+/).filt
 /* شماره تماس | Phone Link: شماره را به نشانی تماس تبدیل می‌کند و فقط رقم‌ها را نگه می‌دارد */
 const telHref = p => { const d = fd(String(p || '')).replace(/[^\d+]/g, ''); return d ? 'tel:' + d : ''; };
 /* فیلدهای مشخصات | Student Fields: همان برچسب‌های برنامهٔ اصلی؛ h یعنی عنوان گروه */
-const SF = [['h', 'مشخصات و شرح حال دانش‌آموز'], ['shad', 'شماره شاد', 'p'], ['father', 'نام پدر'], ['fphone', 'شماره تماس پدر', 'p'], ['bd', 'تاریخ تولد'], ['ephone', 'شماره تماس ضروری', 'p'], ['addr', 'آدرس محل سکونت'], ['h', 'شرح تکمیلی دانش‌آموز'], ['sib', 'تعداد خواهر و برادر'], ['fedu', 'تحصیلات پدر'], ['medu', 'تحصیلات مادر'], ['rank', 'فرزند چندم'], ['glass', 'عینک'], ['hear', 'سمعک'], ['rep', 'تکرار پایه'], ['help', 'کمک در تکالیف'], ['weak', 'ضعف در درس'], ['good', 'قوت در درس'], ['ill', 'بیماری یا نیاز ویژه'], ['talent', 'استعداد یا توانایی ویژه']];
+const SF = [['h', 'مشخصات و شرح حال دانش‌آموز'], ['shad', 'شماره شاد', 'p'], ['father', 'نام پدر'], ['fphone', 'شماره تماس پدر', 'p'], ['bd', 'تاریخ تولد'], ['ephone', 'شماره تماس ضروری', 'p'], ['addr', 'آدرس محل سکونت'], ['h', 'شرح تکمیلی دانش‌آموز'], ['sib', 'تعداد خواهر و برادر'], ['fedu', 'تحصیلات پدر'], ['medu', 'تحصیلات مادر'], ['rank', 'فرزند چندم'], ['glass', 'عینک'], ['hear', 'سمعک'], ['lh', 'آیا چپ‌دست است؟'], ['rep', 'تکرار پایه'], ['help', 'کمک در تکالیف'], ['weak', 'ضعف در درس'], ['good', 'قوت در درس'], ['ill', 'بیماری یا نیاز ویژه'], ['talent', 'استعداد یا توانایی ویژه']];
 /* بخش‌های طرح درس | Plan Sections: عنوان بخش‌های طرح درس */
 const PS = [['kol', 'اهداف کلی'], ['juz', 'اهداف جزئی'], ['raf', 'اهداف رفتاری'], ['diag', 'ارزشیابی تشخیصی'], ['tools', 'وسایل و رسانه‌های آموزشی'], ['method', 'الگو و روش تدریس'], ['intro', 'ارائه درس — مقدمه'], ['dev', 'ارائه درس — توسعه درس'], ['sum', 'ارائه درس — جمع‌بندی'], ['act', 'فعالیت‌های معلم / دانش‌آموز'], ['final', 'ارزیابی پایانی'], ['hw', 'تکلیف']];
 
@@ -2265,9 +2270,9 @@ const Nav = {
     const sp = r.spec = fnp(r, r.p || {});
     const st = Nav.stack(), prev = st[st.length - 2];
     let lead = sp.lead;
-    if (lead === undefined) lead = st.length > 1 ? '<button class="nav-btn nav-back" data-act="back" aria-label="بازگشت">' + ico('chev-r') + '</button>' : '';
+    if (lead === undefined) lead = st.length > 1 ? '<button class="nav-btn nav-back" data-act="back" aria-label="بازگشت">' + ico('chev-l') + '</button>' : '';
     el.classList.toggle('has-tabs', !!sp.tabs);
-    el.innerHTML = '<div class="nav' + (sp.large ? '' : ' solid') + '"><div class="nav-bg"></div><div class="nav-row"><div class="nav-side">' + lead + '</div><div class="nav-title">' + esc(sp.title || '') + '</div><div class="nav-side">' + (sp.trail || '') + '</div></div></div>'
+    el.innerHTML = '<div class="nav' + (sp.large ? '' : ' solid') + '"><div class="nav-bg"></div><div class="nav-row"><div class="nav-side">' + (sp.trail || '') + '</div><div class="nav-title">' + esc(sp.title || '') + '</div><div class="nav-side lead">' + lead + '</div></div></div>'
       + '<div class="scroll">' + (sp.large ? '<h1 class="large-title">' + esc(sp.title) + '</h1>' : '') + (sp.sub ? '<p class="page-sub">' + sp.sub + '</p>' : '') + sp.body + '</div>' + (sp.foot || '');
   },
   /* بعد از نشستن در صفحه | After Mount: برگرداندن جای اسکرول، نوار بالای شیشه‌ای، عکس‌ها و کار اختصاصی صفحه */
@@ -2358,7 +2363,7 @@ const stOf = () => (Nav.top() || { st: {} }).st;
 const telH = p => (p ? '<a class="tint" dir="ltr" href="' + esc(telHref(p)) + '">' + pd(esc(p)) + '</a>' : '');
 
 /* ---- ۹.۸ رویدادهای لمس | 9.8 Event Binding ---- */
-/* رویدادها | Events: لمس هر عنصر دارای data-act کار ثبت‌شدهٔ ACT را اجرا می‌کند؛ نوشتن در data-in به INP می‌رسد؛ کشیدن از لبهٔ راست به چپ = بازگشت */
+/* رویدادها | Events: لمس هر عنصر دارای data-act کار ثبت‌شدهٔ ACT را اجرا می‌کند؛ نوشتن در data-in به INP می‌رسد؛ کشیدن از لبهٔ چپ به راست = بازگشت */
 const bindEvents = () => {
   /* بدون زوم و انتخاب | No Zoom No Select: نیشگون، دوبار لمس و انتخاب متن و منوی لمس طولانی در همهٔ برنامه بسته است (جز داخل کادرهای نوشتن) */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(n => document.addEventListener(n, e => e.preventDefault(), { passive: false }));
@@ -2395,13 +2400,13 @@ const bindEvents = () => {
   let sx = null, sy = 0;
   document.addEventListener('touchstart', e => {
     const t = e.touches[0], r = $('#app').getBoundingClientRect();
-    sx = (r.right - t.clientX < 28 && !Sheet.els.length) ? t.clientX : null; sy = t.clientY;
+    sx = (t.clientX - r.left < 28 && !Sheet.els.length) ? t.clientX : null; sy = t.clientY;
   }, { passive: true });
   document.addEventListener('touchend', e => {
     if (sx == null) return;
     const t = e.changedTouches[0], dx = t.clientX - sx, dy = Math.abs(t.clientY - sy);
     sx = null;
-    if (dx < -70 && dy < 60) Nav.pop();
+    if (dx > 70 && dy < 60) Nav.pop();
   }, { passive: true });
 };
 
@@ -2573,7 +2578,7 @@ ACT.openCourse = (el, a) => Nav.enter(a);
 /* خروج از دوره | Leave Course Action: دکمهٔ «دوره‌ها» بالای هر تب */
 ACT.leaveCourse = () => Nav.leave();
 /* دکمهٔ بازگشت به دوره‌ها | Courses Back Button: چپ‌ترین دکمهٔ بالای صفحهٔ اصلی هر تب */
-const leaveBtn = '<button class="nav-btn nav-back" data-act="leaveCourse" aria-label="دوره‌ها">' + ico('chev-r') + '</button>';
+const leaveBtn = '<button class="nav-btn nav-back" data-act="leaveCourse" aria-label="دوره‌ها">' + ico('chev-l') + '</button>';
 
 /* ---- ۱۱.۴ نوار شیفت و زنگ | 11.4 Shift & Bell Bar ---- */
 /* زنگ فعلی | Bell Now: مثل برنامهٔ دسکتاپ؛ نام زنگ (یا تفریح یا مراسم)، شیفت هفته و ثانیه‌های مانده تا پایان زنگ (یا تا شروع زنگ بعدی)؛ lesson نام درس همان زنگ است */
@@ -2854,7 +2859,7 @@ const pnBody = () => {
   return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
 };
 /* دکمه‌های بالای برگه | Header Buttons: «ویرایش» و (در حالت ویرایش) «تمام» و «حذف» به شکل کپسول، گوشهٔ راست */
-const pnAct = () => '<button class="cap-b ic' + (PN.edit ? ' solid' : ' tint') + '" data-act="pnEdit" aria-label="ویرایش">' + ico('pencil') + '</button>' + (PN.edit ? '<button class="cap-b red" data-act="pnDel"' + (PN.sel.size ? '' : ' disabled') + '>حذف' + (PN.sel.size ? ' ' + fn(PN.sel.size) : '') + '</button>' : '');
+const pnAct = () => '<button class="cap-b ic' + (PN.edit ? ' solid' : ' tint') + '" data-act="pnEdit" aria-label="ویرایش">' + ico('pencil') + '</button>' + (PN.edit ? '<button class="cap-b red" data-act="pnDel" aria-label="حذف"' + (PN.sel.size ? '' : ' disabled') + '>' + ico('trash') + (PN.sel.size ? ' ' + fn(PN.sel.size) : '') + '</button>' : '');
 /* بزرگ‌شدن کادر نوشتن | Auto Grow: متن بلند به خط بعد می‌رود و کادر بلندتر می‌شود */
 const pnGrow = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
 INP.pnGrow = (v, el) => pnGrow(el);
@@ -3249,15 +3254,17 @@ const stuInfoH = (s) => {
 /* ---- ۱۵.۳ بخش کارنامه | 15.3 Report Card Segment ---- */
 /* کارنامه | Report Card Segment: جدول درس × ماه (مهر تا اردیبهشت) و میانگین کل؛ ماه‌های بدون نمره نشان داده نمی‌شوند */
 const stuCardH = (c, s) => {
-  const r = reportOf(c, s), used = MO.map((_, mi) => r.rows.some(x => x.m[mi] != null));
-  if (!r.rows.some(x => x.n)) return emptyH('award', 'هنوز نمره‌ای نیست', 'وقتی نمره‌ها ثبت شوند، کارنامهٔ ماهانه اینجا دیده می‌شود.');
+  const ed = !!stOf().cardEd, r = reportOf(c, s), used = MO.map((_, mi) => ed || r.rows.some(x => x.m[mi] != null));
+  /* در حالت ویرایش همهٔ ماه‌ها نشان داده می‌شوند و هر خانه با لمس قابل تغییر است؛ خانهٔ نمرهٔ دستی نقطه دارد */
+  if (!r.rows.length || (!ed && !r.rows.some(x => x.n))) return emptyH('award', 'هنوز نمره‌ای نیست', 'وقتی نمره‌ها ثبت شوند، کارنامهٔ ماهانه اینجا دیده می‌شود.') + dsBoxH(s, ed);
   let h = '<div class="tblw"><table class="tbl"><tr><th class="nm">درس</th>' + MO.map((m, i) => used[i] ? '<th>' + m + '</th>' : '').join('') + '<th>کل</th></tr>';
-  r.rows.forEach(x => { h += '<tr><td class="nm">' + esc(x.l.name) + '</td>' + MO.map((m, i) => used[i] ? '<td>' + rcCell(x.m[i], r.q, true) + '</td>' : '').join('') + '<td>' + rcCell(x.all, r.q, true) + '</td></tr>'; });
+  const rg = s.rg || {}, cell = (x, i) => { const has = typeof ((rg[(r.q ? 'q:' : '') + x.l.id] || {})[i]) === 'number'; return ed ? '<td class="rce' + (has ? ' ov' : '') + '" data-act="rcEd" data-a="' + esc(x.l.id) + '|' + i + '">' + (rcCell(x.m[i], r.q, true) || '<span class="muted">·</span>') + '</td>' : '<td>' + rcCell(x.m[i], r.q, true) + '</td>'; };
+  r.rows.forEach(x => { h += '<tr><td class="nm">' + esc(x.l.name) + '</td>' + MO.map((m, i) => used[i] ? cell(x, i) : '').join('') + '<td>' + rcCell(x.all, r.q, true) + '</td></tr>'; });
   if (r.q) h += '<tr class="sum"><td class="nm">معدل</td>' + MO.map((m, i) => used[i] ? '<td>' + rcCell(r.foot.m[i], true, true) + '</td>' : '').join('') + '<td>' + rcCell(r.foot.all, true, true) + '</td></tr>';
   h += '</table></div>';
   if (!r.q) h += '<div class="legend">' + [1, 2, 3, 4].map(g => '<span class="lg"><i style="background:var(--g' + g + ')"></i>' + GN[g] + '</span>').join('') + '</div>';
-  if (s.rkDesc) h += groupH('توضیح معلم', '<div class="plan-sec"><p>' + esc(s.rkDesc) + '</p></div>');
-  return h;
+  if (ed) h += '<div class="group-f">برای تغییر نمرهٔ هر ماه روی آن بزن. نقطهٔ کنار خانه یعنی نمرهٔ دستی است.</div>';
+  return h + dsBoxH(s, ed);
 };
 
 /* ---- ۱۵.۴ بخش غیبت و رفتار | 15.4 Absence & Behavior Segment ---- */
@@ -3300,7 +3307,7 @@ PAGES.stuD = (r, p) => {
   const pv = L[i - 1], nx = L[i + 1], fnm = x => esc((x && (x.fn || sn(x))) || '');
   const stepBtn = (o, d, ic) => '<button class="stepb' + (o ? '' : ' off') + '"' + (o ? ' data-act="stuStep" data-a="' + d + '"' : ' disabled') + '>' + (d < 0 ? ico(ic) : '') + '<span>' + (o ? fnm(o) : '') + '</span>' + (d > 0 ? ico(ic) : '') + '</button>';
   b = '<div class="stepbar">' + stepBtn(pv, -1, 'chev-r') + '<div class="stepn"><b>' + fn(i + 1) + '</b> از ' + fn(L.length) + '</div>' + stepBtn(nx, 1, 'chev-l') + '</div>' + b;
-  return { title: sn(s), tabs: false, trail: edBtn('stu', { sid: s.id }), body: b };
+  return { title: sn(s), tabs: false, trail: st.seg === 'card' ? edBtn('stuCard', { sid: s.id }, !!st.cardEd) : edBtn('stu', { sid: s.id }), body: b };
 };
 ACT.stuSeg = (el, a) => { stOf().seg = a; Nav.refresh(); };
 ACT.stuStep = (el, a) => {
@@ -3318,7 +3325,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-23T07:20:06.056Z';
+const APP_BUILD = '2026-11-23T08:12:08.179Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3942,7 +3949,7 @@ ACT.hwPdf = async () => {
 
 /* ---- ۱۸.۱ دکمهٔ مداد | 18.1 Pencil Button ---- */
 /* دکمهٔ مداد | Pencil Button: دکمهٔ گرد بالای صفحه؛ kind نوع فرم و p شناسه‌های لازم (مثل شناسهٔ دانش‌آموز) است */
-const edBtn = (kind, p) => '<button class="cap-b ic tint" data-act="edOpen" data-a="' + kind + '" data-b="' + esc(JSON.stringify(p || {})) + '" aria-label="' + (/Add$/.test(kind) ? 'افزودن' : 'ویرایش') + '">' + ico(/Add$/.test(kind) ? 'plus' : 'pencil') + '</button>';
+const edBtn = (kind, p, on) => '<button class="cap-b ic ' + (on ? 'solid' : 'tint') + '" data-act="edOpen" data-a="' + kind + '" data-b="' + esc(JSON.stringify(p || {})) + '" aria-label="' + (/Add$/.test(kind) ? 'افزودن' : 'ویرایش') + '">' + ico(on ? 'check' : /Add$/.test(kind) ? 'plus' : 'pencil') + '</button>';
 
 /* ---- ۱۸.۲ ساخت فرم | 18.2 Form Builder ---- */
 /* وضعیت فرم باز | Open Form State: فرمی که الان باز است (برای ذخیره و حذف) */
@@ -3961,7 +3968,7 @@ const efH = f => {
 const edSheet = o => {
   ED.cur = o;
   const body = '<div class="group ef-g">' + o.fields.map(efH).join('') + '</div>' + (o.extra || '')
-    + (o.del ? '<div class="ef-del"><button class="cap-b red" data-act="edDel">' + esc(o.del.label || 'حذف') + '</button></div>' : '');
+    + (o.del ? '<div class="ef-del"><button class="cap-b ic red" data-act="edDel" aria-label="' + esc(o.del.label || 'حذف') + '">' + ico('trash') + '</button></div>' : '');
   Sheet.open({ title: o.title, act: '<button class="cap-b ic tint" data-act="edSave" aria-label="ذخیره">' + ico('check') + '</button>', body });
 };
 /* ذخیرهٔ فرم | Save Form: فقط خانه‌هایی که عوض شده‌اند به‌صورت دستور ثبت می‌شوند؛ ناگزیرها باید پر باشند */
@@ -3983,10 +3990,13 @@ const edId = p => p + Date.now().toString(36) + Math.floor(Math.random() * 1296)
 /* ---- ۱۸.۳ فرم دانش‌آموز | 18.3 Student Form ---- */
 /* فرم دانش‌آموز | Student Form: نام، جنسیت و همهٔ فیلدهای پروندهٔ دانش‌آموز؛ دانش‌آموز تازه هم با همین فرم ساخته می‌شود */
 const AREA_SF = ['addr', 'weak', 'good', 'ill', 'talent', 'help'];
+/* گزینه‌ای‌ها | Choice Fields: فیلدهای بله/خیر و عددی مثل برنامهٔ اصلی با انتخاب پر می‌شوند */
+const YN_ = ['بله', 'خیر'], N0_ = [...Array(11).keys()].map(String), SF_SEL = { glass: YN_, hear: YN_, lh: YN_, sib: N0_, rank: N0_ };
+const sfField = (f, s) => { const v = s[f[0]] == null ? '' : String(s[f[0]]), o = SF_SEL[f[0]]; if (o) return { k: f[0], l: f[1], t: 'sel', v, o: [['', '—']].concat((o.includes(v) || !v ? o : o.concat([v])).map(x => [x, x])) }; return { k: f[0], l: f[1], v: s[f[0]], t: f[2] === 'p' ? 'tel' : AREA_SF.includes(f[0]) ? 'area' : 'text' }; };
 const stuFields = s => [{ t: 'h', l: 'نام' }, { k: 'fn', l: 'نام', v: s.fn }, { k: 'ln', l: 'نام خانوادگی', v: s.ln },
   { k: 'tg', l: 'برچسب‌ها (با ، جدا)', v: stuTags(s).join('، ') },
   { k: 'gender', l: 'جنسیت', t: 'sel', v: s.gender || '', o: [['', '—'], ['دختر', 'دختر'], ['پسر', 'پسر']] }]
-  .concat(SF.map(f => f[0] === 'h' ? { t: 'h', l: f[1] } : { k: f[0], l: f[1], v: s[f[0]], t: f[2] === 'p' ? 'tel' : AREA_SF.includes(f[0]) ? 'area' : 'text' }));
+  .concat(SF.map(f => f[0] === 'h' ? { t: 'h', l: f[1] } : sfField(f, s)));
 const stuVal = (k, v) => ['shad', 'fphone', 'ephone'].includes(k) ? fd(v) : k === 'tg' ? tgArr(v) : v;
 /* برچسب‌ها | Tags: متن جداشده با ویرگول را به فهرست برچسب تبدیل می‌کند (تکراری‌ها حذف؛ خالی = پاک کردن) */
 const tgArr = v => { const L = [...new Set(String(v || '').split(/[،,]/).map(x => x.trim()).filter(Boolean))]; return L.length ? L : ''; };
@@ -4037,7 +4047,7 @@ ED_FORMS.stf = () => {
 
 /* ---- ۱۸.۶ فرم درس و بودجه‌بندی | 18.6 Lesson & Budget Form ---- */
 /* ردیف لینک | Link Row: دو کادر عنوان و نشانی با دکمهٔ پاک کردن */
-const lkRow = (t, u) => '<div class="ef-lk"><input data-lt placeholder="عنوان" value="' + esc(t || '') + '" autocomplete="off"><input data-lu dir="ltr" class="ltr-in" placeholder="https://…" value="' + esc(u || '') + '" autocomplete="off"><button class="cap-b ic" data-act="edLkDel" aria-label="پاک کردن">' + ico('x') + '</button></div>';
+const lkRow = (t, u) => '<div class="ef-lk"><input data-lt placeholder="عنوان" value="' + esc(t || '') + '" autocomplete="off"><input data-lu dir="ltr" class="ltr-in" placeholder="https://…" value="' + esc(u || '') + '" autocomplete="off"><button class="cap-b ic" data-act="edLkDel" aria-label="حذف">' + ico('trash') + '</button></div>';
 ACT.edLkAdd = () => { const b = $('#edLks'); if (b) { b.insertAdjacentHTML('beforeend', lkRow('', '')); const i = $$('[data-lt]', b).pop(); if (i) i.focus(); } };
 ACT.edLkDel = el => { const r = el.closest('.ef-lk'); if (r) r.remove(); };
 /* فرم درس | Lesson Form: نام درس، بودجه‌بندی هر ماه (از…تا… برای دو نیمه) و لینک‌ها؛ دکمه‌های افزودن طرح درس و حذف درس */
@@ -4091,6 +4101,39 @@ ED_FORMS.sch = () => {
 /* ---- ۱۸.۹ بازکننده | 18.9 Opener ---- */
 /* باز کردن فرم | Open Form: کار دکمهٔ مداد؛ فرم مربوط به نوع را باز می‌کند */
 ACT.edOpen = (el, a, b) => { let p = {}; try { p = b ? JSON.parse(b) : {}; } catch (e) { /* پارامتر خراب */ } if (ED_FORMS[a]) ED_FORMS[a](p); };
+
+/* ---- ۱۸.۱۰ ویرایش کارنامه | 18.10 Report Card Editing ---- */
+/* ویرایش کارنامه | Report Card Edit Mode: مدادِ تب کارنامه حالت ویرایش را روشن و خاموش می‌کند؛ در این حالت هر ماه با لمس عوض می‌شود و توصیفات تحصیلی و انضباطی قابل نوشتن‌اند */
+ED_FORMS.stuCard = () => { const st = stOf(); st.cardEd = !st.cardEd; Nav.refresh(); };
+/* نمرهٔ دستی | Manual Grade: نمرهٔ دستی یک درس در یک ماه را روی دانش‌آموز می‌نویسد (مثل برنامهٔ اصلی روی نمرهٔ چک‌لیست اثر ندارد)؛ خالی = بازگشت به میانگین */
+const rcSet = (sid, lid, mi, q, x) => { edSet(['students', { f: 'id', v: sid }, 'rg', (q ? 'q:' : '') + lid, +mi], x == null ? '' : x); Nav.refresh(); };
+/* لمس یک ماه | Tap Month Cell: توصیفی = انتخاب یکی از چهار سطح؛ کمی = نوشتن عدد ۰ تا ۲۰ */
+ACT.rcEd = (el, a) => {
+  const c = C(), r = Nav.top(), s = stuById(c, r.p.sid); if (!s) return;
+  const [lid, mi] = String(a).split('|'), rep = reportOf(c, s), row = rep.rows.find(x => String(x.l.id) === lid), q = rep.q;
+  const ov = ((s.rg || {})[(q ? 'q:' : '') + lid] || {})[mi], has = typeof ov === 'number', ttl = (row ? row.l.name : '') + ' — ' + MO[+mi];
+  if (!q) { Sheet.action({ msg: ttl, items: [1, 2, 3, 4].map(g => ({ t: GN[g], fn: () => rcSet(s.id, lid, mi, q, g) })).concat(has ? [{ t: 'بازگشت به میانگین چک‌لیست', cls: 'destructive', fn: () => rcSet(s.id, lid, mi, q, null) }] : []) }); return; }
+  const cur = row && row.m[+mi] != null ? r2(row.m[+mi]) : '';
+  edSheet({ title: ttl, fields: [{ k: 'v', l: 'نمره (۰ تا ۲۰)', t: 'num', v: cur }],
+    save: vals => { const t = fd(vals.v).replace('٫', '.'), x = t === '' ? null : parseFloat(t); if (x !== null && isNaN(x)) return false; rcSet(s.id, lid, mi, q, x === null ? null : Math.min(20, Math.max(0, x))); },
+    del: has ? { label: 'بازگشت به میانگین', msg: 'نمرهٔ دستی پاک شود و میانگین چک‌لیست نشان داده شود؟', fn: () => { rcSet(s.id, lid, mi, q, null); } } : null });
+};
+/* توصیفات | Descriptions: هر دانش‌آموز چند توصیف دارد؛ هر کدام {id, t: متن, on: چشم روشن}. فقط توصیف‌های دارای چشم روشن در کارنامه دیده می‌شوند. (توصیف تک‌متنی قدیمی rkDesc اولین توصیف حساب می‌شود) */
+const dsOf = s => Array.isArray(s.rkDs) ? s.rkDs : (s.rkDesc ? [{ id: 'dl', t: String(s.rkDesc), on: 1 }] : []);
+/* ذخیرهٔ توصیفات | Save Descriptions: کل فهرست یک‌جا روی دانش‌آموز نوشته می‌شود */
+const dsSave = (s, L) => edSet(['students', { f: 'id', v: s.id }, 'rkDs'], L.map(d => ({ id: d.id, t: d.t || '', on: d.on ? 1 : 0 })));
+const dsCtx = () => { const s = stuById(C(), Nav.top().p.sid); return s ? { s, L: dsOf(s).map(d => Object.assign({}, d)) } : null; };
+ACT.rkTxt = (el, v) => { const x = dsCtx(); if (!x) return; const d = x.L.find(y => y.id === el.dataset.a); if (d && d.t !== v) { d.t = v; dsSave(x.s, x.L); } };
+ACT.rkEye = (el, id) => { const x = dsCtx(); if (!x) return; const d = x.L.find(y => y.id === id); if (d) { d.on = d.on ? 0 : 1; dsSave(x.s, x.L); Nav.refresh(); } };
+ACT.rkAdd = () => { const x = dsCtx(); if (!x) return; x.L.push({ id: edId('d'), t: '', on: 1 }); dsSave(x.s, x.L); Nav.refresh(); };
+ACT.rkDel = (el, id) => { const x = dsCtx(); if (!x) return; ask('این توصیف حذف شود؟', 'حذف', () => { dsSave(x.s, x.L.filter(y => y.id !== id)); Nav.refresh(); }, true); };
+/* کادر توصیفات | Descriptions Box: در حالت دیدن فقط توصیف‌های دارای چشم روشن (شماره‌دار)؛ در حالت ویرایش همه با چشم، حذف و افزودن */
+const dsBoxH = (s, ed) => {
+  const L = dsOf(s), T = 'توصیفات تحصیلی و انضباطی';
+  if (!ed) { const V = L.filter(d => d.on && String(d.t || '').trim()); return V.length ? groupH(T, V.map((d, i) => '<div class="plan-sec"><p><span class="pn-no">' + fn(i + 1) + '.</span> ' + esc(d.t).replace(/\n/g, '<br>') + '</p></div>').join('')) : ''; }
+  return groupH(T, L.map((d, i) => '<div class="rkd' + (d.on ? '' : ' off') + '" id="rkd-' + esc(d.id) + '" data-qs="' + esc(d.id) + '"><span class="pn-no">' + fn(i + 1) + '.</span><textarea class="fld" rows="2" data-chg="rkTxt" data-a="' + esc(d.id) + '" placeholder="توصیف را بنویس…">' + esc(d.t || '') + '</textarea>'
+    + '<div class="rkd-b"><button class="cap-b ic ' + (d.on ? 'tint' : '') + '" data-act="rkEye" data-a="' + esc(d.id) + '" aria-label="' + (d.on ? 'دیده می‌شود' : 'پنهان است') + '">' + ico(d.on ? 'eye' : 'eye-off') + '</button><button class="cap-b ic red" data-act="rkDel" data-a="' + esc(d.id) + '" aria-label="حذف">' + ico('trash') + '</button></div></div>').join('') + '<div class="ef-add"><button class="cap-b tint" data-act="rkAdd">+ افزودن توصیف</button></div>');
+};
 
 
 /* ================================================================
