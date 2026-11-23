@@ -711,6 +711,13 @@ input,textarea,select{font-size:max(16px,1rem)}
 .ef-lk{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:center;padding:6px 10px}.ef-lk .cap-b{order:2}.ef-lk [data-lu]{order:3;flex:1 1 100%}.ef-lk+.ef-lk{border-top:.5px solid var(--sep)}.ef-lk input{flex:1;min-width:0;padding:8px 0;font-size:max(16px,1rem)}.ef-lk [data-lt]{flex:1 1 0;order:1;font-weight:600}
 .ef-add{display:flex;gap:8px;justify-content:center;margin:4px 0 12px}.ef-del{display:flex;justify-content:center;margin:8px 0 18px}
 
+/* ---- اصلاحات بازبینی | Review Fixes: دکمهٔ بستن برگه در منتهای چپ، دکمهٔ برگشت گرد، کپسول قبلی/بعدی کمرنگ در ابتدا و انتهای فهرست، برچسب‌های قابل لمس ---- */
+.sheet .sh-head>.cap-b{justify-self:end}
+.nav-back,.nav-btn.nav-back{width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%}
+.stepb.off{opacity:.3;background:var(--fill)}
+.tags.tap{cursor:pointer}.tag.add{background:var(--tint-weak);color:var(--tint)}
+.ef-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px 12px}.ef-chips .chip{border:0;border-radius:999px;padding:6px 14px;background:var(--fill);color:var(--label-2);font-weight:600}.ef-chips .chip.on{background:var(--tint);color:#fff}
+
 
 /* ---- ۳.۱۴ ابزار | 3.14 Tools Styles ---- */
 /* تکلیف‌ساز | Homework Maker: صفحهٔ تنظیم‌ها، نوار پایین، برگهٔ سفید پیش‌نمایش و چاپ A4 */
@@ -933,7 +940,7 @@ const ICONS = {
   'printer': '<path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/>',
   'shuffle': '<path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/>',
   'trash': '<path d="M3 6h18M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
-  'pencil': '<path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  'pencil': '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>',
   'list': '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
   'grid': '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
   'text': '<path d="M4 7V5h16v2M9 19h6M12 5v14"/>',
@@ -2834,7 +2841,7 @@ const pnGroup = (L, w) => {
     const head = PN.sid ? esc(jFull(kdate(g[0].k))) : stnH(g[0].s);
     return '<div class="pn-g' + (open && n > 1 ? ' open' : '') + '"><div class="pn-cap" data-act="' + (PN.edit ? 'pnGrp' : n > 1 ? 'pnTog' : 'noop') + '" data-a="' + esc(id) + '">'
       + (PN.edit ? '<span class="pn-ck' + (all ? ' on' : '') + '">' + ico('check') + '</span>' : '') + '<b>' + head + '</b>' + (n > 1 ? '<i>' + fn(n) + '</i>' + (PN.edit ? '' : ico('chev-l')) : '') + '</div>'
-      + (n === 1 && !PN.edit ? '<small class="pn-p">' + esc(g[0].why || 'بدون توضیح') + (PN.f !== 'day' && !PN.sid ? ' · ' + esc(jFull(kdate(g[0].k))) : '') + '</small>' : '')
+      + (n === 1 && !PN.edit ? '<small class="pn-p"><span class="pn-no">' + fn(1) + '.</span> ' + esc(g[0].why || 'بدون توضیح') + (PN.f !== 'day' && !PN.sid ? ' · ' + esc(jFull(kdate(g[0].k))) : '') + '</small>' : '')
       + (open && (n > 1 || PN.edit) ? '<div class="pn-es">' + g.map((e, i) => pnEnt(e, i)).join('') + '</div>' : '') + '</div>';
   }).join('');
 };
@@ -3286,12 +3293,12 @@ PAGES.stuD = (r, p) => {
   const st = r.st; if (!st.seg) st.seg = p.seg || 'info';
   const calls = [['پدر', s.fphone], ['ضروری', s.ephone]].filter(x => telHref(x[1]));
   let b = '<div class="shead">' + avatar(s, 84) + '<div class="nm">' + esc(sn(s)) + '</div><div class="meta">' + esc([s.gender, c.name].filter(Boolean).join(' · ')) + '</div>'
-    + (stuTags(s).length ? '<div class="tags">' + stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') + '</div>' : '')
+    + '<div class="tags tap" data-act="edOpen" data-a="stuTg" data-b="' + esc(JSON.stringify({ sid: s.id })) + '">' + (stuTags(s).length ? stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') : '<span class="tag add">+ برچسب</span>') + '</div>'
     + (calls.length ? '<div class="circ">' + calls.map(x => '<a href="' + esc(telHref(x[1])) + '"><i>' + ico('phone') + '</i>' + x[0] + '</a>').join('') + '</div>' : '') + '</div>';
   b += segH([['info', 'مشخصات'], ['card', 'کارنامه'], ['att', 'غیبت و رفتار']], st.seg, 'stuSeg');
   b += st.seg === 'info' ? stuInfoH(s) : st.seg === 'card' ? stuCardH(c, s) : stuAttH(c, s);
   const pv = L[i - 1], nx = L[i + 1], fnm = x => esc((x && (x.fn || sn(x))) || '');
-  const stepBtn = (o, d, ic) => '<button class="stepb' + (o ? '' : ' off') + '"' + (o ? ' data-act="stuStep" data-a="' + d + '"' : ' disabled') + '>' + (d < 0 ? ico(ic) : '') + '<span>' + (o ? fnm(o) : '—') + '</span>' + (d > 0 ? ico(ic) : '') + '</button>';
+  const stepBtn = (o, d, ic) => '<button class="stepb' + (o ? '' : ' off') + '"' + (o ? ' data-act="stuStep" data-a="' + d + '"' : ' disabled') + '>' + (d < 0 ? ico(ic) : '') + '<span>' + (o ? fnm(o) : '') + '</span>' + (d > 0 ? ico(ic) : '') + '</button>';
   b = '<div class="stepbar">' + stepBtn(pv, -1, 'chev-r') + '<div class="stepn"><b>' + fn(i + 1) + '</b> از ' + fn(L.length) + '</div>' + stepBtn(nx, 1, 'chev-l') + '</div>' + b;
   return { title: sn(s), tabs: false, trail: edBtn('stu', { sid: s.id }), body: b };
 };
@@ -3311,7 +3318,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-22T20:23:58.161Z';
+const APP_BUILD = '2026-11-23T07:20:06.056Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -3955,7 +3962,7 @@ const edSheet = o => {
   ED.cur = o;
   const body = '<div class="group ef-g">' + o.fields.map(efH).join('') + '</div>' + (o.extra || '')
     + (o.del ? '<div class="ef-del"><button class="cap-b red" data-act="edDel">' + esc(o.del.label || 'حذف') + '</button></div>' : '');
-  Sheet.open({ title: o.title, act: '<button class="cap-b tint" data-act="edSave">ذخیره</button>', body });
+  Sheet.open({ title: o.title, act: '<button class="cap-b ic tint" data-act="edSave" aria-label="ذخیره">' + ico('check') + '</button>', body });
 };
 /* ذخیرهٔ فرم | Save Form: فقط خانه‌هایی که عوض شده‌اند به‌صورت دستور ثبت می‌شوند؛ ناگزیرها باید پر باشند */
 ACT.edSave = () => {
@@ -3977,9 +3984,12 @@ const edId = p => p + Date.now().toString(36) + Math.floor(Math.random() * 1296)
 /* فرم دانش‌آموز | Student Form: نام، جنسیت و همهٔ فیلدهای پروندهٔ دانش‌آموز؛ دانش‌آموز تازه هم با همین فرم ساخته می‌شود */
 const AREA_SF = ['addr', 'weak', 'good', 'ill', 'talent', 'help'];
 const stuFields = s => [{ t: 'h', l: 'نام' }, { k: 'fn', l: 'نام', v: s.fn }, { k: 'ln', l: 'نام خانوادگی', v: s.ln },
+  { k: 'tg', l: 'برچسب‌ها (با ، جدا)', v: stuTags(s).join('، ') },
   { k: 'gender', l: 'جنسیت', t: 'sel', v: s.gender || '', o: [['', '—'], ['دختر', 'دختر'], ['پسر', 'پسر']] }]
   .concat(SF.map(f => f[0] === 'h' ? { t: 'h', l: f[1] } : { k: f[0], l: f[1], v: s[f[0]], t: f[2] === 'p' ? 'tel' : AREA_SF.includes(f[0]) ? 'area' : 'text' }));
-const stuVal = (k, v) => ['shad', 'fphone', 'ephone'].includes(k) ? fd(v) : v;
+const stuVal = (k, v) => ['shad', 'fphone', 'ephone'].includes(k) ? fd(v) : k === 'tg' ? tgArr(v) : v;
+/* برچسب‌ها | Tags: متن جداشده با ویرگول را به فهرست برچسب تبدیل می‌کند (تکراری‌ها حذف؛ خالی = پاک کردن) */
+const tgArr = v => { const L = [...new Set(String(v || '').split(/[،,]/).map(x => x.trim()).filter(Boolean))]; return L.length ? L : ''; };
 const ED_FORMS = {};
 ED_FORMS.stu = p => {
   const c = C(), s = stuById(c, p.sid); if (!s) return;
@@ -3990,8 +4000,19 @@ ED_FORMS.stu = p => {
 };
 ED_FORMS.stuAdd = () => {
   edSheet({ title: 'دانش‌آموز تازه', fields: stuFields({}), req: ['fn'],
-    save: vals => { const it = { id: edId('s') }; Object.keys(vals).forEach(k => { if (vals[k]) it[k] = stuVal(k, vals[k]); }); return edit({ k: 'arrAdd', path: ['students'], item: it }); } });
+    save: vals => { const it = { id: edId('s') }; Object.keys(vals).forEach(k => { if (vals[k]) it[k] = stuVal(k, vals[k]); }); if (!it.tg) delete it.tg; return edit({ k: 'arrAdd', path: ['students'], item: it }); } });
 };
+
+/* ویرایش برچسب | Tag Editor: فرم کوچک برچسب‌های یک دانش‌آموز با گزینه‌های آمادهٔ برچسب‌های دیگر دانش‌آموزان؛ همان‌جا روی سرور هم ذخیره می‌شود */
+ED_FORMS.stuTg = p => {
+  const c = C(), s = stuById(c, p.sid); if (!s) return;
+  const all = [...new Set(STU(c).flatMap(x => stuTags(x)))], cur = stuTags(s);
+  const extra = all.length ? '<div class="group-h">برچسب‌های این دوره</div><div class="ef-chips">' + all.map(t => '<button class="chip' + (cur.includes(t) ? ' on' : '') + '" data-act="edTg" data-a="' + esc(t) + '">' + esc(t) + '</button>').join('') + '</div>' : '';
+  edSheet({ title: 'برچسب‌های ' + (s.fn || sn(s)), fields: [{ k: 'tg', l: 'برچسب‌ها', v: cur.join('، ') }], extra,
+    save: (vals, ch) => { if ('tg' in ch) edSet(['students', { f: 'id', v: s.id }, 'tg'], tgArr(ch.tg)); } });
+};
+/* انتخاب برچسب آماده | Pick Tag Chip: برچسب را به کادر اضافه یا از آن حذف می‌کند */
+ACT.edTg = (el, t) => { const i = $('.sheet [data-ef=tg]'); if (!i) return; const L = [].concat(tgArr(i.value) || []), x = L.indexOf(t); if (x >= 0) L.splice(x, 1); else L.push(t); i.value = L.join('، '); el.classList.toggle('on', x < 0); };
 
 /* ---- ۱۸.۴ فرم دوره | 18.4 Course Form ---- */
 /* فرم دوره | Course Form: مشخصات دوره و نماینده‌ها */
