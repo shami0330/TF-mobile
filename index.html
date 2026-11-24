@@ -286,6 +286,22 @@ button.stat:active{opacity:.6}
 .sheet{position:absolute;inset-inline:0;bottom:0;max-height:88%;display:flex;flex-direction:column;background:var(--bg);border-radius:20px 20px 0 0;transform:translateY(105%);transition:transform .45s var(--ease);pointer-events:auto;box-shadow:0 -8px 40px rgba(0,0,0,.2);padding-bottom:var(--sab)}
 .sheet.on{transform:none}
 .sheet.dragging{transition:none;will-change:transform}
+.sheet.tall{height:calc(100% - var(--sat) - var(--kb,0px) - 12px);max-height:calc(100% - var(--sat) - var(--kb,0px) - 12px)}
+.sno{color:var(--label-2);font-weight:600;margin-inline-end:2px;font-variant-numeric:tabular-nums}
+/* کارت گروه‌ها | Group Cards */
+.gcard{position:relative;margin:0 16px 12px;padding:13px 16px 13px;background:var(--card);border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.gcard::before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:5px;background:var(--gc)}
+.gcard.tap{transition:background .12s}.gcard.tap:active{background:var(--fill)}
+.gc-h{display:flex;align-items:center;gap:10px}
+.gc-t{flex:1;min-width:0}.gc-t b{display:block;font-size:1.0625rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gc-t small{color:var(--label-2);font-size:.8125rem;font-weight:600}
+.gc-l{display:flex;align-items:center;gap:10px;margin-top:12px;padding:8px 10px;border-radius:13px;background:var(--fill);background:color-mix(in srgb,var(--gc) 13%,transparent)}
+.gc-n{min-width:0}.gc-n b{display:block;font-size:1rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gc-n small{color:var(--orange);font-size:.8125rem;font-weight:800}
+.gc-m{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.gc-c{display:inline-flex;align-items:center;gap:6px;padding:3px 4px;padding-inline-end:11px;background:var(--fill);border-radius:999px;font-size:.875rem;max-width:100%}
+.gc-c>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gc-e{margin-top:10px;color:var(--label-2);font-size:.875rem}
+/* شمارنده‌های فهرست دانش‌آموزان | Student List Counters: هر سه آدمک هم‌اندازه و همیشه با شمار زیرشان (حتی صفر) */
+.ab-row.sl{gap:6px;align-items:flex-start}.ab-row.sl .ab-p{width:34px}.ab-row.sl .ab-p .ppl{width:26px;height:26px}.ab-row.sl .ab-p.z b{color:var(--label-3)}
 .sheet{touch-action:pan-y}
 .sheet .grab{flex:none;padding:8px 0 4px;touch-action:none}
 .sheet .grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--label-3);margin:0 auto}
@@ -915,6 +931,9 @@ const qv = n => pd(String(Math.round(n * 100) / 100)).replace('.', '٫');
 /* نام دانش‌آموز | Student Name: نام و نام‌خانوادگی را کنار هم می‌گذارد */
 /* نام قابل‌لمس | Touchable Name: نام دانش‌آموز؛ با نگه‌داشتن انگشت روی آن (در هر جای برنامه) کمی بزرگ می‌شود و مشخصاتش باز می‌شود */
 const stnH = s => '<span class="stn" data-stu="' + esc(s.id) + '">' + esc(sn(s)) + '</span>';
+/* شمارهٔ دانش‌آموز | Student Number: شمارهٔ ثابت هر دانش‌آموز در فهرست کلاس (به ترتیب اسم)؛ در همهٔ فهرست‌ها کنار نام می‌آید */
+const snoH = s => { const i = STU(C()).findIndex(x => String(x.id) === String(s && s.id)); return i < 0 ? '' : '<span class="sno">' + fn(i + 1) + '.</span> '; };
+const stnN = s => snoH(s) + stnH(s);
 const sn = s => (((s && s.fn) || '') + ' ' + ((s && s.ln) || '')).trim() || (s && s.name) || '';
 /* مکث | Sleep: برای مکث کوتاه بین کارها */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -1037,7 +1056,7 @@ const ICONS = {
 const PPL_DEVIL = '<path d="M45 140C45 210 75 245 95 260 120 225 145 235 175 235 205 235 220 205 250 205 260 205 270 190 275 180 235 185 205 160 175 130 150 110 125 115 110 125L70 125C55 115 40 120 45 140Z" fill="#A61C1C"/><path d="M30 165C30 135 50 120 80 120L120 120C150 120 170 135 170 165L170 185 145 195 145 160 138 160 138 197 62 197 62 160 55 160 55 195 30 185Z" fill="#D92626"/><path d="M55 125Q100 155 145 125L130 118Q100 135 70 118Z" fill="#C41E1E"/><circle cx="100" cy="80" r="42" fill="#D92626"/><path d="M65 55C48 42 45 22 56 12 58 28 66 36 78 42ZM135 55C152 42 155 22 144 12 142 28 134 36 122 42Z" fill="#D92626"/><path d="M73 66 91 74M127 66 109 74M88 96Q102 104 114 91" fill="none" stroke="#801111" stroke-width="4.5" stroke-linecap="round"/><circle cx="82" cy="77" r="4.5" fill="#801111"/><circle cx="118" cy="77" r="4.5" fill="#801111"/><g transform="translate(198 0)" fill="#B51B1B"><rect x="-4.5" y="15" width="9" height="250" rx="4.5"/><polygon points="0,0 -10,20 10,20"/><path d="M-28 24L-28 52C-28 72 28 72 28 52L28 24" fill="none" stroke="#B51B1B" stroke-width="9" stroke-linecap="round"/><polygon points="-28,8 -37,26 -19,26"/><polygon points="28,8 19,26 37,26"/></g><circle cx="198" cy="175" r="13" fill="#D92626"/>';
 const PPL_USER = '<circle cx="85" cy="80" r="44" fill="#D92626"/><path d="M15 168C15 136 36 120 68 120L102 120C134 120 155 136 155 168L155 188 130 198 130 162 123 162 123 200 47 200 47 162 40 162 40 198 15 188Z" fill="#D92626"/>';
 const PPL_ANGEL = '<path d="M75 135C45 110 15 80 5 85-2 90 8 115 25 125 12 125 10 135 28 145 18 148 22 160 45 162 58 162 68 152 75 145Z" fill="#F2F4F7" stroke="#C9D0DA" stroke-width="3" stroke-linejoin="round"/><path d="M145 135C175 110 205 80 215 85 222 90 212 115 195 125 208 125 210 135 192 145 202 148 198 160 175 162 162 162 152 152 145 145Z" fill="#F2F4F7" stroke="#C9D0DA" stroke-width="3" stroke-linejoin="round"/><ellipse cx="110" cy="22" rx="42" ry="11" fill="none" stroke="#F4C430" stroke-width="7"/><circle cx="110" cy="80" r="42" fill="#77B988"/><g fill="#F4C430"><path d="M106 60C90 62 74 72 68 85M114 60C130 62 146 72 152 85" fill="none" stroke="#F4C430" stroke-width="2.5" stroke-linecap="round"/><ellipse cx="100" cy="56" rx="7" ry="3.5" transform="rotate(-25 100 56)"/><ellipse cx="90" cy="60" rx="7.5" ry="3.5" transform="rotate(-35 90 60)"/><ellipse cx="80" cy="66" rx="7.5" ry="3.5" transform="rotate(-45 80 66)"/><ellipse cx="72" cy="74" rx="7" ry="3.5" transform="rotate(-55 72 74)"/><ellipse cx="120" cy="56" rx="7" ry="3.5" transform="rotate(25 120 56)"/><ellipse cx="130" cy="60" rx="7.5" ry="3.5" transform="rotate(35 130 60)"/><ellipse cx="140" cy="66" rx="7.5" ry="3.5" transform="rotate(45 140 66)"/><ellipse cx="148" cy="74" rx="7" ry="3.5" transform="rotate(55 148 74)"/></g><path d="M42 168C42 136 63 120 93 120L127 120C157 120 178 136 178 168L178 188 153 198 153 162 146 162 146 200 74 200 74 162 67 162 67 198 42 188Z" fill="#77B988"/>';
-const PPL_SLASH = '<line x1="8" y1="212" x2="162" y2="32" stroke="#fff" stroke-width="26" stroke-linecap="round"/><line x1="8" y1="212" x2="162" y2="32" stroke="#801111" stroke-width="13" stroke-linecap="round"/>';
+const PPL_SLASH = '<line x1="31" y1="181" x2="139" y2="55" stroke="#fff" stroke-width="26" stroke-linecap="round"/><line x1="31" y1="181" x2="139" y2="55" stroke="#801111" stroke-width="13" stroke-linecap="round"/>';
 const PPL_VB = { abs: '8 28 156 190', neg: '25 0 255 270', pos: '0 8 225 195' };
 /* سه آدمک پشت‌هم | Absence Group Icon: سه آدمک ردیف و روی هم برای «جمع غیبت‌ها»؛ فقط آدمک جلویی خط مورب دارد */
 const PPL_ROW = '<g opacity=".5" transform="translate(-15 -36)">' + PPL_USER + '</g><g opacity=".78" transform="translate(55 -36)">' + PPL_USER + '</g><g transform="translate(125 -36)">' + PPL_USER + PPL_SLASH + '</g>';
@@ -2264,19 +2283,25 @@ const Sheet = {
     ov.append(bd, sh); Sheet.els = [bd, sh];
     bd.addEventListener('click', () => Sheet.close());
     /* کشیدن برای بستن | Drag to Close: برگه را می‌شود از دستگیره، سرتیتر یا خود متن (وقتی بالای فهرست است) پایین کشید؛ همراه انگشت می‌آید، با کشیدن زیاد یا ضربهٔ سریع از همان جا روان پایین می‌رود و بسته می‌شود */
-    const body = $('.sh-body', sh); let y0 = null, dy = 0, vy = 0, ly = 0, lt = 0, armed = false;
-    const start = (y, tg) => { if (tg.closest('button,input,textarea,select')) return; if (body.contains(tg) && body.scrollTop > 0) return; y0 = y; dy = 0; vy = 0; ly = y; lt = performance.now(); armed = false; };
+    const body = $('.sh-body', sh); let y0 = null, dy = 0, vy = 0, ly = 0, lt = 0, armed = false, h0 = 0, nat = 0, mx = 0, hh = 0;
+    /* بلندترین اندازه | Max Height: اندازهٔ برگه وقتی تا بالای صفحه می‌رسد */
+    const maxH = () => { const had = sh.classList.contains('tall'); sh.classList.add('tall'); const v = sh.offsetHeight; if (!had) sh.classList.remove('tall'); return v; };
+    const start = (y, tg) => { if (tg.closest('button,input,textarea,select')) return; if (body.contains(tg) && body.scrollTop > 0) return; y0 = y; dy = 0; vy = 0; ly = y; lt = performance.now(); armed = false; h0 = sh.offsetHeight; if (!sh.style.height) { nat = h0; mx = maxH(); } hh = h0; };
+    /* کشیدن همراه انگشت | Follow Finger: کشیدن به بالا برگه را همراه انگشت بلندتر می‌کند (تا بالای صفحه) و هر جا رها شود همان‌جا می‌ماند؛ کشیدن به پایین اول آن را کوتاه می‌کند و بعد از اندازهٔ اول، برگه را پایین می‌برد تا بسته شود */
     const move = (y, e) => {
       if (y0 == null) return; const d = y - y0;
-      if (!armed) { if (d < -6) { y0 = null; return; } if (d < 6) return; armed = true; sh.classList.add('dragging'); bd.style.transition = 'none'; }
-      const now = performance.now(); dy = Math.max(0, d); vy = (y - ly) / Math.max(1, now - lt); ly = y; lt = now;
+      if (!armed) { if (Math.abs(d) < 6) return; if (d < 0 && h0 >= mx - 1) { y0 = null; return; } armed = true; sh.classList.add('dragging'); bd.style.transition = 'none'; }
+      const now = performance.now(); vy = (y - ly) / Math.max(1, now - lt); ly = y; lt = now;
+      hh = d < 0 ? Math.min(mx, h0 - d) : Math.max(nat, h0 - d); dy = d > 0 ? Math.max(0, d - (h0 - nat)) : 0;
+      if (hh > nat || sh.style.height) { sh.style.maxHeight = mx + 'px'; sh.style.height = hh + 'px'; }
       sh.style.transform = 'translate3d(0,' + dy + 'px,0)'; bd.style.opacity = Math.max(0, 1 - dy / Math.max(1, sh.offsetHeight));
       if (e && e.cancelable) e.preventDefault();
     };
     const end = () => {
       if (y0 == null) return; const was = armed; y0 = null; armed = false; if (!was) return;
       sh.classList.remove('dragging'); bd.style.transition = ''; bd.style.opacity = ''; sh.style.transform = '';
-      if (dy > sh.offsetHeight * 0.3 || vy > 0.6) Sheet.close();
+      if (dy > sh.offsetHeight * 0.3 || (vy > 0.6 && dy > 0)) { Sheet.close(); return; }
+      if (hh <= nat + 1) { sh.style.height = ''; sh.style.maxHeight = ''; }
     };
     sh.addEventListener('touchstart', e => start(e.touches[0].clientY, e.target), { passive: true });
     sh.addEventListener('touchmove', e => move(e.touches[0].clientY, e), { passive: false });
@@ -2574,7 +2599,7 @@ const Screen = {
     Screen.show('login', '<div class="scroll"><div class="hero"><div class="logo">' + LOGO + '</div><h1>توت فرنگی</h1></div>'
       + '<div id="lerr">' + (msg ? '<div class="banner">' + ico('alert') + '<span>' + esc(msg) + '</span></div>' : '') + '</div>'
       + '<div class="group"><div class="field"><label for="em">ایمیل</label><input id="em" class="ltr-in" type="email" inputmode="email" autocomplete="username" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="name@example.com" value="' + esc(em) + '" data-enter="focusPw"></div>'
-      + '<div class="field"><label for="pw">رمز عبور</label><input id="pw" class="ltr-in" type="password" autocomplete="current-password" placeholder="رمز عبور" data-enter="doLogin"><button class="eye" data-act="togglePw" aria-label="نمایش رمز">' + ico('eye') + '</button></div></div>'
+      + '<div class="field"><label for="pw">رمز عبور</label><input id="pw" class="ltr-in" type="password" autocomplete="current-password" placeholder="رمز عبور" data-enter="doLogin"><button class="eye" data-act="togglePw" aria-label="نمایش رمز">' + ico('eye-off') + '</button></div></div>'
       + '<div class="pad-x"><button class="btn primary" id="lbtn" data-act="doLogin">ورود</button></div>'
       + '<div class="or">یا</div>'
       + '<div class="pad-x"><button class="btn tinted" data-act="doDemo">' + ico('star') + 'ورود با داده‌ی نمایشی</button></div>'
@@ -2635,7 +2660,7 @@ const Auth = {
 /* کار دکمه‌ها | Auth Actions: ورود، نمایش رمز، دادهٔ نمایشی، تلاش دوباره و خروج */
 ACT.doLogin = () => Auth.login();
 ACT.focusPw = () => { const p = $('#pw'); if (p) p.focus(); };
-ACT.togglePw = el => { const p = $('#pw'); if (!p) return; const show = p.type === 'password'; p.type = show ? 'text' : 'password'; el.innerHTML = ico(show ? 'eye-off' : 'eye'); };
+ACT.togglePw = el => { const p = $('#pw'); if (!p) return; const show = p.type === 'password'; p.type = show ? 'text' : 'password'; el.innerHTML = ico(show ? 'eye' : 'eye-off'); };
 ACT.doDemo = () => Auth.demo();
 ACT.retryLoad = () => Auth.load();
 ACT.useCache = () => Auth.useCache();
@@ -2802,7 +2827,7 @@ const attDayView = (c, st) => {
   weekDays(st.off).forEach(x => { if (attDay(c, dkey(x)).rec) marks[dkey(x)] = 1; });
   let h = '<div class="day-head"><b>' + esc(jFull(d)) + '</b>' + (attLocked(c, k) ? '<span class="pill orange">' + ico('lock') + 'قفل‌شده</span>' : '') + '</div>';
   h += dayStripH({ off: st.off, sel: k, marks, pick: 'attPick', nav: 'attWeek' });
-  const tile = (f, cls, n, t) => '<button class="stat ' + cls + (st.f === f ? ' on' : '') + '" data-act="attFilter" data-a="' + f + '">' + (f === 'a' ? ppl('abs') : '') + '<b>' + fn(n) + '</b><span>' + t + '</span></button>';
+  const tile = (f, cls, n, t) => '<button class="stat ' + cls + (st.f === f ? ' on' : '') + '" data-act="attDayAbs">' + (f === 'a' ? ppl('abs') : '') + '<b>' + fn(n) + '</b><span>' + t + '</span></button>';
   h += '<div class="stats">' + tile('a', 'red', ad.a, 'غایب') + '</div>';
   const L = STU(c).filter(s => { const v = attOf(c, k, s.id); return st.f === 'all' || (st.f === 'p' && v === 1) || (st.f === 'a' && v === 0) || (st.f === 'n' && v !== 1 && v !== 0); });
   const lk = attLocked(c, k);
@@ -2819,7 +2844,7 @@ const attRow = (c, s, k, lk) => {
   const m = v === 1 ? ['p on', 'pres', 'حاضر'] : v === 0 ? ['a on', 'abs', 'غایب'] : ['n', 'minus', 'ثبت نشده'];
   const btn = '<button class="abt ' + m[0] + '" data-act="attSet" data-a="' + esc(s.id) + '" aria-label="' + m[2] + '"' + (lk ? ' disabled' : '') + '>' + (m[1] === 'pres' || m[1] === 'abs' ? ppl(m[1]) : ico(m[1])) + '</button>';
   return '<div class="row has-lead arow" data-sid="' + esc(s.id) + '"><span class="lead">' + avatar(s, 40) + '</span>'
-    + '<span class="main tap" role="button"' + pushA('stuD', { sid: s.id, seg: 'att' }) + '><div class="ttl">' + stnH(s) + '</div>' + (tg ? '<div class="sub">' + tg + '</div>' : '') + '</span>'
+    + '<span class="main tap" role="button"' + pushA('stuD', { sid: s.id, seg: 'att' }) + '><div class="ttl">' + stnN(s) + '</div>' + (tg ? '<div class="sub">' + tg + '</div>' : '') + '</span>'
     + '<span class="trail abtns">' + btn + '</span></div>';
 };
 /* ابزار روز | Day Tools: قفل کردن یا باز کردن قفل روز */
@@ -2838,11 +2863,11 @@ const attMonthView = (c, st) => {
   const per = L.map(s => { let a = 0; days.forEach(d => { if (attOf(c, dkey(d), s.id) === 0) a++; }); return a; });
   const tot = per.reduce((p, q) => p + q, 0), withAbs = per.filter(x => x > 0).length;
   let h = '<div class="mo-nav"><button class="dnav" data-act="attMonthGo" data-a="-1" aria-label="ماه قبل">' + ico('chev-r') + '</button><div class="t">' + JM[m - 1] + ' ' + fn(y) + '</div><button class="dnav" data-act="attMonthGo" data-a="1"' + ((y > cur.y || (y === cur.y && m >= cur.m)) ? ' disabled' : '') + ' aria-label="ماه بعد">' + ico('chev-l') + '</button></div>';
-  h += '<div class="stats"><div class="stat tint"><b>' + fn(rec) + '</b><span>روز ثبت‌شده</span></div><div class="stat red">' + ppl('abs3') + '<b>' + fn(tot) + '</b><span>جمع غیبت‌ها</span></div><div class="stat orange">' + ppl('abs') + '<b>' + fn(withAbs) + '</b><span>دانش‌آموز غایب</span></div></div>';
+  h += '<div class="stats"><div class="stat red" data-act="attAbsNames" style="cursor:pointer">' + ppl('abs3') + '<b>' + fn(tot) + '</b><span>جمع غیبت‌ها</span></div><div class="stat orange" data-act="attAbsNames" style="cursor:pointer">' + ppl('abs') + '<b>' + fn(withAbs) + '</b><span>دانش‌آموز غایب</span></div></div>';
   if (!rec) return h + emptyH('calendar', 'ثبتی در این ماه نیست', 'برای روزهای این ماه حضور و غیاب ثبت نشده است.');
   h += '<div class="group">' + L.map((s, i) => {
     const dots = '<div class="dots">' + days.map(d => { const k = dkey(d), v = attOf(c, k, s.id); return '<i class="dt ' + (k > tk ? 'f' : v === 1 ? 'p' : v === 0 ? 'a' : '') + '"></i>'; }).join('') + '</div>';
-    return rowH({ lead: avatar(s, 40), ttl: stnH(s), sub: (per[i] ? '<span class="red">' + fn(per[i]) + ' روز غیبت</span>' : 'بدون غیبت') + dots, wrap: true, trail: per[i] ? '<span class="count-dot red">' + fn(per[i]) + '</span>' : '<span class="count-dot green">' + ico('check') + '</span>', chev: true, attr: pushA('stuD', { sid: s.id, seg: 'att' }) });
+    return rowH({ lead: avatar(s, 40), ttl: stnN(s), sub: (per[i] ? '<span class="red">' + fn(per[i]) + ' روز غیبت</span>' : 'بدون غیبت') + dots, wrap: true, trail: per[i] ? '<span class="count-dot red">' + fn(per[i]) + '</span>' : '<span class="count-dot green">' + ico('check') + '</span>', chev: true, attr: pushA('stuD', { sid: s.id, seg: 'att' }) });
   }).join('') + '</div>';
   return h + '<div class="legend"><span class="lg"><i style="background:var(--green)"></i>حاضر</span><span class="lg"><i style="background:var(--red)"></i>غایب</span><span class="lg"><i style="background:var(--label-4)"></i>ثبت‌نشده</span></div>';
 };
@@ -2868,6 +2893,24 @@ ACT.attWeek = (el, a) => {
 };
 ACT.attFilter = (el, a) => { const s = stOf(); s.f = s.f === a ? 'all' : a; Nav.refresh(); };
 ACT.attMonthGo = (el, a) => { const s = stOf(); let { y, m } = s.mo; m += +a; if (m > 12) { m = 1; y++; } if (m < 1) { m = 12; y--; } s.mo = { y, m }; Nav.refresh(); };
+/* ردیف غیبت به سبک ماهانه | Month-Style Row: آواتار، نام، تعداد روز غیبت و نقطه‌های روزهای ماه، با دایرهٔ شمار در کنار */
+const attMoRow = (c, s, days, tk) => {
+  const n = days.filter(d => attOf(c, dkey(d), s.id) === 0).length;
+  const dots = '<div class="dots">' + days.map(d => { const k = dkey(d), v = attOf(c, k, s.id); return '<i class="dt ' + (k > tk ? 'f' : v === 1 ? 'p' : v === 0 ? 'a' : '') + '"></i>'; }).join('') + '</div>';
+  return rowH({ lead: avatar(s, 40), ttl: stnN(s), sub: (n ? '<span class="red">' + fn(n) + ' روز غیبت</span>' : 'بدون غیبت') + dots, wrap: true, trail: n ? '<span class="count-dot red">' + fn(n) + '</span>' : '<span class="count-dot green">' + ico('check') + '</span>' });
+};
+/* نام غایب‌های ماه | Absent Names: با لمس «جمع غیبت‌ها» یا «دانش‌آموز غایب» در نمای ماهانه، برگه‌ای با نام غایب‌های این ماه (به ترتیب اسم) و به سبک همین نما باز می‌شود */
+ACT.attAbsNames = () => {
+  const c = C(), st = stOf(), { y, m } = st.mo, days = monthDays(y, m), tk = dkey(todayD());
+  const L = STU(c).filter(s => days.some(d => attOf(c, dkey(d), s.id) === 0));
+  Sheet.open({ title: 'غایب‌های ' + JM[m - 1], body: L.length ? groupH(fn(L.length) + ' دانش‌آموز', L.map(s => attMoRow(c, s, days, tk)).join('')) : emptyH('calendar', 'بدون غیبت', 'در این ماه کسی غایب نبوده است.') });
+};
+/* نام غایب‌های روز | Day Absent Names: با لمس کاشی «غایب» در نمای روزانه، برگه‌ای با نام غایب‌های همان روز و به سبک نمای ماهانه (تعداد غیبت و نقطه‌های ماه) باز می‌شود */
+ACT.attDayAbs = () => {
+  const c = C(), st = stOf(), k = st.sel, j = jd(kdate(k)), days = monthDays(j.y, j.m), tk = dkey(todayD());
+  const L = STU(c).filter(s => attOf(c, k, s.id) === 0);
+  Sheet.open({ title: 'غایب‌های ' + jFull(kdate(k)), body: L.length ? groupH(fn(L.length) + ' دانش‌آموز', L.map(s => attMoRow(c, s, days, tk)).join('')) : emptyH('users', 'بدون غایب', 'در این روز کسی غایب نشده است.') });
+};
 ACT.attToday = () => { const s = stOf(), d = defDay(); s.sel = dkey(d); s.off = weekOff(d); s.f = 'all'; Nav.refresh(); };
 
 /* ---- ۱۲.۷ ثبت حضور و غیاب | 12.7 Recording Attendance ---- */
@@ -2960,7 +3003,7 @@ const pnGroup = (L, w) => {
   L.forEach(e => { const k = gk(e); if (!G[k]) { G[k] = []; order.push(k); } G[k].push(e); });
   return order.map(k => {
     const g = G[k], id = w + ':' + k, open = PN.edit || PN.open.has(id), n = g.length, all = g.every(e => PN.sel.has(e.id));
-    const head = PN.sid ? esc(jFull(kdate(g[0].k))) : stnH(g[0].s);
+    const head = PN.sid ? esc(jFull(kdate(g[0].k))) : stnN(g[0].s);
     return '<div class="pn-g' + (open && n > 1 ? ' open' : '') + '"><div class="pn-cap" data-act="' + (PN.edit ? 'pnGrp' : n > 1 ? 'pnTog' : 'noop') + '" data-a="' + esc(id) + '">'
       + (PN.edit ? '<span class="pn-ck' + (all ? ' on' : '') + '">' + ico('check') + '</span>' : '') + '<b>' + head + '</b>' + (n > 1 ? '<i>' + fn(n) + '</i>' + (PN.edit ? '' : ico('chev-l')) : '') + '</div>'
       + (n === 1 && !PN.edit ? '<small class="pn-p"><span class="pn-no">' + fn(1) + '.</span> ' + esc(g[0].why || 'بدون توضیح') + (PN.f !== 'day' && !PN.sid ? ' · ' + esc(jFull(kdate(g[0].k))) : '') + '</small>' : '')
@@ -3068,7 +3111,7 @@ PAGES.chk = r => {
     }).join('') + '</div>';
   } else {
     const L = STU(c);
-    b += L.length ? '<div class="group">' + L.map(s => rowH({ lead: avatar(s, 40), ttl: stnH(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || '', trail: stuOverall(c, s).html, chev: true, attr: pushA('chkS', { sid: s.id }) })).join('') + '</div>' + '<div class="group-f" style="margin-top:-8px">عدد کنار نام، میانگین کلی نمره‌های ماه‌های کارنامه است.</div>'
+    b += L.length ? '<div class="group">' + L.map(s => rowH({ lead: avatar(s, 40), ttl: stnN(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || '', trail: stuOverall(c, s).html, chev: true, attr: pushA('chkS', { sid: s.id }) })).join('') + '</div>' + '<div class="group-f" style="margin-top:-8px">عدد کنار نام، میانگین کلی نمره‌های ماه‌های کارنامه است.</div>'
       : emptyH('users', 'دانش‌آموزی نیست', '');
   }
   return { title: 'چک‌لیست', large: true, tabs: true, lead: leaveBtn, body: b };
@@ -3117,7 +3160,7 @@ const chkLRow = (c, s, l, it, k, q) => {
   }
   if (ab) { ctl = '<span class="abs-pill">غایب</span>'; sub = ''; }
   const meta = (flags ? '<span class="qline">' + flags + '</span>' : '') + sub;
-  return '<div class="row has-lead ' + cn + '" data-sid="' + esc(s.id) + '"><span class="lead">' + avatar(s, 38) + '</span><span class="main tap" role="button"' + pushA('chkS', { sid: s.id, lid: l.id }) + '><div class="ttl">' + stnH(s) + '</div>' + (meta ? '<div class="sub wrap">' + meta + '</div>' : '') + '</span><span class="trail">' + ctl + '</span></div>';
+  return '<div class="row has-lead ' + cn + '" data-sid="' + esc(s.id) + '"><span class="lead">' + avatar(s, 38) + '</span><span class="main tap" role="button"' + pushA('chkS', { sid: s.id, lid: l.id }) + '><div class="ttl">' + stnN(s) + '</div>' + (meta ? '<div class="sub wrap">' + meta + '</div>' : '') + '</span><span class="trail">' + ctl + '</span></div>';
 };
 /* صفحهٔ درس | Lesson Page: چیپ موردها، نوار روزها، خلاصه و فهرست دانش‌آموزان */
 PAGES.chkL = (r, p) => {
@@ -3343,7 +3386,7 @@ ACT.schDay = (el, a) => { stOf().di = +a; Nav.refresh(); };
 const stuListH = (c, q) => {
   const L = STU(c).filter(s => !q || stuMatch(s, q));
   if (!L.length) return emptyH('search', q ? 'نتیجه‌ای پیدا نشد' : 'دانش‌آموزی ثبت نشده', q ? 'نام دیگری را امتحان کن.' : 'در برنامهٔ اصلی دانش‌آموزان را اضافه کن.');
-  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnH(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: (() => { const bh = behOf(c, s.id), one = (k, n, t) => n ? '<span class="ab-p ' + k + '" title="' + t + '">' + ppl(k) + '<b>' + fn(n) + '</b></span>' : ''; return '<span class="ab-row">' + one('pos', bh.tp, 'مثبت') + one('neg', bh.tn, 'منفی') + one('abs', a, 'روز غیبت') + '</span>'; })(), chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
+  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnN(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: (() => { const bh = behOf(c, s.id), one = (k, n, t) => '<span class="ab-p ' + k + (n ? '' : ' z') + '" title="' + t + '">' + ppl(k) + '<b>' + fn(n || 0) + '</b></span>'; return '<span class="ab-row sl">' + one('pos', bh.tp, 'مثبت') + one('neg', bh.tn, 'منفی') + one('abs', a, 'روز غیبت') + '</span>'; })(), chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
     + '<div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' دانش‌آموز' + (q ? ' از ' + fn(STU(c).length) : '') + '</div>';
 };
 /* صفحهٔ دانش‌آموزان | Students Page: نوار جستجو و فهرست */
@@ -4276,7 +4319,7 @@ const grpPut = L => {
   return ok;
 };
 /* اعضای گروه | Group Members: دانش‌آموزان واقعیِ گروه؛ سرگروه اول می‌آید */
-const grpMem = (c, g) => arr(g.m).map(id => stuById(c, id)).filter(Boolean).sort((a, b) => (String(b.id) === String(g.hd)) - (String(a.id) === String(g.hd)));
+const grpMem = (c, g) => { const ms = new Set(arr(g.m).map(String)); return STU(c).filter(s => ms.has(String(s.id))).sort((a, b) => (String(b.id) === String(g.hd)) - (String(a.id) === String(g.hd))); };
 /* رنگ گروه‌ها | Group Colors: هر گروه بر اساس جایگاهش یک رنگ برای آیکون می‌گیرد */
 const GRP_COL = ['#007aff', '#34c759', '#ff9500', '#af52de', '#ff2d55', '#5ac8fa', '#ffcc00'];
 /* شمار مثبت و منفی | Group Pos/Neg Count: آدمک سبز با شمار مثبت‌ها و آدمک قرمز با شمار منفی‌ها */
@@ -4288,8 +4331,9 @@ PAGES.grp = r => {
   const c = C(), L = GRP(c);
   /* مرتب‌سازی | Ranking: گروهی که تفاضل مثبت منهای منفی بیشتری دارد بالاتر است؛ در برابری، مثبت بیشتر مقدم است؛ رنگ هر گروه مطابق جایگاه اصلی ثابت می‌ماند */
   const rows = L.map((g, i) => ({ g, i })).sort((a, b) => (arr(b.g.p).length - arr(b.g.n).length) - (arr(a.g.p).length - arr(a.g.n).length) || arr(b.g.p).length - arr(a.g.p).length || a.i - b.i).map(({ g, i }) => {
-    const hd = stuById(c, g.hd), n = grpMem(c, g).length;
-    return rowH({ lead: icSq('groups', GRP_COL[i % GRP_COL.length]), ttl: esc(g.nm || 'گروه'), sub: (hd ? 'سرگروه: ' + esc(sn(hd)) + ' · ' : '') + fn(n) + ' عضو', trail: grpPnH(g), chev: true, attr: pushA('grpOne', { gid: g.id }) });
+    /* کارت گروه | Group Card: بالا نام گروه با شمار مثبت و منفی، زیرش سرگروه با نشان ستاره، و پایین اعضا به‌صورت قرص‌های کوچک به ترتیب اسم؛ رنگ کنارهٔ کارت رنگ همان گروه است */
+    const col = GRP_COL[i % GRP_COL.length], hd = stuById(c, g.hd), all = grpMem(c, g), ms = all.filter(x => !hd || String(x.id) !== String(hd.id));
+    return rowH({ lead: icSq('groups', col), ttl: esc(g.nm || 'گروه'), sub: fn(all.length) + ' عضو' + (hd ? ' · ★ ' + esc(sn(hd)) : ''), trail: grpPnH(g), chev: true, attr: pushA('grpOne', { gid: g.id }) });
   }).join('');
   return { title: 'گروه‌بندی', large: true, tabs: true, lead: leaveBtn, trail: edBtn('grpAdd'),
     body: L.length ? '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="gqOpen">' + ppl('duo') + 'شایستگی گروه‌ها</button><button class="btn qc-neg" data-act="ghOpen">تاریخچه عملکرد</button></div><div class="group">' + rows + '</div><div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' گروه · ' + fn(STU(c).filter(x => !L.some(g => arr(g.m).map(String).includes(String(x.id)))).length) + ' دانش‌آموز بدون گروه</div>' : emptyH('groups', 'هنوز گروهی نساخته‌ای', 'با دکمهٔ + بالای صفحه یک گروه تازه بساز.') };
@@ -4310,7 +4354,7 @@ PAGES.grpOne = r => {
   /* کپسول مثبت و منفی | Pos/Neg Capsule: مثل مشخصات دانش‌آموز، یک کپسول با دو ستون جداشده با خط؛ لمسش تاریخچهٔ گروه را باز می‌کند */
   const pn = '<div class="grp-pn1"><button class="stat pn2" data-act="grpHist" data-a="' + esc(g.id) + '"><span class="pn2c green"><b>' + ppl('pos') + '<bdi dir="ltr">' + fn(arr(g.p).length) + '</bdi></b><span>مثبت</span></span><span class="pn2c red"><b>' + ppl('neg') + '<bdi dir="ltr">' + fn(arr(g.n).length) + '</bdi></b><span>منفی</span></span></button></div>';
   const mem = M.length
-    ? groupH('اعضا (' + fn(M.length) + ')', M.map(s => rowH({ lead: avatar(s, 40), ttl: stnH(s), sub: String(s.id) === String(g.hd) ? '<span class="tag">سرگروه</span>' : '' })).join(''))
+    ? groupH('اعضا (' + fn(M.length) + ')', M.map(s => rowH({ lead: avatar(s, 40), ttl: stnN(s), sub: String(s.id) === String(g.hd) ? '<span class="tag">سرگروه</span>' : '' })).join(''))
     : groupH('اعضا', rowH({ ttl: '<span class="muted">هنوز عضوی انتخاب نشده؛ با دکمهٔ مداد اضافه کن</span>', wrap: true }));
   return { title: g.nm || 'گروه', trail: edBtn('grpEdit', { gid: g.id }),
     body: pn + mem };
@@ -4367,7 +4411,7 @@ ACT.gqA = (el, gid, w) => {
   const L = grpCopy(GRP(C())), g = L.find(x => String(x.id) === String(gid)); if (!g || !arr(g[k]).length) return;
   g[k] = arr(g[k]).slice(0, -1);
   if (!grpPut(L)) return toast('ثبت نشد', true);
-  gqPaint();
+  gqPaint(); Nav.refresh();
 };
 ACT.gqWhySave = () => {
   const rs = GQ && GQ.rs; if (!rs) return;
@@ -4375,7 +4419,7 @@ ACT.gqWhySave = () => {
   const t = String(($('#gqWhy') || {}).value || '').trim(), e = { id: edId('e'), d: dkey(new Date()) }; if (t) e.t = t;
   g[rs.w] = arr(g[rs.w]).concat([e]);
   if (!grpPut(L)) return toast('ثبت نشد', true);
-  GQ.rs = null; gqPaint();
+  GQ.rs = null; gqPaint(); Nav.refresh();
 };
 ACT.gqWhySkip = () => { if (GQ) { GQ.rs = null; gqPaint(); } };
 /* تاریخچه عملکرد گروه‌ها | Group History: به تفکیک گروه؛ برای هر گروه یک کارت با شمارش مثبت و منفی و فهرست زمانیِ ثبت‌ها (جدیدترین اول)؛ فیلتر روز، ماه یا همه؛ تک‌ستونی برای موبایل؛ حالت ویرایش برای تغییر دلیل و حذف */
@@ -4465,9 +4509,9 @@ const grpForm = gid => {
   GRP(c).forEach(x => { if (!cur || String(x.id) !== String(cur.id)) arr(x.m).forEach(id => { where[String(id)] = x.nm || 'گروه'; }); });
   /* ردیف انتخاب | Pick Row: آواتار و نام؛ سمت چپ ستارهٔ سرگروه (فقط برای عضو) و دکمهٔ حبابی + (افزودن) یا − (برداشتن) */
   const pick = (s, mm) => { const id = String(s.id), on = mem.has(id), hd = cur && String(cur.hd) === id && on;
-    return '<div class=\"row has-lead grp-pick' + (mm ? ' mm' : '') + (on ? ' on' : '') + (hd ? ' hd' : '') + '\" data-s=\"' + esc(id) + '\"><span class=\"lead\">' + avatar(s, 40) + '</span><span class=\"main\"><div class=\"ttl\">' + esc(sn(s)) + '</div></span><span class=\"trail\"><button class=\"grp-hdb\" data-act=\"grpHd\" data-s=\"' + esc(id) + '\" aria-label=\"سرگروه\">' + ico('star') + '</button><button class=\"grp-bub\" data-act=\"grpPick\" data-s=\"' + esc(id) + '\" aria-label=\"تغییر عضویت\"><span class=\"p\">' + ico('plus') + '</span><span class=\"m\">' + ico('minus') + '</span></button></span></div>'; };
+    return '<div class=\"row has-lead grp-pick' + (mm ? ' mm' : '') + (on ? ' on' : '') + (hd ? ' hd' : '') + '\" data-s=\"' + esc(id) + '\"><span class=\"lead\">' + avatar(s, 40) + '</span><span class=\"main\"><div class=\"ttl\">' + snoH(s) + esc(sn(s)) + '</div></span><span class=\"trail\"><button class=\"grp-hdb\" data-act=\"grpHd\" data-s=\"' + esc(id) + '\" aria-label=\"سرگروه\">' + ico('star') + '</button><button class=\"grp-bub\" data-act=\"grpPick\" data-s=\"' + esc(id) + '\" aria-label=\"تغییر عضویت\"><span class=\"p\">' + ico('plus') + '</span><span class=\"m\">' + ico('minus') + '</span></button></span></div>'; };
   /* دو بخش | Two Sections: اعضای فعلی این گروه، و دانش‌آموزانی که هیچ گروهی ندارند؛ دانش‌آموزِ عضو گروه دیگر نمایش داده نمی‌شود */
-  const cm = all.filter(s => mem.has(String(s.id))), fr = all.filter(s => !mem.has(String(s.id)) && !where[String(s.id)]);
+  const cm = all.filter(s => mem.has(String(s.id))).sort((a, b) => (+(!!cur && String(cur.hd) === String(b.id))) - (+(!!cur && String(cur.hd) === String(a.id)))), fr = all.filter(s => !mem.has(String(s.id)) && !where[String(s.id)]);
   const extra = '<div class=\"grp-sel-w\" id=\"grpSelW\"' + (cm.length ? '' : ' hidden') + '><div class=\"group-h\">اعضای گروه · با ستاره سرگروه را انتخاب کن</div><div class=\"group\" id=\"grpSelG\">' + cm.map(s => pick(s, true)).join('') + '</div></div>'
     + '<div class=\"group-h\">' + (cur ? 'افزودن دانش‌آموز بدون گروه' : 'دانش‌آموزان بدون گروه') + '</div><div class=\"group\" id=\"grpFreeG\">' + (fr.length ? fr.map(s => pick(s, false)).join('') : rowH({ ttl: '<span class=\"muted\">دانش‌آموزِ بدون گروه نمانده</span>' })) + '</div>';
   edSheet({ title: cur ? 'ویرایش گروه' : 'گروه تازه', req: ['nm'], extra,
@@ -4491,10 +4535,14 @@ ED_FORMS.grpEdit = p => grpForm(p.gid);
 ACT.grpPick = el => { const row = el.closest('.grp-pick'), on = row.classList.toggle('on'); if (!on) row.classList.remove('hd');
   /* جدا کردن انتخاب‌شده‌ها | Separate Selected: دانش‌آموزِ انتخاب‌شده به بخش جدای بالا می‌رود (با فاصله از بقیه)؛ با برداشتن، به فهرست پایین برمی‌گردد */
   const w = $('#grpSelW'), sg = $('#grpSelG'), fg = $('#grpFreeG'); if (!w || !sg || !fg) return;
-  if (on) { $$('.row:not(.grp-pick)', fg).forEach(r => r.remove()); sg.appendChild(row); } else fg.insertBefore(row, fg.firstChild);
+  if (on) { $$('.row:not(.grp-pick)', fg).forEach(r => r.remove()); } grpPlace(on ? sg : fg, row);
   w.hidden = !sg.querySelector('.grp-pick'); };
 /* لمس ستاره | Pick Head: همان دانش‌آموز سرگروه می‌شود و از بقیه برداشته می‌شود؛ لمس دوباره سرگروه را برمی‌دارد */
-ACT.grpHd = el => { const row = el.closest('.grp-pick'), was = row.classList.contains('hd'); $$('.grp-pick.hd').forEach(r => r.classList.remove('hd')); if (!was) row.classList.add('hd'); };
+ACT.grpHd = el => { const row = el.closest('.grp-pick'), was = row.classList.contains('hd'); $$('.grp-pick.hd').forEach(r => r.classList.remove('hd')); if (!was) row.classList.add('hd');
+  const sg = $('#grpSelG'); if (sg) $$('.grp-pick', sg).sort((a, b) => grpKey(a) - grpKey(b)).forEach(r => sg.appendChild(r)); };
+/* ترتیب ردیف‌ها | Row Order: همیشه به ترتیب فهرست دانش‌آموزان (ترتیب نام)؛ فقط در اعضای گروه، سرگروه اول می‌آید */
+const grpKey = r => { const ord = STU(C()).map(s => String(s.id)); return r.classList.contains('hd') && r.closest('#grpSelG') ? -1 : ord.indexOf(String(r.dataset.s)); };
+const grpPlace = (box, row) => { const k = grpKey(row), nx = $$('.grp-pick', box).find(r => r !== row && grpKey(r) > k); if (nx) box.insertBefore(row, nx); else box.appendChild(row); };
 
 
 /* ================================================================
