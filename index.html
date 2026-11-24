@@ -828,6 +828,56 @@ input,textarea,select{font-size:max(16px,1rem)}
 }
 .hw-bar .btn{white-space:nowrap;padding:0 12px}
 
+/* ---- ۳.۱۵ گروه‌بندی | 3.15 Groups ---- */
+/* نوار تب فشرده | Compact Tab Bar: چون تب‌ها هفت‌تا شدند، نوشتهٔ زیر هر تب کمی کوچک‌تر است تا همه جا شوند */
+#tabbar .tab{font-size:.625rem}
+/* کارت شمارندهٔ گروه | Group Counter Cards: دو کارت مثبت و منفی بالای صفحهٔ هر گروه؛ عدد بزرگ و دکمهٔ ثبت */
+.grp-pn1{display:flex;padding:0 16px 18px}.grp-pn1 .stat.pn2{flex:1}
+/* آیکن بالای عدد | Icon Above Number: در کپسول مثبت و منفی (صفحهٔ دانش‌آموز و گروه) آیکن بالا و عدد زیرش است */
+.pn2c b{display:flex;flex-direction:column;align-items:center;gap:2px}
+.pn2c b .ppl,.pn2c b .ppl.pos,.pn2c b .ppl.neg{margin:0 auto;width:30px;height:32.5px}
+.grp-pn{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 18px}
+.grp-card{background:var(--card);border-radius:16px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.grp-card .ppl{width:38px;height:42px}
+.grp-card .gc-t{font-weight:700;font-size:.9375rem}
+.grp-card .gc-n{font-size:2rem;font-weight:800;line-height:1.1}
+.grp-card.pos .gc-t,.grp-card.pos .gc-n{color:var(--green)}
+.grp-card.neg .gc-t,.grp-card.neg .gc-n{color:var(--red)}
+.grp-card .btn{min-height:40px;padding:0 10px;font-size:.9375rem}
+.grp-card.pos .btn{background:rgba(52,199,89,.16);color:var(--green)}
+.grp-card.neg .btn{background:rgba(255,59,48,.13);color:var(--red)}
+/* نام گروه دیگر | Other Group Hint: کنار نام دانش‌آموزی که الان عضو گروه دیگری است */
+.grp-o{opacity:.6;font-size:.6875rem}
+/* دکمهٔ حذف مورد | Entry Delete Button: دکمهٔ کوچک سطل کنار هر مثبت یا منفی ثبت‌شده */
+.grp-del{width:34px;height:34px;border-radius:50%;background:var(--fill);color:var(--red);display:flex;align-items:center;justify-content:center}
+.grp-del svg{width:17px;height:17px}.grp-del:active{opacity:.5}
+/* انتخاب عضو | Member Picker: ردیف دانش‌آموز با آواتار، دایرهٔ تیک و دکمهٔ ستارهٔ سرگروه */
+.grp-bub{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(10,132,255,.14);color:var(--blue)}
+.grp-bub span{display:flex}.grp-bub svg{width:17px;height:17px;stroke-width:3}.grp-bub .m{display:none}
+.grp-pick.on .grp-bub{background:rgba(255,59,48,.13);color:var(--red)}
+.grp-pick.on .grp-bub .p{display:none}.grp-pick.on .grp-bub .m{display:flex}
+.grp-pick.mm:not(.on){opacity:.45}
+/* تاریخچهٔ گروه‌ها | Group History: کارت هر گروه، ردیف‌های تک‌ستونی و دکمه‌های بزرگ برای موبایل */
+.qc-nav b.wk{font-size:.8125rem;text-align:center;line-height:1.4}
+.grp-card.tap{cursor:pointer}.grp-card.tap:active{opacity:.6}.grp-card .gc-m{color:var(--label-3);font-size:.75rem}
+.gh-list{padding:4px 0 12px}
+.gh-g{background:var(--card);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.gh-hd{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;cursor:pointer}
+.gh-hd b{flex:1;min-width:0;font-size:1rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gh-hd .chev{flex:none;width:16px;height:16px;color:var(--label-3);transform:rotate(-90deg);transition:transform .2s}
+.gh-g.col .gh-hd .chev{transform:none}.gh-g.col .gh-es{display:none}
+.gh-e{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;border-top:.5px solid rgba(128,128,128,.25);font-size:.9375rem;line-height:1.55}
+.gh-s{flex:none;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.0625rem;line-height:1}
+.gh-e.pos .gh-s{background:rgba(52,199,89,.16);color:var(--green)}.gh-e.neg .gh-s{background:rgba(255,59,48,.13);color:var(--red)}
+.gh-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;word-break:break-word}.gh-t small{color:var(--label-3);font-size:.75rem}
+.gh-e.sel{background:rgba(10,132,255,.08)}.gh-e.sel .pn-ck,.gh-hd .pn-ck.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.gh-e .pn-ck,.gh-hd .pn-ck{width:24px;height:24px}
+.grp-sel-w{margin-bottom:28px}.grp-sel-w[hidden]{display:none}
+.grp-hdb{width:32px;height:32px;border-radius:50%;display:none;align-items:center;justify-content:center;color:var(--label-2);background:var(--fill)}
+.grp-hdb svg{width:17px;height:17px}
+.grp-pick.on .grp-hdb{display:flex}
+.grp-pick.hd .grp-hdb{background:var(--orange);color:#fff}
+
 </style>
 </head>
 <body>
@@ -977,7 +1027,9 @@ const ICONS = {
   'heart': '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
   'cloud': '<path d="M18 10h-1.3A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/>',
   'down': '<path d="M12 5v14M19 12l-7 7-7-7"/>',
-  'up': '<path d="M12 19V5M5 12l7-7 7 7"/>'
+  'up': '<path d="M12 19V5M5 12l7-7 7 7"/>',
+  /* آیکون گروه | Groups Icon: سه آدمک کنار هم برای تب گروه‌بندی */
+  'groups': '<circle cx="12" cy="7.5" r="3.2"/><path d="M6.5 20.5v-1.5a4.5 4.5 0 0 1 4.5-4.5h2a4.5 4.5 0 0 1 4.5 4.5v1.5"/><circle cx="4.2" cy="10.5" r="2.2"/><circle cx="19.8" cy="10.5" r="2.2"/><path d="M1 19v-.8a3 3 0 0 1 3-3M23 19v-.8a3 3 0 0 0-3-3"/>'
 };
 /* ساخت آیکون | Make Icon: یک تصویر SVG از نام آیکون می‌سازد؛ cls کلاس اضافه برای اندازه و رنگ است */
 /* آدمک‌ها | People Icons: آدمک قرمز غیبت (abs)، آدمک قرمز شیطانی با شاخ و دم برای منفی (neg)، آدمک سبز بالدار با هاله برای مثبت (pos)، و هر دو پشت‌به‌پشت در یک آیکون (duo) */
@@ -1773,6 +1825,19 @@ const buildDemo = () => {
   });
   B.students[0].tg = ['نیاز به توجه'];
   [A, B].forEach(c => { c.students.forEach(s => { delete s.ab; }); });
+  /* گروه‌بندی نمایشی | Demo Groups: چند گروه با سرگروه، اعضا و مثبت و منفی‌های دارای تاریخ و دلیل؛ یک دانش‌آموز عمداً بدون گروه است */
+  const GD = recent(12).map(dkey), ge = (id, d, t) => ({ id: 'ge' + id, d: GD[d], t });
+  A.grp = [
+    { id: 'ga1', nm: 'ستاره‌ها', hd: 'sa1', m: ['sa1', 'sa2', 'sa3'], p: [ge(1, 11, 'همکاری عالی در فعالیت علوم'), ge(2, 9, 'نظم و ترتیب در کار گروهی'), ge(3, 7, 'پاسخ درست و کامل به سؤال گروهی'), ge(4, 4, 'کمک به گروه دیگر'), ge(5, 1, 'ارائهٔ زیبای پروژه')], n: [ge(6, 6, 'سروصدا هنگام توضیح معلم')] },
+    { id: 'ga2', nm: 'پروانه‌ها', hd: 'sa5', m: ['sa5', 'sa6', 'sa7', 'sa8'], p: [ge(7, 10, 'مشارکت همهٔ اعضا'), ge(8, 5, 'تمیزی میز و کلاس'), ge(9, 2, 'تکلیف کامل همهٔ اعضا')], n: [ge(10, 8, 'دیر رسیدن به کلاس'), ge(11, 3, 'فراموش کردن وسایل')] },
+    { id: 'ga3', nm: 'شاهین‌ها', hd: 'sa9', m: ['sa9', 'sa10', 'sa11'], p: [ge(12, 10, 'برنده شدن در مسابقهٔ ریاضی'), ge(13, 8, 'انضباط در صف'), ge(14, 5, 'گوش دادن فعال'), ge(15, 0, 'گزارش کار خوب')], n: [] },
+    { id: 'ga4', nm: 'جوانه‌ها', hd: 'sa12', m: ['sa12', 'sa13', 'sa14'], p: [ge(16, 9, 'تلاش در بازی گروهی'), ge(17, 3, 'کمک به همکلاسی')], n: [ge(18, 11, 'بی‌نظمی هنگام زنگ تفریح'), ge(19, 7, 'بحث و جدل در گروه'), ge(20, 2, 'ناتمام ماندن کار گروهی')] }
+  ];
+  B.grp = [
+    { id: 'gb1', nm: 'عقاب‌ها', hd: 'sb1', m: ['sb1', 'sb2', 'sb3'], p: [ge(21, 10, 'بیشترین امتیاز در آزمون گروهی'), ge(22, 6, 'ارائهٔ منظم'), ge(23, 2, 'همکاری در آزمایشگاه')], n: [ge(24, 4, 'استفاده از موبایل در کلاس')] },
+    { id: 'gb2', nm: 'ببرها', hd: 'sb4', m: ['sb4', 'sb5', 'sb6'], p: [ge(25, 8, 'پیشرفت در ریاضی'), ge(26, 1, 'آرامش و نظم')], n: [ge(27, 9, 'کم‌کاری در پروژه'), ge(28, 5, 'تأخیر در تحویل تکلیف')] },
+    { id: 'gb3', nm: 'یوزها', hd: 'sb7', m: ['sb7', 'sb8'], p: [ge(29, 7, 'خلاقیت در حل مسئله')], n: [] }
+  ];
   return { db: { courses: [A, B] }, photos: {} };
 };
 
@@ -2250,7 +2315,7 @@ const ask = (msg, label, fn, danger) => Sheet.action({ msg, items: [{ t: label, 
 
 /* ---- ۹.۵ نوار تب‌ها | 9.5 Tab Bar ---- */
 /* تب‌های دوره | Course Tabs: پنج بخش اصلی داخل هر دوره؛ [کلید، نام، آیکون] */
-const TABS = [['att', 'حضور و غیاب', 'attend'], ['chk', 'چک‌لیست', 'clipboard'], ['sch', 'برنامه', 'calendar'], ['stu', 'دانش‌آموزان', 'users'], ['tool', 'ابزار', 'wrench'], ['more', 'بیشتر', 'more']];
+const TABS = [['att', 'حضور و غیاب', 'attend'], ['chk', 'چک‌لیست', 'clipboard'], ['sch', 'برنامه', 'calendar'], ['stu', 'دانش‌آموزان', 'users'], ['grp', 'گروه‌بندی', 'groups'], ['tool', 'ابزار', 'wrench'], ['more', 'بیشتر', 'more']];
 const Tabs = {
   render() { $('#tabbar').innerHTML = TABS.map(t => '<button class="tab" data-act="tab" data-a="' + t[0] + '">' + ico(t[2]) + '<span>' + t[1] + '</span></button>').join(''); },
   sync(show, key) { const tb = $('#tabbar'); tb.classList.toggle('hidden', !show); $$('.tab', tb).forEach(b => b.classList.toggle('on', b.dataset.a === key)); }
@@ -2865,7 +2930,7 @@ const bubS = n => 'font-size:' + (0.75 + Math.min(n, 30) * 0.02).toFixed(3) + 'r
 const qcBtn = (c, k) => {
   if (!qcKey(c)) return '';
   k = k || dkey(defDay()); const gl = gLocked(c, k), sum = w => negList(c, k, w).reduce((a, x) => a + x.n, 0), P = sum('p'), N = sum('n');
-  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ppl('duo') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">مثبت و منفی روز' + (P || N ? ' <span class="pnb" style="' + bubS(P) + '">' + ppl('pos') + '<bdi dir="ltr">' + fn(P) + '</bdi></span><span class="pnb" style="' + bubS(N) + '">' + ppl('neg') + '<bdi dir="ltr">' + fn(N) + '</bdi></span>' : '') + '</button></div><div class="pad-x qc-wrap"><button class="btn sm glk' + (gl ? ' lkon' : '') + '" data-act="gLock" data-a="' + k + '">' + ico('lock') + 'قفل نمرات</button></div>';
+  return '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="qcOpen">' + ppl('duo') + 'شایستگی‌ها</button><button class="btn qc-neg" data-act="qcNeg" data-a="' + k + '">تاریخچه عملکرد' + (P || N ? ' <span class="pnb" style="' + bubS(P) + '">' + ppl('pos') + '<bdi dir="ltr">' + fn(P) + '</bdi></span><span class="pnb" style="' + bubS(N) + '">' + ppl('neg') + '<bdi dir="ltr">' + fn(N) + '</bdi></span>' : '') + '</button></div><div class="pad-x qc-wrap"><button class="btn sm glk' + (gl ? ' lkon' : '') + '" data-act="gLock" data-a="' + k + '">' + ico('lock') + 'قفل نمرات</button></div>';
 };
 /* ---- ۱۳.۲ج برگهٔ مثبت و منفی | 13.2c Positive & Negative Sheet ---- */
 /* مثبت و منفی | Pos/Neg Sheet: برگهٔ دو ستونه (مثبت‌ها و منفی‌ها) برای کل کلاس در یک روز یا یک ماه، یا برای یک دانش‌آموز؛ با «ویرایش» می‌شود دلیل را عوض کرد یا مورد را (تکی یا چندتایی، با تأیید) حذف کرد و روی سرور ذخیره می‌شود */
@@ -2881,7 +2946,11 @@ const pnAll = (c, sid) => {
   }));
   return out.sort((a, b) => (a.k < b.k ? 1 : a.k > b.k ? -1 : 0));
 };
-const pnList = c => pnAll(c, PN.sid).filter(e => PN.f === 'day' ? e.k === PN.k : PN.f === 'month' ? pnYm(e.k) === PN.ym : true);
+/* هفته | Week: هفته از شنبه تا جمعه؛ بازهٔ هفتهٔ شامل یک روز و نوار جابه‌جایی هفته (برای تاریخچهٔ چک‌لیست و گروه‌ها) */
+const wkR = k => { const d = kdate(k), off = (d.getDay() + 1) % 7, a = new Date(d.getFullYear(), d.getMonth(), d.getDate() - off, 12), b = new Date(a.getFullYear(), a.getMonth(), a.getDate() + 6, 12); return [dkey(a), dkey(b)]; };
+const inWk = (k, ref) => { const r = wkR(ref); return !!k && k >= r[0] && k <= r[1]; };
+const wkNav = (ref, act) => { const r = wkR(ref); return '<div class="qc-nav"><button class="dnav" data-act="' + act + '" data-a="-1" aria-label="هفتهٔ قبل">' + ico('chev-r') + '</button><b class="wk">' + esc(jFull(kdate(r[0]))) + ' تا ' + esc(jFull(kdate(r[1]))) + '</b><button class="dnav" data-act="' + act + '" data-a="1" aria-label="هفتهٔ بعد">' + ico('chev-l') + '</button></div>'; };
+const pnList = c => pnAll(c, PN.sid).filter(e => PN.f === 'day' ? e.k === PN.k : PN.f === 'week' ? inWk(e.k, PN.k) : PN.f === 'month' ? pnYm(e.k) === PN.ym : true);
 const pnEnt = (e, i) => '<div class="pn-e' + (PN.sel.has(e.id) ? ' sel' : '') + '">' + (PN.edit ? '<span class="pn-ck" data-act="pnSel" data-a="' + esc(e.id) + '">' + ico('check') + '</span>' : '')
   + '<div class="pn-t"><span class="pn-no">' + fn(i + 1) + '.</span>' + (PN.sid || PN.f !== 'day' ? '<small class="pn-d">' + esc(jFull(kdate(e.k))) + '</small>' : '')
   + (PN.edit ? '<textarea class="fld pn-in" rows="1" data-in="pnGrow" data-chg="pnWhy" data-a="' + esc(e.id) + '" maxlength="200" placeholder="دلیل">' + esc(e.why) + '</textarea>' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>') + '</div></div>';
@@ -2900,8 +2969,9 @@ const pnGroup = (L, w) => {
 };
 const pnBody = () => {
   const c = C(), all = pnAll(c, PN.sid), L = pnList(c), P = L.filter(e => e.w === 'p'), N = L.filter(e => e.w === 'n');
-  let h = segH(PN.sid ? [['month', 'ماه'], ['all', 'همه']] : [['day', 'روز'], ['month', 'ماه']], PN.f, 'pnF');
+  let h = segH(PN.sid ? [['week', 'هفته'], ['month', 'ماه'], ['all', 'همه']] : [['day', 'روز'], ['week', 'هفته'], ['month', 'ماه']], PN.f, 'pnF');
   if (PN.f === 'day') h += '<div class="qc-nav"><button class="dnav" data-act="pnD" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(PN.k))) + '</b><button class="dnav" data-act="pnD" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>';
+  if (PN.f === 'week') h += wkNav(PN.k, 'pnW');
   if (PN.f === 'month') { const ms = [...new Set(all.map(e => pnYm(e.k)).concat([PN.ym]))].sort((a, b) => a - b); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === PN.ym ? ' on' : '') + '" data-act="pnM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
   const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + ppl(w === 'p' ? 'pos' : 'neg') + ' ' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? pnGroup(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
   return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
@@ -2912,12 +2982,13 @@ const pnAct = () => '<button class="cap-b ic' + (PN.edit ? ' solid' : ' tint') +
 const pnGrow = el => { el.style.height = 'auto'; el.style.height = el.scrollHeight + 'px'; };
 INP.pnGrow = (v, el) => pnGrow(el);
 const pnPaint = () => { const b = $('#pnBody'); if (b && PN) { Morph.html(b, pnBody()); $$('.pn-in', b).forEach(pnGrow); } const a = $('#shAct'); if (a && PN) Morph.html(a, pnAct()); };
-const pnShow = () => Sheet.open({ title: PN.sid ? 'مثبت و منفی' : 'مثبت و منفی روز', act: pnAct(), body: '<div id="pnBody">' + pnBody() + '</div>' });
+const pnShow = () => Sheet.open({ title: PN.sid ? 'مثبت و منفی' : 'تاریخچه عملکرد', act: pnAct(), body: '<div id="pnBody">' + pnBody() + '</div>' });
 ACT.qcNeg = (el, k) => { PN = { sid: null, f: 'day', k, ym: pnYm(k), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
 ACT.stuPN = () => { const c = C(), r = Nav.top(), all = pnAll(c, r.p.sid), tk = dkey(defDay()); PN = { sid: r.p.sid, f: 'month', k: tk, ym: all.length ? pnYm(all[0].k) : pnYm(tk), edit: false, sel: new Set(), open: new Set() }; pnShow(); };
 ACT.noop = () => {};
 ACT.pnF = (el, a) => { PN.f = a; PN.sel.clear(); PN.open.clear(); pnPaint(); };
 ACT.pnD = (el, a) => { const d = kdate(PN.k); d.setDate(d.getDate() + +a); PN.k = dkey(d); PN.ym = pnYm(PN.k); PN.sel.clear(); PN.open.clear(); pnPaint(); };
+ACT.pnW = (el, a) => { const d = kdate(PN.k); d.setDate(d.getDate() + 7 * +a); PN.k = dkey(d); PN.ym = pnYm(PN.k); PN.sel.clear(); PN.open.clear(); pnPaint(); };
 ACT.pnM = (el, a) => { PN.ym = +a; PN.sel.clear(); PN.open.clear(); pnPaint(); };
 ACT.pnTog = (el, id) => { PN.open.has(id) ? PN.open.delete(id) : PN.open.add(id); pnPaint(); };
 ACT.pnEdit = () => { PN.edit = !PN.edit; PN.sel.clear(); pnPaint(); };
@@ -4184,6 +4255,246 @@ const dsBoxH = (s, ed) => {
   return groupH(T, L.map((d, i) => '<div class="rkd' + (d.on ? '' : ' off') + '" id="rkd-' + esc(d.id) + '" data-qs="' + esc(d.id) + '"><span class="pn-no">' + fn(i + 1) + '.</span><textarea class="fld" rows="2" data-chg="rkTxt" data-a="' + esc(d.id) + '" placeholder="توصیف را بنویس…">' + esc(d.t || '') + '</textarea>'
     + '<div class="rkd-b"><button class="cap-b ic ' + (d.on ? 'tint' : '') + '" data-act="rkEye" data-a="' + esc(d.id) + '" aria-label="' + (d.on ? 'دیده می‌شود' : 'پنهان است') + '">' + ico(d.on ? 'eye' : 'eye-off') + '</button><button class="cap-b ic red" data-act="rkDel" data-a="' + esc(d.id) + '" aria-label="حذف">' + ico('trash') + '</button></div></div>').join('') + '<div class="ef-add"><button class="cap-b tint" data-act="rkAdd">+ افزودن توصیف</button></div>');
 };
+
+
+/* ================================================================
+   ۱۹) گروه‌بندی | 19) Groups
+   تب گروه‌بندی: ساختن گروه، انتخاب اعضا و سرگروه، و ثبت مثبت و منفی برای هر گروه (توضیح اختیاری است). همه‌چیز در کلید grp همان دوره نگه داشته می‌شود و روی سرور هم ذخیره می‌شود.
+   ================================================================ */
+
+/* ---- ۱۹.۱ داده‌ی گروه‌ها | 19.1 Group Data ---- */
+/* دادهٔ گروه‌ها | Group Data: هر گروه = { id شناسه، nm نام، hd شناسهٔ سرگروه، m شناسهٔ اعضا، p مثبت‌ها، n منفی‌ها }؛ هر مثبت یا منفی = { id، d روز، t توضیح اختیاری } */
+const GRP = c => arr(c && c.grp).filter(g => g && typeof g === 'object');
+const grpById = (c, id) => GRP(c).find(g => String(g.id) === String(id));
+const grpCopy = L => JSON.parse(JSON.stringify(L));
+/* ذخیرهٔ گروه‌ها | Save Groups: کل فهرست گروه‌ها یک‌جا (روی گوشی و روی سرور) ذخیره می‌شود؛ فهرست خالی کلید را پاک می‌کند */
+/* ذخیرهٔ سرور‌اول | Server-First Save: بدون اینترنت یا نشست ثبت نمی‌شود؛ وگرنه تغییر بلافاصله (بدون تأخیر صف) به سرور فرستاده می‌شود */
+const grpPut = L => {
+  if (!S.demo && (!Srv.has() || navigator.onLine === false)) { toast('اینترنت لازم است؛ گروه‌بندی فقط روی سرور ذخیره می‌شود', true); return false; }
+  const ok = edit({ k: 'set', path: ['grp'], v: L.length ? grpCopy(L) : null });
+  if (ok) Sync.flush();
+  return ok;
+};
+/* اعضای گروه | Group Members: دانش‌آموزان واقعیِ گروه؛ سرگروه اول می‌آید */
+const grpMem = (c, g) => arr(g.m).map(id => stuById(c, id)).filter(Boolean).sort((a, b) => (String(b.id) === String(g.hd)) - (String(a.id) === String(g.hd)));
+/* رنگ گروه‌ها | Group Colors: هر گروه بر اساس جایگاهش یک رنگ برای آیکون می‌گیرد */
+const GRP_COL = ['#007aff', '#34c759', '#ff9500', '#af52de', '#ff2d55', '#5ac8fa', '#ffcc00'];
+/* شمار مثبت و منفی | Group Pos/Neg Count: آدمک سبز با شمار مثبت‌ها و آدمک قرمز با شمار منفی‌ها */
+const grpPnH = g => '<span class="ab-row"><span class="ab-p pos">' + ppl('pos') + '<b>' + fn(arr(g.p).length) + '</b></span><span class="ab-p neg">' + ppl('neg') + '<b>' + fn(arr(g.n).length) + '</b></span></span>';
+
+/* ---- ۱۹.۲ صفحهٔ گروه‌بندی | 19.2 Groups Page ---- */
+/* صفحهٔ گروه‌بندی | Groups Page: تب گروه‌بندی؛ فهرست گروه‌ها با سرگروه، تعداد اعضا، مثبت و منفی؛ دکمهٔ + بالای صفحه گروه تازه می‌سازد */
+PAGES.grp = r => {
+  const c = C(), L = GRP(c);
+  /* مرتب‌سازی | Ranking: گروهی که تفاضل مثبت منهای منفی بیشتری دارد بالاتر است؛ در برابری، مثبت بیشتر مقدم است؛ رنگ هر گروه مطابق جایگاه اصلی ثابت می‌ماند */
+  const rows = L.map((g, i) => ({ g, i })).sort((a, b) => (arr(b.g.p).length - arr(b.g.n).length) - (arr(a.g.p).length - arr(a.g.n).length) || arr(b.g.p).length - arr(a.g.p).length || a.i - b.i).map(({ g, i }) => {
+    const hd = stuById(c, g.hd), n = grpMem(c, g).length;
+    return rowH({ lead: icSq('groups', GRP_COL[i % GRP_COL.length]), ttl: esc(g.nm || 'گروه'), sub: (hd ? 'سرگروه: ' + esc(sn(hd)) + ' · ' : '') + fn(n) + ' عضو', trail: grpPnH(g), chev: true, attr: pushA('grpOne', { gid: g.id }) });
+  }).join('');
+  return { title: 'گروه‌بندی', large: true, tabs: true, lead: leaveBtn, trail: edBtn('grpAdd'),
+    body: L.length ? '<div class="pad-x qc-wrap qc-two"><button class="btn tinted qc-btn" data-act="gqOpen">' + ppl('duo') + 'شایستگی گروه‌ها</button><button class="btn qc-neg" data-act="ghOpen">تاریخچه عملکرد</button></div><div class="group">' + rows + '</div><div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' گروه · ' + fn(STU(c).filter(x => !L.some(g => arr(g.m).map(String).includes(String(x.id)))).length) + ' دانش‌آموز بدون گروه</div>' : emptyH('groups', 'هنوز گروهی نساخته‌ای', 'با دکمهٔ + بالای صفحه یک گروه تازه بساز.') };
+};
+
+/* ---- ۱۹.۳ صفحهٔ یک گروه | 19.3 One Group Page ---- */
+/* فهرست ثبت‌ها | Entry List: مثبت‌ها (w=p) یا منفی‌های (w=n) ثبت‌شدهٔ گروه، تازه‌ترین اول، با توضیح اختیاری و دکمهٔ حذف */
+const grpEntH = (g, w) => {
+  const L = arr(g[w]).slice().reverse(); if (!L.length) return '';
+  return groupH(w === 'p' ? 'مثبت‌های ثبت‌شده' : 'منفی‌های ثبت‌شده', L.map(e => rowH({ ttl: esc(e.t || 'بدون توضیح'), sub: e.d ? esc(jFull(kdate(e.d))) : '', wrap: true,
+    trail: '<button class="grp-del" data-act="grpDelE" data-a="' + esc(g.id) + '" data-b="' + w + '|' + esc(e.id) + '" aria-label="حذف">' + ico('trash') + '</button>' })).join(''));
+};
+/* صفحهٔ یک گروه | One Group Page: دو کارت مثبت و منفی با دکمهٔ ثبت، فهرست اعضا (سرگروه اول) و فهرست ثبت‌ها؛ دکمهٔ مداد گروه را ویرایش می‌کند */
+PAGES.grpOne = r => {
+  const c = C(), g = grpById(c, r.p.gid);
+  if (!g) return { title: 'گروه', body: emptyH('groups', 'گروه پیدا نشد', 'شاید حذف شده باشد.') };
+  const M = grpMem(c, g);
+  /* کپسول مثبت و منفی | Pos/Neg Capsule: مثل مشخصات دانش‌آموز، یک کپسول با دو ستون جداشده با خط؛ لمسش تاریخچهٔ گروه را باز می‌کند */
+  const pn = '<div class="grp-pn1"><button class="stat pn2" data-act="grpHist" data-a="' + esc(g.id) + '"><span class="pn2c green"><b>' + ppl('pos') + '<bdi dir="ltr">' + fn(arr(g.p).length) + '</bdi></b><span>مثبت</span></span><span class="pn2c red"><b>' + ppl('neg') + '<bdi dir="ltr">' + fn(arr(g.n).length) + '</bdi></b><span>منفی</span></span></button></div>';
+  const mem = M.length
+    ? groupH('اعضا (' + fn(M.length) + ')', M.map(s => rowH({ lead: avatar(s, 40), ttl: stnH(s), sub: String(s.id) === String(g.hd) ? '<span class="tag">سرگروه</span>' : '' })).join(''))
+    : groupH('اعضا', rowH({ ttl: '<span class="muted">هنوز عضوی انتخاب نشده؛ با دکمهٔ مداد اضافه کن</span>', wrap: true }));
+  return { title: g.nm || 'گروه', trail: edBtn('grpEdit', { gid: g.id }),
+    body: pn + mem };
+};
+
+/* ---- ۱۹.۴ ثبت مثبت و منفی | 19.4 Recording Pos/Neg ---- */
+/* ثبت مثبت یا منفی | Add Entry: دکمهٔ ثبت برگه‌ای باز می‌کند که توضیح اختیاری می‌پرسد؛ w = p مثبت، n منفی */
+ACT.grpAddE = (el, gid, w) => {
+  Sheet.open({ title: w === 'p' ? 'مثبت برای گروه' : 'منفی برای گروه',
+    body: '<div class="pad-x"><div class="hw-lab">توضیح (اختیاری)</div><textarea class="fld" id="grpWhy" rows="3" maxlength="200" placeholder="اگر خواستی دلیل را بنویس"></textarea><div class="spacer"></div><button class="btn primary" data-act="grpAddSave" data-a="' + esc(gid) + '" data-b="' + w + '">ثبت</button></div>' });
+};
+/* ذخیرهٔ ثبت | Save Entry: یک مثبت یا منفی با تاریخ امروز و توضیح (اگر نوشته شده) به گروه اضافه می‌شود */
+/* گام + و − | Step Plus/Minus: + برگهٔ دلیل را باز می‌کند؛ − آخرین مثبت یا منفی گروه را برمی‌دارد */
+ACT.grpStep = (el, gid, w) => {
+  const k = w[0]; if (w[1] === '+') return ACT.grpAddE(el, gid, k);
+  const L = grpCopy(GRP(C())), g = L.find(x => String(x.id) === String(gid)); if (!g || !arr(g[k]).length) return;
+  g[k] = arr(g[k]).slice(0, -1);
+  if (!grpPut(L)) return toast('ثبت نشد', true);
+  Nav.refresh();
+};
+ACT.grpAddSave = (el, gid, w) => {
+  const c = C(), L = grpCopy(GRP(c)), g = L.find(x => String(x.id) === String(gid)); if (!g) return;
+  const t = String(($('#grpWhy') || {}).value || '').trim(), e = { id: edId('e'), d: dkey(new Date()) };
+  if (t) e.t = t;
+  g[w] = arr(g[w]).concat([e]);
+  if (!grpPut(L)) return toast('ثبت نشد', true);
+  Sheet.close(); toast('ثبت شد'); Nav.refresh();
+};
+/* حذف یک ثبت | Delete Entry: بعد از تأیید، همان مثبت یا منفی از گروه برداشته می‌شود */
+ACT.grpDelE = (el, gid, b) => {
+  const [w, eid] = String(b).split('|');
+  ask('این مورد حذف شود؟', 'حذف', () => {
+    const c = C(), L = grpCopy(GRP(c)), g = L.find(x => String(x.id) === String(gid)); if (!g) return;
+    g[w] = arr(g[w]).filter(e => String(e.id) !== eid);
+    if (!grpPut(L)) return toast('حذف نشد', true);
+    toast('حذف شد'); Nav.refresh();
+  }, true);
+};
+
+/* کپسول شایستگی گروه | Group Capsule: دکمهٔ «شایستگی گروه‌ها» برگه‌ای باز می‌کند؛ برای هر گروه یک کپسول مثبت و منفی مثل شایستگی کلاس؛ نوشتن دلیل اختیاری است */
+let GQ = null;
+const gqCap = g => { const c = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="gqA" data-a="' + esc(g.id) + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="gqA" data-a="' + esc(g.id) + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button></span>'; return '<span class="qcc">' + c('p', arr(g.p).length, 'pos') + c('n', arr(g.n).length, 'neg') + '</span>'; };
+const gqBody = () => {
+  const c = C(), L = GRP(c);
+  if (GQ.rs) { const g = grpById(c, GQ.rs.gid); return '<div class="sec-sub">' + esc(g ? g.nm || 'گروه' : '') + ' · ' + (GQ.rs.w === 'p' ? 'شایستگی مثبت' : 'شایستگی منفی') + '</div><div class="pad-x"><div class="hw-lab">دلیل (اختیاری)</div><input class="fld" id="gqWhy" data-enter="gqWhySave" maxlength="120" placeholder="اگر خواستی دلیل را بنویس"><div class="spacer"></div><button class="btn primary" data-act="gqWhySave">ثبت</button><div class="spacer"></div><button class="btn gray" data-act="gqWhySkip">لغو</button></div>'; }
+  return L.length ? '<div class="group">' + L.map(g => '<div class="row qcr"><span class="ttl">' + esc(g.nm || 'گروه') + '</span>' + gqCap(g) + '</div>').join('') + '</div>' : emptyH('groups', 'هنوز گروهی نساخته‌ای', '');
+};
+const gqPaint = () => { const b = $('#gqBody'); if (b && GQ) Morph.html(b, gqBody()); };
+ACT.gqOpen = () => { if (!GRP(C()).length) return; GQ = { rs: null }; Sheet.open({ title: 'شایستگی گروه‌ها', body: '<div id="gqBody">' + gqBody() + '</div>', after: sh => { const cl = sh.querySelector('[data-act=sheetClose]'); if (cl) cl.addEventListener('click', () => { GQ = null; Nav.refresh(); }); } }); };
+/* افزودن یا کم‌کردن | Add or Remove: + دلیل (اختیاری) می‌پرسد؛ − آخرین مورد را برمی‌دارد */
+ACT.gqA = (el, gid, w) => {
+  if (!GQ) return; const k = w[0];
+  if (w[1] === '+') { GQ.rs = { gid, w: k }; gqPaint(); const f = $('#gqWhy'); if (f) setTimeout(() => f.focus(), 250); return; }
+  const L = grpCopy(GRP(C())), g = L.find(x => String(x.id) === String(gid)); if (!g || !arr(g[k]).length) return;
+  g[k] = arr(g[k]).slice(0, -1);
+  if (!grpPut(L)) return toast('ثبت نشد', true);
+  gqPaint();
+};
+ACT.gqWhySave = () => {
+  const rs = GQ && GQ.rs; if (!rs) return;
+  const L = grpCopy(GRP(C())), g = L.find(x => String(x.id) === String(rs.gid)); if (!g) { GQ.rs = null; return gqPaint(); }
+  const t = String(($('#gqWhy') || {}).value || '').trim(), e = { id: edId('e'), d: dkey(new Date()) }; if (t) e.t = t;
+  g[rs.w] = arr(g[rs.w]).concat([e]);
+  if (!grpPut(L)) return toast('ثبت نشد', true);
+  GQ.rs = null; gqPaint();
+};
+ACT.gqWhySkip = () => { if (GQ) { GQ.rs = null; gqPaint(); } };
+/* تاریخچه عملکرد گروه‌ها | Group History: به تفکیک گروه؛ برای هر گروه یک کارت با شمارش مثبت و منفی و فهرست زمانیِ ثبت‌ها (جدیدترین اول)؛ فیلتر روز، ماه یا همه؛ تک‌ستونی برای موبایل؛ حالت ویرایش برای تغییر دلیل و حذف */
+let GH = null;
+const ghAll = c => { const out = []; GRP(c).forEach(g => ['p', 'n'].forEach(w => arr(g[w]).forEach((e, i) => out.push({ id: g.id + '|' + w + '|' + e.id, g, w, i, k: String(e.d || ''), why: String(e.t || '').trim() })))); return out.sort((a, b) => (a.k < b.k ? 1 : a.k > b.k ? -1 : b.i - a.i)); };
+const ghList = c => ghAll(c).filter(e => (!GH.gid || String(e.g.id) === String(GH.gid)) && (GH.f === 'all' || (e.k && (GH.f === 'day' ? e.k === GH.k : GH.f === 'week' ? inWk(e.k, GH.k) : pnYm(e.k) === GH.ym))));
+/* ردیف یک ثبت | Entry Row: دایرهٔ + یا −، دلیل و تاریخ (در نمای روز تاریخ لازم نیست)؛ در ویرایش، دایرهٔ انتخاب و کادر دلیل */
+const ghEnt = e => '<div class="gh-e ' + (e.w === 'p' ? 'pos' : 'neg') + (GH.sel.has(e.id) ? ' sel' : '') + '">' + (GH.edit ? '<span class="pn-ck" data-act="ghSel" data-a="' + esc(e.id) + '">' + ico('check') + '</span>' : '')
+  + '<span class="gh-s">' + (e.w === 'p' ? '+' : '\u2212') + '</span><div class="gh-t">'
+  + (GH.edit ? '<textarea class="fld pn-in" rows="1" data-in="pnGrow" data-chg="ghWhy" data-a="' + esc(e.id) + '" maxlength="200" placeholder="دلیل (اختیاری)">' + esc(e.why) + '</textarea>' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>')
+  + (e.k && GH.f !== 'day' ? '<small>' + esc(jFull(kdate(e.k))) + '</small>' : '') + '</div></div>';
+/* ردیف یک ثبت به سبک مشخصات دانش‌آموز | Student-Style Entry: شماره، دلیل (و در ویرایش کادر دلیل) */
+const ghPe = (e, i) => '<div class="pn-e' + (GH.sel.has(e.id) ? ' sel' : '') + '">' + (GH.edit ? '<span class="pn-ck" data-act="ghSel" data-a="' + esc(e.id) + '">' + ico('check') + '</span>' : '')
+  + '<div class="pn-t"><span class="pn-no">' + fn(i + 1) + '.</span>' + (GH.edit ? '<textarea class="fld pn-in" rows="1" data-in="pnGrow" data-chg="ghWhy" data-a="' + esc(e.id) + '" maxlength="200" placeholder="دلیل (اختیاری)">' + esc(e.why) + '</textarea>' : '<span>' + esc(e.why || 'بدون توضیح') + '</span>') + '</div></div>';
+/* کپسول هر روز | Day Capsule: ثبت‌های یک روز زیر یک کپسول؛ با لمس باز می‌شود */
+const ghDays = (L, w) => {
+  const G = {}, order = []; L.forEach(e => { const k = e.k || '-'; if (!G[k]) { G[k] = []; order.push(k); } G[k].push(e); });
+  return order.map(k => {
+    const g = G[k], id = w + ':' + k, open = GH.edit || GH.open.has(id), n = g.length, all = g.every(e => GH.sel.has(e.id));
+    return '<div class="pn-g' + (open && n > 1 ? ' open' : '') + '"><div class="pn-cap" data-act="' + (GH.edit ? 'ghGrp' : n > 1 ? 'ghTog' : 'noop') + '" data-a="' + esc(id) + '">'
+      + (GH.edit ? '<span class="pn-ck' + (all ? ' on' : '') + '">' + ico('check') + '</span>' : '') + '<b>' + esc(k === '-' ? 'بدون تاریخ' : jFull(kdate(k))) + '</b>' + (n > 1 ? '<i>' + fn(n) + '</i>' + (GH.edit ? '' : ico('chev-l')) : '') + '</div>'
+      + (n === 1 && !GH.edit ? '<small class="pn-p"><span class="pn-no">' + fn(1) + '.</span> ' + esc(g[0].why || 'بدون توضیح') + '</small>' : '')
+      + (open && (n > 1 || GH.edit) ? '<div class="pn-es">' + g.map((e, i) => ghPe(e, i)).join('') + '</div>' : '') + '</div>';
+  }).join('');
+};
+/* نمای یک گروه | One-Group View: مثل مشخصات دانش‌آموز؛ فیلتر هفته، ماه، همه و دو ستون مثبت و منفی */
+const ghOne = () => {
+  const c = C(), all = ghAll(c).filter(e => String(e.g.id) === String(GH.gid)), L = ghList(c), P = L.filter(e => e.w === 'p'), N = L.filter(e => e.w === 'n');
+  let h = segH([['week', 'هفته'], ['month', 'ماه'], ['all', 'همه']], GH.f, 'ghF');
+  if (GH.f === 'week') h += wkNav(GH.k, 'ghW');
+  if (GH.f === 'month') { const ms = [...new Set(all.filter(e => e.k).map(e => pnYm(e.k)).concat([GH.ym]))].sort((a, b) => a - b); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === GH.ym ? ' on' : '') + '" data-act="ghM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
+  const col = (E, t, cls, w) => '<div class="pn-col ' + cls + '"><div class="pn-h">' + ppl(w === 'p' ? 'pos' : 'neg') + ' ' + t + ' <b>' + fn(E.length) + '</b></div>' + (E.length ? ghDays(E, w) : '<div class="pn-0">ندارد</div>') + '</div>';
+  return h + '<div class="pn-grid">' + col(P, 'مثبت‌ها', 'pos', 'p') + col(N, 'منفی‌ها', 'neg', 'n') + '</div>';
+};
+const ghBody = () => {
+  if (GH.gid) return ghOne();
+  const c = C(), all = ghAll(c), L = ghList(c), G = {}, order = [];
+  L.forEach(e => { const k = String(e.g.id); if (!G[k]) { G[k] = []; order.push(k); } G[k].push(e); });
+  order.sort((a, b) => (G[b].filter(e => e.w === 'p').length - G[b].filter(e => e.w === 'n').length) - (G[a].filter(e => e.w === 'p').length - G[a].filter(e => e.w === 'n').length));
+  let h = segH([['day', 'روز'], ['week', 'هفته'], ['month', 'ماه'], ['all', 'همه']], GH.f, 'ghF');
+  if (GH.f === 'day') h += '<div class="qc-nav"><button class="dnav" data-act="ghD" data-a="-1" aria-label="روز قبل">' + ico('chev-r') + '</button><b>' + esc(jFull(kdate(GH.k))) + '</b><button class="dnav" data-act="ghD" data-a="1" aria-label="روز بعد">' + ico('chev-l') + '</button></div>';
+  if (GH.f === 'week') h += wkNav(GH.k, 'ghW');
+  if (GH.f === 'month') { const ms = [...new Set(all.filter(e => e.k).map(e => pnYm(e.k)).concat([GH.ym]))].sort((a, b) => a - b); h += '<div class="pn-months">' + ms.map(m => '<button class="chip' + (m === GH.ym ? ' on' : '') + '" data-act="ghM" data-a="' + m + '">' + pnYmT(m) + '</button>').join('') + '</div>'; }
+  if (!order.length) return h + emptyH('groups', 'موردی ثبت نشده', GH.f === 'all' ? 'با دکمهٔ «شایستگی گروه‌ها» مثبت یا منفی ثبت کن.' : 'برای این بازه چیزی ثبت نشده است.');
+  return h + '<div class="gh-list">' + order.map(k => {
+    const E = G[k], g = E[0].g, P = E.filter(e => e.w === 'p').length, N = E.length - P, col = !GH.edit && GH.col.has(k), all2 = E.every(e => GH.sel.has(e.id));
+    return '<div class="gh-g' + (col ? ' col' : '') + '"><div class="gh-hd" data-act="' + (GH.edit ? 'ghGrp' : 'ghTog') + '" data-a="' + esc(k) + '">' + (GH.edit ? '<span class="pn-ck' + (all2 ? ' on' : '') + '">' + ico('check') + '</span>' : '')
+      + '<b>' + esc(g.nm || 'گروه') + '</b><span class="ab-row"><span class="ab-p pos">' + ppl('pos') + '<b>' + fn(P) + '</b></span><span class="ab-p neg">' + ppl('neg') + '<b>' + fn(N) + '</b></span></span>' + (GH.edit ? '' : ico('chev-l', 'chev')) + '</div>'
+      + '<div class="gh-es">' + E.map(ghEnt).join('') + '</div></div>';
+  }).join('') + '</div>';
+};
+const ghAct = () => '<button class="cap-b ic' + (GH.edit ? ' solid' : ' tint') + '" data-act="ghEdit" aria-label="ویرایش">' + ico('pencil') + '</button>' + (GH.edit ? '<button class="cap-b red" data-act="ghDel" aria-label="حذف"' + (GH.sel.size ? '' : ' disabled') + '>' + ico('trash') + (GH.sel.size ? ' ' + fn(GH.sel.size) : '') + '</button>' : '');
+const ghPaint = () => { const b = $('#ghBody'); if (b && GH) { Morph.html(b, ghBody()); $$('.pn-in', b).forEach(pnGrow); } const a = $('#shAct'); if (a && GH) Morph.html(a, ghAct()); };
+const ghShow = () => Sheet.open({ title: GH.gid ? (((grpById(C(), GH.gid) || {}).nm) || 'گروه') : 'تاریخچه عملکرد', act: ghAct(), body: '<div id="ghBody">' + ghBody() + '</div>' });
+ACT.ghOpen = () => { const tk = dkey(defDay()); GH = { f: 'all', k: tk, ym: pnYm(tk), edit: false, sel: new Set(), col: new Set(), open: new Set() }; ghShow(); };
+/* لمس مثبت یا منفی گروه | Open Group Entries: از کارت‌های صفحهٔ گروه؛ تاریخچهٔ همان گروه به سبک مشخصات دانش‌آموز باز می‌شود */
+ACT.grpHist = (el, gid) => { const tk = dkey(defDay()), all = ghAll(C()).filter(e => String(e.g.id) === String(gid) && e.k); GH = { gid, f: 'month', k: tk, ym: all.length ? pnYm(all[0].k) : pnYm(tk), edit: false, sel: new Set(), col: new Set(), open: new Set() }; ghShow(); };
+ACT.ghF = (el, a) => { GH.f = a; GH.sel.clear(); ghPaint(); };
+ACT.ghD = (el, a) => { const d = kdate(GH.k); d.setDate(d.getDate() + +a); GH.k = dkey(d); GH.ym = pnYm(GH.k); GH.sel.clear(); ghPaint(); };
+ACT.ghW = (el, a) => { const d = kdate(GH.k); d.setDate(d.getDate() + 7 * +a); GH.k = dkey(d); GH.ym = pnYm(GH.k); GH.sel.clear(); ghPaint(); };
+ACT.ghM = (el, a) => { GH.ym = +a; GH.sel.clear(); ghPaint(); };
+ACT.ghTog = (el, id) => { const S2 = String(id).includes(':') ? GH.open : GH.col; S2.has(id) ? S2.delete(id) : S2.add(id); ghPaint(); };
+ACT.ghEdit = () => { GH.edit = !GH.edit; GH.sel.clear(); ghPaint(); };
+ACT.ghSel = (el, id) => { GH.sel.has(id) ? GH.sel.delete(id) : GH.sel.add(id); ghPaint(); };
+ACT.ghGrp = (el, id) => { const L = ghList(C()).filter(e => String(id).includes(':') ? (e.w + ':' + (e.k || '-')) === id : String(e.g.id) === id), all = L.every(e => GH.sel.has(e.id)); L.forEach(e => (all ? GH.sel.delete(e.id) : GH.sel.add(e.id))); ghPaint(); };
+/* ویرایش دلیل | Edit Reason: دلیل همان مورد عوض می‌شود (خالی هم مجاز است) و ذخیره می‌شود */
+ACT.ghWhy = (el, v) => {
+  const [gid, w, eid] = String(el.dataset.a).split('|'), L = grpCopy(GRP(C())), g = L.find(x => String(x.id) === gid), e = g && arr(g[w]).find(x => String(x.id) === eid); if (!e) return;
+  const old = e.t || ''; if (String(v).trim()) e.t = String(v).trim(); else delete e.t;
+  if (!grpPut(L)) { el.value = old; return; }
+  toast('ذخیره شد');
+};
+/* حذف با تأیید | Confirmed Delete: موردهای انتخاب‌شده از گروه‌ها برداشته می‌شود؛ بعد برگه دوباره باز می‌شود */
+ACT.ghDel = () => {
+  if (!GH || !GH.sel.size) return; const E = ghAll(C()).filter(e => GH.sel.has(e.id)), n = E.length;
+  Sheet.action({ msg: fn(n) + ' مورد حذف شود؟ این کار برگشت‌پذیر نیست.', items: [{ t: 'حذف ' + fn(n) + ' مورد', cls: 'destructive', fn: () => {
+    const L = grpCopy(GRP(C())); E.forEach(x => { const g = L.find(y => String(y.id) === String(x.g.id)), eid = x.id.split('|')[2]; if (g) g[x.w] = arr(g[x.w]).filter(y => String(y.id) !== eid); });
+    const ok = grpPut(L); toast(ok ? 'حذف شد' : 'حذف نشد', !ok); GH.sel.clear(); Nav.refresh(); setTimeout(ghShow, 150);
+  } }], onCancel: () => ghShow() });
+};
+
+/* ---- ۱۹.۵ فرم گروه | 19.5 Group Form ---- */
+/* فرم گروه | Group Form: نام گروه، انتخاب سرگروه و انتخاب اعضا با لمس نام‌ها؛ هر دانش‌آموز فقط در یک گروه است (اگر در گروه دیگری بود، با ذخیره از آن گروه برداشته می‌شود) */
+const grpForm = gid => {
+  const c = C(), cur = gid ? grpById(c, gid) : null; if (gid && !cur) return;
+  const all = STU(c), mem = new Set(arr(cur && cur.m).map(String)), where = {};
+  GRP(c).forEach(x => { if (!cur || String(x.id) !== String(cur.id)) arr(x.m).forEach(id => { where[String(id)] = x.nm || 'گروه'; }); });
+  /* ردیف انتخاب | Pick Row: آواتار و نام؛ سمت چپ ستارهٔ سرگروه (فقط برای عضو) و دکمهٔ حبابی + (افزودن) یا − (برداشتن) */
+  const pick = (s, mm) => { const id = String(s.id), on = mem.has(id), hd = cur && String(cur.hd) === id && on;
+    return '<div class=\"row has-lead grp-pick' + (mm ? ' mm' : '') + (on ? ' on' : '') + (hd ? ' hd' : '') + '\" data-s=\"' + esc(id) + '\"><span class=\"lead\">' + avatar(s, 40) + '</span><span class=\"main\"><div class=\"ttl\">' + esc(sn(s)) + '</div></span><span class=\"trail\"><button class=\"grp-hdb\" data-act=\"grpHd\" data-s=\"' + esc(id) + '\" aria-label=\"سرگروه\">' + ico('star') + '</button><button class=\"grp-bub\" data-act=\"grpPick\" data-s=\"' + esc(id) + '\" aria-label=\"تغییر عضویت\"><span class=\"p\">' + ico('plus') + '</span><span class=\"m\">' + ico('minus') + '</span></button></span></div>'; };
+  /* دو بخش | Two Sections: اعضای فعلی این گروه، و دانش‌آموزانی که هیچ گروهی ندارند؛ دانش‌آموزِ عضو گروه دیگر نمایش داده نمی‌شود */
+  const cm = all.filter(s => mem.has(String(s.id))), fr = all.filter(s => !mem.has(String(s.id)) && !where[String(s.id)]);
+  const extra = '<div class=\"grp-sel-w\" id=\"grpSelW\"' + (cm.length ? '' : ' hidden') + '><div class=\"group-h\">اعضای گروه · با ستاره سرگروه را انتخاب کن</div><div class=\"group\" id=\"grpSelG\">' + cm.map(s => pick(s, true)).join('') + '</div></div>'
+    + '<div class=\"group-h\">' + (cur ? 'افزودن دانش‌آموز بدون گروه' : 'دانش‌آموزان بدون گروه') + '</div><div class=\"group\" id=\"grpFreeG\">' + (fr.length ? fr.map(s => pick(s, false)).join('') : rowH({ ttl: '<span class=\"muted\">دانش‌آموزِ بدون گروه نمانده</span>' })) + '</div>';
+  edSheet({ title: cur ? 'ویرایش گروه' : 'گروه تازه', req: ['nm'], extra,
+    fields: [{ k: 'nm', l: 'نام گروه', v: cur ? cur.nm : '' }],
+    save: (vals, ch, sh) => {
+      const L = grpCopy(GRP(C())), sel = $$('.grp-pick.on', sh).map(b => String(b.dataset.s)), hdEl = $('.grp-pick.hd', sh), hd = hdEl ? String(hdEl.dataset.s) : '';
+      if (hd && !sel.includes(hd)) sel.push(hd);
+      let g = cur && L.find(x => String(x.id) === String(cur.id));
+      if (!g) { g = { id: edId('g'), p: [], n: [] }; L.push(g); }
+      g.nm = vals.nm; g.hd = hd; g.m = sel;
+      L.forEach(x => { if (x === g) return; x.m = arr(x.m).filter(id => !sel.includes(String(id))); if (x.hd && sel.includes(String(x.hd))) x.hd = ''; });
+      return grpPut(L);
+    },
+    del: cur ? { label: 'حذف گروه', msg: 'این گروه با همهٔ مثبت و منفی‌هایش حذف شود؟', back: true, fn: () => grpPut(GRP(C()).filter(x => String(x.id) !== String(cur.id))) } : undefined });
+};
+/* بازکننده‌ها | Group Form Openers: دکمهٔ + (گروه تازه) و دکمهٔ مداد (ویرایش گروه) */
+ED_FORMS.grpAdd = () => grpForm();
+ED_FORMS.grpEdit = p => grpForm(p.gid);
+/* انتخاب عضو | Pick Member Chip: لمس نام دانش‌آموز او را عضو گروه می‌کند یا برمی‌دارد */
+/* دکمهٔ حبابی | Member Bubble: عضویت را روشن/خاموش می‌کند؛ با خاموش شدن، ستارهٔ سرگروهِ همان ردیف هم برداشته می‌شود */
+ACT.grpPick = el => { const row = el.closest('.grp-pick'), on = row.classList.toggle('on'); if (!on) row.classList.remove('hd');
+  /* جدا کردن انتخاب‌شده‌ها | Separate Selected: دانش‌آموزِ انتخاب‌شده به بخش جدای بالا می‌رود (با فاصله از بقیه)؛ با برداشتن، به فهرست پایین برمی‌گردد */
+  const w = $('#grpSelW'), sg = $('#grpSelG'), fg = $('#grpFreeG'); if (!w || !sg || !fg) return;
+  if (on) { $$('.row:not(.grp-pick)', fg).forEach(r => r.remove()); sg.appendChild(row); } else fg.insertBefore(row, fg.firstChild);
+  w.hidden = !sg.querySelector('.grp-pick'); };
+/* لمس ستاره | Pick Head: همان دانش‌آموز سرگروه می‌شود و از بقیه برداشته می‌شود؛ لمس دوباره سرگروه را برمی‌دارد */
+ACT.grpHd = el => { const row = el.closest('.grp-pick'), was = row.classList.contains('hd'); $$('.grp-pick.hd').forEach(r => r.classList.remove('hd')); if (!was) row.classList.add('hd'); };
 
 
 /* ================================================================
