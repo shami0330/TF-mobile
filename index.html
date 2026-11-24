@@ -320,6 +320,10 @@ button.stat:active{opacity:.6}
 .banner svg{flex:none;width:20px;height:20px;margin-top:2px}
 .banner.info{background:rgba(0,122,255,.1);color:#0a6ad6}
 
+/* ---- کیبورد و لمس | Keyboard & Touch: برگه بالای کیبورد می‌نشیند؛ دوبار لمس بزرگ‌نمایی نمی‌کند؛ اندازهٔ متن خودکار نمی‌شود ---- */
+html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.sheet{margin-bottom:var(--kb,0px);max-height:min(88%,calc(100% - var(--kb,0px) - var(--sat) - 12px))}
+
 
 /* ================================================================
    ۳) ظاهر صفحه‌ها | 3) Screen Styles
@@ -1547,7 +1551,7 @@ const Sync = {
       for (const n of Object.keys(parts)) skipped += await Sync.savePart(n, parts[n]);
       Sync.q = Sync.q.filter(o => batch.indexOf(o) < 0); Sync.persist();
       Sync.fails = 0; Sync.t0 = 0; Sync.last = Date.now(); Sync.set(Sync.q.length ? 'wait' : 'ok');
-      if (skipped) toast(fn(skipped) + ' تغییر انجام نشد، چون روز یا نمره در برنامهٔ اصلی قفل شده بود');
+      if (skipped) toast(fn(skipped) + ' تغییر انجام نشد؛ در برنامهٔ اصلی قفل یا حذف شده بود');
       if (Sync.remote || skipped) await Sync.rebase();
     } catch (e) {
       if (e && e.code === 401) Sync.set('login', 'نشست تمام شد؛ دوباره وارد شو');
@@ -2402,7 +2406,7 @@ const telH = p => (p ? '<a class="tint" dir="ltr" href="' + esc(telHref(p)) + '"
 const bindEvents = () => {
   /* بدون زوم و انتخاب | No Zoom No Select: نیشگون، دوبار لمس و انتخاب متن و منوی لمس طولانی در همهٔ برنامه بسته است (جز داخل کادرهای نوشتن) */
   ['gesturestart', 'gesturechange', 'gestureend'].forEach(n => document.addEventListener(n, e => e.preventDefault(), { passive: false }));
-  document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
+  /* بدون شنود touchmove سنگین؛ جلوگیری از بزرگ‌نمایی با touch-action در CSS انجام می‌شود تا اسکرول روان بماند */
   document.addEventListener('selectstart', e => { if (!e.target.closest || !e.target.closest('input,textarea')) e.preventDefault(); });
   document.addEventListener('contextmenu', e => { if (!e.target.closest('input,textarea')) e.preventDefault(); });
   document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
@@ -2452,6 +2456,16 @@ ACT.push = (el, a, b) => { let p = {}; try { p = b ? JSON.parse(b) : {}; } catch
 ACT.tab = (el, a) => Nav.tab(a);
 ACT.sheetClose = () => Sheet.close();
 ACT.noop = () => {};
+
+/* ---- ۹.۱۰ کیبورد موبایل | 9.10 Mobile Keyboard ---- */
+/* کیبورد | Keyboard Space: وقتی کیبورد باز می‌شود، ارتفاع آن را در --kb می‌گذارد تا برگه‌ها بالای کیبورد بنشینند؛ کادر در حال نوشتن به وسط دیده می‌شود و با بسته شدن کیبورد صفحه سر جایش برمی‌گردد */
+(() => {
+  const vv = window.visualViewport, root = document.documentElement.style;
+  const fit = () => { const kb = vv ? Math.max(0, Math.round(innerHeight - vv.height - vv.offsetTop)) : 0; root.setProperty('--kb', (kb > 80 ? kb : 0) + 'px'); if (!kb) { if (scrollY || document.body.scrollTop) scrollTo(0, 0); } };
+  if (vv) { vv.addEventListener('resize', fit); vv.addEventListener('scroll', fit); }
+  document.addEventListener('focusin', e => { const t = e.target; if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) setTimeout(() => { try { t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (x) { /* مرورگر قدیمی */ } }, 320); });
+  document.addEventListener('focusout', () => setTimeout(() => { if (!/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '')) { scrollTo(0, 0); fit(); } }, 120));
+})();
 
 
 /* ================================================================
@@ -3358,7 +3372,7 @@ ACT.stuStep = (el, a) => {
 /* نسخهٔ برنامه | App Version: شمارهٔ نسخهٔ نسخهٔ موبایل */
 const APP_VERSION = '1.1';
 /* شناسهٔ ساخت | Build Stamp: زمان ساخت این فایل (در زمان ساخت جایگزین می‌شود)؛ برای فهمیدن نسخهٔ جدیدتر در گیت‌هاب */
-const APP_BUILD = '2026-11-23T12:21:50.747Z';
+const APP_BUILD = '2026-11-24T07:57:34.885Z';
 /* مربع رنگی آیکون | Colored Icon Square: آیکون سفید روی مربع رنگی مثل تنظیمات iOS */
 const icSq = (n, col) => '<span class="ic-sq" style="background:' + col + '">' + ico(n) + '</span>';
 /* دورهٔ جاری و شمارهٔ رنگ | Course Index: جایگاه دورهٔ جاری برای انتخاب رنگ ثابت */
@@ -4139,7 +4153,7 @@ ACT.edOpen = (el, a, b) => { let p = {}; try { p = b ? JSON.parse(b) : {}; } cat
 /* ویرایش کارنامه | Report Card Edit Mode: مدادِ تب کارنامه حالت ویرایش را روشن و خاموش می‌کند؛ در این حالت هر ماه با لمس عوض می‌شود و توصیفات تحصیلی و انضباطی قابل نوشتن‌اند */
 ED_FORMS.stuCard = () => { const st = stOf(), s = stuById(C(), Nav.top().p.sid); if (!s) return; if (!st.cardEd) { st.cardSnap = JSON.stringify({ rg: s.rg || null, rkDs: Array.isArray(s.rkDs) ? s.rkDs : null }); st.cardEd = true; } else { st.cardEd = false; st.cardSnap = null; toast('ذخیره شد'); } Nav.refresh(); };
 /* لغو ویرایش کارنامه | Cancel Card Edit: نمره‌های دستی و توصیفات به حالت قبل از شروع ویرایش برمی‌گردند */
-ED_FORMS.stuCardX = () => { const st = stOf(), s = stuById(C(), Nav.top().p.sid); if (!s) return; const o = JSON.parse(st.cardSnap || '{}'), sel = { f: 'id', v: s.id }; edSet(['students', sel, 'rg'], o.rg || ''); edSet(['students', sel, 'rkDs'], o.rkDs || ''); st.cardEd = false; st.cardSnap = null; toast('تغییرها لغو شد'); Nav.refresh(); };
+ED_FORMS.stuCardX = () => { const st = stOf(), s = stuById(C(), Nav.top().p.sid); if (!s) return; if (!st.cardSnap) { st.cardEd = false; Nav.refresh(); return; } const o = JSON.parse(st.cardSnap || '{}'), sel = { f: 'id', v: s.id }; edSet(['students', sel, 'rg'], o.rg || ''); edSet(['students', sel, 'rkDs'], o.rkDs || ''); st.cardEd = false; st.cardSnap = null; toast('تغییرها لغو شد'); Nav.refresh(); };
 /* نمرهٔ دستی | Manual Grade: نمرهٔ دستی یک درس در یک ماه را روی دانش‌آموز می‌نویسد (مثل برنامهٔ اصلی روی نمرهٔ چک‌لیست اثر ندارد)؛ خالی = بازگشت به میانگین */
 const rcSet = (sid, lid, mi, q, x) => { edSet(['students', { f: 'id', v: sid }, 'rg', (q ? 'q:' : '') + lid, +mi], x == null ? '' : x); Nav.refresh(); };
 /* لمس یک ماه | Tap Month Cell: توصیفی = انتخاب یکی از چهار سطح؛ کمی = نوشتن عدد ۰ تا ۲۰ */
