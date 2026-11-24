@@ -416,6 +416,7 @@ html,body{touch-action:pan-x pan-y;-webkit-text-size-adjust:100%;text-size-adjus
 .dcell .dot{position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--label-3)}
 .dcell.on .dot{background:rgba(255,255,255,.85)}
 .dcell.dis{opacity:.35;pointer-events:none}
+.dp{display:flex;gap:8px;padding:8px 16px 20px}.dp label{flex:1;display:flex;flex-direction:column;gap:4px;font-weight:700}.dp small{color:var(--label-2);font-size:.75rem;text-align:center}.dp select{height:44px;border-radius:12px;background:var(--fill);padding:0 10px;text-align:center;text-align-last:center;width:100%}
 .day-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 20px 10px}
 .day-head b{font-size:1.0625rem}
 
@@ -2529,6 +2530,15 @@ const bindEvents = () => {
   document.addEventListener('touchmove', e => { if (lp && Math.hypot(e.touches[0].clientX - lp.x, e.touches[0].clientY - lp.y) > 10) lpEnd(); }, { passive: true });
   ['touchend', 'touchcancel'].forEach(n => document.addEventListener(n, () => { if (lp && !lp.done) lpEnd(); }, { passive: true }));
   document.addEventListener('click', e => { if (window.__lpHit && Date.now() - window.__lpHit < 600) { e.stopPropagation(); e.preventDefault(); } }, true);
+  let dp = null;
+  const dpEnd = () => { if (dp) { clearTimeout(dp.t); dp = null; } };
+  document.addEventListener('touchstart', e => {
+    dpEnd(); const el = e.target.closest && e.target.closest('.dcell[data-a]'); if (!el || e.touches.length > 1) return;
+    dp = { x: e.touches[0].clientX, y: e.touches[0].clientY, t: setTimeout(() => { dp = null; window.__lpHit = Date.now(); dpOpen(el.dataset.a); }, 450) };
+  }, { passive: true });
+  document.addEventListener('touchmove', e => { if (dp && Math.hypot(e.touches[0].clientX - dp.x, e.touches[0].clientY - dp.y) > 10) dpEnd(); }, { passive: true });
+  ['touchend', 'touchcancel'].forEach(n => document.addEventListener(n, dpEnd, { passive: true }));
+  document.addEventListener('contextmenu', e => { const el = e.target.closest && e.target.closest('.dcell[data-a]'); if (el) dpOpen(el.dataset.a); });
   let sx = null, sy = 0;
   document.addEventListener('touchstart', e => {
     const t = e.touches[0], r = $('#app').getBoundingClientRect();
@@ -3193,6 +3203,21 @@ const chkCtx = () => {
 ACT.chkItem = (el, a) => { stOf().item = a; Nav.refresh(); };
 ACT.chkPick = (el, a) => { const s = stOf(); s.sel = a; s.off = weekOff(kdate(a)); Nav.refresh(); };
 ACT.chkWeek = (el, a) => { const s = stOf(), i = Math.max(0, weekDays(s.off).findIndex(x => dkey(x) === s.sel)); s.off += +a; s.sel = dkey(weekDays(s.off)[i]); Nav.refresh(); };
+/* رفتن به تاریخ | Date Jump: نگه‌داشتن روی هر روز نوار هفته، برگهٔ انتخاب سال، ماه و روز را باز می‌کند */
+const dpDays = (y, m) => dayN(m < 12 ? monthStart(y, m + 1) : monthStart(y + 1, 1)) - dayN(monthStart(y, m));
+const dpOpts = (n, v, f, a) => { let h = ''; for (let i = a || 1; i <= n; i++) h += '<option value="' + i + '"' + (i === v ? ' selected' : '') + '>' + f(i) + '</option>'; return h; };
+const dpOpen = k => {
+  const j = jd(kdate(k)), ty = jd(new Date()).y;
+  Sheet.open({ title: 'رفتن به تاریخ', act: '<button class="cap-b ic tint" data-act="dpGo" aria-label="برو">' + ico('check') + '</button>',
+    body: '<div class="dp"><label><small>سال</small><select id="dpY" data-chg="dpRef">' + dpOpts(ty, j.y, fn, ty - 6) + '</select></label><label><small>ماه</small><select id="dpM" data-chg="dpRef">' + dpOpts(12, j.m, i => JM[i - 1]) + '</select></label><label><small>روز</small><select id="dpD">' + dpOpts(dpDays(j.y, j.m), j.d, fn) + '</select></label></div>' });
+};
+ACT.dpRef = () => { const D = $('#dpD'), n = dpDays(+$('#dpY').value, +$('#dpM').value); D.innerHTML = dpOpts(n, Math.min(+D.value, n), fn); };
+ACT.dpGo = () => {
+  let t = monthStart(+$('#dpY').value, +$('#dpM').value); t = new Date(t.getFullYear(), t.getMonth(), t.getDate() + +$('#dpD').value - 1, 12);
+  const now = todayD(); if (t > now) t = now;
+  const w = satIdx(t); if (w > 4) t = new Date(t.getFullYear(), t.getMonth(), t.getDate() - (w - 4), 12);
+  const s = stOf(); s.sel = dkey(t); s.off = weekOff(t); Sheet.close(); Nav.refresh();
+};
 
 /* ---- ۱۳.۴ صفحهٔ چک‌لیست دانش‌آموز | 13.4 Student Checklist ---- */
 /* ردیف تاریخچه | History Pills: آخرین چند نمرهٔ یک مورد با قرص کوچک (قدیمی در چپ، جدید در راست خوانده می‌شود) */
