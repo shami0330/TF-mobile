@@ -301,7 +301,7 @@ button.stat:active{opacity:.6}
 .gc-c>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gc-e{margin-top:10px;color:var(--label-2);font-size:.875rem}
 /* شمارنده‌های فهرست دانش‌آموزان | Student List Counters: هر سه آدمک هم‌اندازه و همیشه با شمار زیرشان (حتی صفر) */
-.ab-row.sl{gap:6px;align-items:flex-start}.ab-row.sl .ab-p{width:34px}.ab-row.sl .ab-p .ppl{width:26px;height:26px}.ab-row.sl .ab-p.z b{color:var(--label-3)}
+.ab-row.sl{gap:6px;align-items:flex-start}.ab-row.sl .ab-p{width:34px}.ab-row.sl .ab-p .ppl{width:26px;height:26px}.ab-row.sl .ab-p.abs .ppl{width:23.4px;height:23.4px}.ab-row.sl .ab-p.z b{color:var(--label-3)}
 .sheet{touch-action:pan-y}
 .sheet .grab{flex:none;padding:8px 0 4px;touch-action:none}
 .sheet .grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--label-3);margin:0 auto}
@@ -645,6 +645,7 @@ input,textarea,select{font-size:max(16px,1rem)}
 .qcr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px}
 .qcr .ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qcc{display:inline-flex;align-items:center;gap:8px;flex:none}
+.qc-abs{color:var(--red);font-weight:800;font-size:.9375rem;padding:0 10px}
 .qcg{display:inline-flex;align-items:center;gap:2px;padding:2px;border-radius:999px;background:var(--fill)}
 .qcg .stp{width:32px;height:32px;background:var(--card)}
 .qcg .stp svg{width:16px;height:16px}
@@ -877,6 +878,8 @@ input,textarea,select{font-size:max(16px,1rem)}
 .qc-nav b.wk{font-size:.8125rem;text-align:center;line-height:1.4}
 .grp-card.tap{cursor:pointer}.grp-card.tap:active{opacity:.6}.grp-card .gc-m{color:var(--label-3);font-size:.75rem}
 .gh-list{padding:4px 0 12px}
+/* ارتفاع ثابت تاریخچه | Fixed History Height: با عوض کردن فیلتر روز، هفته، ماه و همه، ارتفاع برگه تغییر نکند */
+#ghBody{min-height:min(62vh,520px)}
 .gh-g{background:var(--card);border-radius:16px;margin-bottom:12px;overflow:hidden}
 .gh-hd{display:flex;align-items:center;gap:10px;min-height:52px;padding:8px 14px;cursor:pointer}
 .gh-hd b{flex:1;min-width:0;font-size:1rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3063,7 +3066,7 @@ ACT.pnDel = () => {
 };
 let QC = null;
 const qcN = (c, sid, k, key) => [cNum(posVal(c, sid, k, key)), cNum(dayVal(c, sid, k, key, false))];
-const qcCap = (c, sid, k, key) => { const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
+const qcCap = (c, sid, k, key) => { if (attOf(c, k, sid) === 0) return '<span class="qcc"><b class="qc-abs">غیبت</b></span>'; const [p, n] = qcN(c, sid, k, key), g = (w, v, cls) => '<span class="qcg ' + cls + '"><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '+" aria-label="زیاد">' + ico('plus') + '</button><b class="qv' + (v ? ' ' + cls : '') + '"><bdi dir="ltr">' + (v ? (w === 'p' ? '+' : '−') + fn(v) : fn(0)) + '</bdi></b><button class="stp" data-act="qcA" data-a="' + sid + '" data-b="' + w + '-" aria-label="کم">' + ico('minus') + '</button></span>'; return '<span class="qcc">' + g('p', p, 'pos') + g('n', n, 'neg') + '</span>'; };
 const qcBody = () => {
   const c = C(), k = QC.k, key = QC.key, tk = dkey(new Date());
   if (QC.rs) { const s = stuById(c, QC.rs.sid); return '<div class="sec-sub">' + esc(sn(s)) + ' · ' + (QC.rs.w === 'p' ? 'شایستگی مثبت' : 'شایستگی منفی') + '</div><div class="pad-x"><div class="hw-lab">دلیل (الزامی)</div><input class="fld" id="qcWhy" data-in="qcWhy" data-enter="qcWhySave" maxlength="120" placeholder="دلیل این ثبت را بنویس"><div class="spacer"></div><button class="btn primary" id="qcWhyOk" data-act="qcWhySave" disabled>ثبت</button><div class="spacer"></div><button class="btn gray" data-act="qcWhySkip">لغو</button></div>'; }
