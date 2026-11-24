@@ -153,7 +153,7 @@ bdi{unicode-bidi:isolate}
 .row .lead{flex:none;display:flex;align-items:center;justify-content:center}
 .row .main{flex:1;min-width:0}
 .row .ttl{font-size:1.0625rem;line-height:1.5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.row .ttl.wrap{white-space:normal}
+.row .ttl.wrap,#stuList .row .ttl{white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere}
 .row .sub{color:var(--label-2);font-size:.875rem;line-height:1.55;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row .sub.wrap{white-space:normal}
 .row .trail{flex:none;display:flex;align-items:center;gap:8px;color:var(--label-2);font-size:1rem}
@@ -301,7 +301,7 @@ button.stat:active{opacity:.6}
 .gc-c>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gc-e{margin-top:10px;color:var(--label-2);font-size:.875rem}
 /* شمارنده‌های فهرست دانش‌آموزان | Student List Counters: هر سه آدمک هم‌اندازه و همیشه با شمار زیرشان (حتی صفر) */
-.ab-row.sl{gap:6px;align-items:flex-start}.ab-row.sl .ab-p{width:34px}.ab-row.sl .ab-p .ppl{width:26px;height:26px}.ab-row.sl .ab-p.abs .ppl{width:23.4px;height:23.4px}.ab-row.sl .ab-p.z b{color:var(--label-3)}
+.ab-row.sl{gap:2px;align-items:flex-start;margin-inline-end:6px}.ab-row.sl .ab-p{width:28px}.ab-row.sl .ab-p .ppl{width:26px;height:26px}.ab-row.sl .ab-p.abs .ppl{width:23.4px;height:23.4px}.ab-row.sl .ab-p.z b{color:var(--label-3)}
 .sheet{touch-action:pan-y}
 .sheet .grab{flex:none;padding:8px 0 4px;touch-action:none}
 .sheet .grab i{display:block;width:38px;height:5px;border-radius:3px;background:var(--label-3);margin:0 auto}
@@ -750,7 +750,7 @@ input,textarea,select{font-size:max(16px,1rem)}
 .stat .ppl{display:block;margin:0 auto 2px}.pn2c b .ppl{width:20px;height:20px;margin-inline-end:4px}
 .pnb{display:inline-flex;align-items:center;gap:2px;font-weight:800;margin-inline-start:6px;background:none}.pnb .ppl{width:1.5em;height:1.5em}
 .qc-btn .ppl.duo{width:34px;height:22px;margin-inline-end:4px}.pn-h .ppl{width:20px;height:20px;margin-inline-end:2px}
-.qc-two .btn{padding:0 8px;gap:2px;font-size:.9375rem}.qc-neg .pnb{margin-inline-start:2px}.qc-neg .pnb .ppl{width:1.3em;height:1.3em}
+.qc-two .btn{padding:0 8px;gap:2px;font-size:.9375rem}.qc-neg .pnb{margin-inline-start:2px;flex-direction:column;gap:0;line-height:1.1}.qc-neg .pnb bdi{font-size:.8125rem}.qc-neg .pnb .ppl{width:1.3em;height:1.3em}
 /* بزرگ‌تر شدن شیطان و فرشته | Bigger Devil & Angel: آیکون فرشته و شیطان ۲۵ درصد بزرگ‌تر از آدمک غیبت */
 .ppl.pos,.ppl.neg{width:30px;height:32.5px}.ppl.duo{width:40px;height:26px}
 .stat .ppl.pos,.stat .ppl.neg{width:30px;height:32.5px}.pn2c b .ppl.pos,.pn2c b .ppl.neg{width:25px;height:27px}
@@ -3389,7 +3389,7 @@ ACT.schDay = (el, a) => { stOf().di = +a; Nav.refresh(); };
 const stuListH = (c, q) => {
   const L = STU(c).filter(s => !q || stuMatch(s, q));
   if (!L.length) return emptyH('search', q ? 'نتیجه‌ای پیدا نشد' : 'دانش‌آموزی ثبت نشده', q ? 'نام دیگری را امتحان کن.' : 'در برنامهٔ اصلی دانش‌آموزان را اضافه کن.');
-  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnN(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: (() => { const bh = behOf(c, s.id), one = (k, n, t) => '<span class="ab-p ' + k + (n ? '' : ' z') + '" title="' + t + '">' + ppl(k) + '<b>' + fn(n || 0) + '</b></span>'; return '<span class="ab-row sl">' + one('pos', bh.tp, 'مثبت') + one('neg', bh.tn, 'منفی') + one('abs', a, 'روز غیبت') + '</span>'; })(), chev: true, attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
+  return '<div class="group">' + L.map(s => { const a = attTot(c, s.id).a; return rowH({ lead: avatar(s, 42), ttl: stnN(s), sub: stuTags(s).map(x => '<span class="tag">' + esc(x) + '</span>').join('') || esc(s.gender || ''), trail: (() => { const bh = behOf(c, s.id), one = (k, n, t) => '<span class="ab-p ' + k + (n ? '' : ' z') + '" title="' + t + '">' + ppl(k) + '<b>' + fn(n || 0) + '</b></span>'; return '<span class="ab-row sl">' + one('pos', bh.tp, 'مثبت') + one('neg', bh.tn, 'منفی') + one('abs', a, 'روز غیبت') + '</span>'; })(), attr: pushA('stuD', { sid: s.id }) }); }).join('') + '</div>'
     + '<div class="group-f center" style="margin-top:-8px">' + fn(L.length) + ' دانش‌آموز' + (q ? ' از ' + fn(STU(c).length) : '') + '</div>';
 };
 /* صفحهٔ دانش‌آموزان | Students Page: نوار جستجو و فهرست */
