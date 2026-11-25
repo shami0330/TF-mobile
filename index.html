@@ -1240,7 +1240,7 @@ swap(el, html) { const t = document.createElement('div'); t.innerHTML = html; co
 };
 const Nav = {
 stacks: {}, key: 'courses', el: null, busy: false,
-stack() { return Nav.stacks[Nav.key] || (Nav.stacks[Nav.key] = []); },
+stack() { return Nav.stacks[Nav.key] || (Nav.stacks[Nav.key] = [{ name: Nav.key, p: {}, st: {} }]); },
 top() { const s = Nav.stack(); return s[s.length - 1]; },
 fill(el, r) {
 const fnp = PAGES[r.name] || (() => ({ title: '', body: '' }));
@@ -1282,7 +1282,7 @@ pop() { if (Nav.busy) return; const s = Nav.stack(); if (s.length < 2) return; s
 refresh() { const r = Nav.top(); if (!r || !Nav.el) return; Nav.saveY(); const t = document.createElement('section'); Nav.fill(t, r); Nav.el.classList.toggle('has-tabs', t.classList.contains('has-tabs')); Morph.kids(Nav.el, t); Nav.post(Nav.el, r); Nav.sync(); },
 setParams(p, st) { const r = Nav.top(); if (!r) return; r.p = p; r.st = st || {}; r.y = 0; Nav.refresh(); const sc = $('.scroll', Nav.el); if (sc) sc.scrollTop = 0; },
 tab(key) {
-if (Nav.busy) return;
+if (Nav.busy || (!S.cid && key !== 'courses')) return;
 if (key === Nav.key) {
 const s = Nav.stack();
 if (s.length > 1) { s.length = 1; Nav.show('back'); } else { const sc = $('.scroll', Nav.el); if (sc) sc.scrollTo({ top: 0, behavior: 'smooth' }); }
@@ -1323,6 +1323,7 @@ document.addEventListener('contextmenu', e => { if (!e.target.closest('input,tex
 document.addEventListener('wheel', e => { if (e.ctrlKey) e.preventDefault(); }, { passive: false });
 document.addEventListener('click', e => {
 const el = e.target.closest('[data-act]'); if (!el) return;
+const pg = el.closest('.page'); if (pg && Nav.el && pg !== Nav.el) return;
 const f = ACT[el.dataset.act]; if (!f) return;
 f(el, el.dataset.a, el.dataset.b, e);
 });
@@ -1625,14 +1626,14 @@ const s = stOf(), i = Math.max(0, weekDays(s.off).findIndex(x => dkey(x) === s.s
 s.off += +a; s.sel = dkey(weekDays(s.off)[i]); Nav.refresh();
 };
 ACT.attFilter = (el, a) => { const s = stOf(); s.f = s.f === a ? 'all' : a; Nav.refresh(); };
-ACT.attMonthGo = (el, a) => { const s = stOf(); let { y, m } = s.mo; m += +a; if (m > 12) { m = 1; y++; } if (m < 1) { m = 12; y--; } s.mo = { y, m }; Nav.refresh(); };
+ACT.attMonthGo = (el, a) => { const s = stOf(); if (!s.mo) return; let { y, m } = s.mo; m += +a; if (m > 12) { m = 1; y++; } if (m < 1) { m = 12; y--; } s.mo = { y, m }; Nav.refresh(); };
 const attMoRow = (c, s, days, tk) => {
 const n = days.filter(d => attOf(c, dkey(d), s.id) === 0).length;
 const dots = '<div class="dots">' + days.map(d => { const k = dkey(d), v = attOf(c, k, s.id); return '<i class="dt ' + (k > tk ? 'f' : v === 1 ? 'p' : v === 0 ? 'a' : '') + '"></i>'; }).join('') + '</div>';
 return rowH({ lead: avatar(s, 40), ttl: stnN(s), sub: (n ? '<span class="red">' + fn(n) + ' روز غیبت</span>' : 'بدون غیبت') + dots, wrap: true, trail: n ? '<span class="count-dot red">' + fn(n) + '</span>' : '<span class="count-dot green">' + ico('check') + '</span>' });
 };
 ACT.attAbsNames = () => {
-const c = C(), st = stOf(), { y, m } = st.mo, days = monthDays(y, m), tk = dkey(todayD());
+const c = C(), st = stOf(); if (!c || !st.mo) return; const { y, m } = st.mo, days = monthDays(y, m), tk = dkey(todayD());
 const L = STU(c).filter(s => days.some(d => attOf(c, dkey(d), s.id) === 0));
 Sheet.open({ title: 'غایب‌های ' + JM[m - 1], body: L.length ? groupH(fn(L.length) + ' دانش‌آموز', L.map(s => attMoRow(c, s, days, tk)).join('')) : emptyH('calendar', 'بدون غیبت', 'در این ماه کسی غایب نبوده است.') });
 };
