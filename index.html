@@ -2944,7 +2944,9 @@ ACT.topOpen = () => {
   let cf = ''; for (let i = 0; i < 16; i++) cf += '<i style="left:' + ((i * 37 + 5) % 100) + '%;animation-delay:' + ((i % 6) * .45) + 's;animation-duration:' + (3.2 + (i % 4) * .6) + 's;background:' + ['#ffd54a', '#ff6b9d', '#6ee7ff', '#a78bfa', '#7dffb1'][i % 5] + '"></i>';
   el.innerHTML = '<div class="tp-cf" aria-hidden="true">' + cf + '</div><button class="tp-x" data-act="topClose" aria-label="بستن">' + ico('x') + '</button><div class="tp-h"><div class="tp-tr" aria-hidden="true">' + ico('tp-trophy') + '</div><h2>گروه‌های برتر</h2><p>معیار: تعداد مثبت‌ها منهای منفی‌ها</p></div>'
     + tpCard(ico('tp-cal'), 'برترین گروهِ هفته', 'هفتهٔ جاری', W, 0) + tpCard(ico('tp-cal2'), 'برترین گروهِ ماه', pnYmT(ym), M, 1) + tpCard(ico('tp-star'), 'برترین گروهِ همهٔ زمان‌ها', 'از ابتدا تا امروز', A, 2);
-  document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('on'));
+  document.body.appendChild(el);
+  /* بارگذاری عکس‌ها | Load Photos (گروه‌های برتر): بعد از باز شدن صفحه، عکس پروفایل سرگروه و اعضا را از حافظه می‌آورد تا دیده شود */
+  Photos.hydrate(el); requestAnimationFrame(() => el.classList.add('on'));
 };
 /* شاگردان برتر | Top Students: مثل گروه‌های برتر، برای روز/هفته/ماه */
 const tsRank = (c, f) => { const G = {}; pnAll(c).filter(f).forEach(e => { const o = G[e.sid] || (G[e.sid] = { s: e.s, p: 0, n: 0, v: 0, t: '' }); if (e.w === 'p') { o.p++; const kk = e.k || '9999'; if (kk > o.t) o.t = kk; } else o.n++; }); return Object.values(G).map(o => { o.d = o.p - o.n; const ch = (c.chk || {})[o.s.id] || {}; Object.keys(ch).forEach(k => { if (f({ k })) Object.keys(ch[k] || {}).forEach(key => { if (Math.round(+ch[k][key]) === 1) o.v++; }); }); return o; }).sort((a, b) => b.d - a.d || b.p - a.p || b.v - a.v || (a.t < b.t ? -1 : a.t > b.t ? 1 : 0) || sn(a.s).localeCompare(sn(b.s), 'fa')); };
@@ -2962,7 +2964,9 @@ ACT.topStu = () => {
   let cf = ''; for (let i = 0; i < 16; i++) cf += '<i style="left:' + ((i * 37 + 5) % 100) + '%;animation-delay:' + ((i % 6) * .45) + 's;animation-duration:' + (3.2 + (i % 4) * .6) + 's;background:' + ['#ffd54a', '#ff6b9d', '#6ee7ff', '#a78bfa', '#7dffb1'][i % 5] + '"></i>';
   el.innerHTML = '<div class="tp-cf" aria-hidden="true">' + cf + '</div><button class="tp-x" data-act="topClose" aria-label="بستن">' + ico('x') + '</button><div class="tp-h"><div class="tp-tr" aria-hidden="true">' + ico('tp-trophy') + '</div><h2>شاگردان برتر</h2><p>معیار: تعداد مثبت‌ها منهای منفی‌ها</p></div>'
     + tsCard(ico('tp-sun'), 'برترین شاگردِ روز', esc(jFull(kdate(tk))), D, 0) + tsCard(ico('tp-cal'), 'برترین شاگردِ هفته', esc(jFull(kdate(wkR(tk)[0]))) + ' تا ' + esc(jFull(kdate(wkR(tk)[1]))), W, 1) + tsCard(ico('tp-cal2'), 'برترین شاگردِ ماه', pnYmT(ym), M, 2);
-  document.body.appendChild(el); requestAnimationFrame(() => el.classList.add('on'));
+  document.body.appendChild(el);
+  /* بارگذاری عکس‌ها | Load Photos (شاگردان برتر): بعد از باز شدن صفحه، عکس پروفایل شاگردان برتر را از حافظه می‌آورد تا دیده شود */
+  Photos.hydrate(el); requestAnimationFrame(() => el.classList.add('on'));
 };
 ACT.topClose = () => { const el = $('#tpOv'); if (!el) return; el.classList.remove('on'); setTimeout(() => el.remove(), 260); };
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#tpOv')) ACT.topClose(); });
